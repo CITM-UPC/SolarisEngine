@@ -1,9 +1,0 @@
-{
-  "dependencies" : [ "sdl2-mixer", "sdl2", "sdl2-image", {
-    "name" : "sdl2"
-  }, {
-    "name" : "sdl2-image"
-  }, {
-    "name" : "sdl2-mixer"
-  } ]
-}
