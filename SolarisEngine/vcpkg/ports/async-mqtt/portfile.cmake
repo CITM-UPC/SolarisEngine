@@ -4,7 +4,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO redboltz/async_mqtt
     REF "${VERSION}"
-    SHA512 0bcb0bc3a08329a11ebe3efee4f919efc7bb8192373efd924f29f63c3bc7ca3ddd2c6e669f5800baf2fb3c5d67ae423e89cc802275d088848da83b2f343f7318
+    SHA512 25aa9b5ceb32247025143531bb849ecb52a5d54dc671bf4739e99c2190082e497b857c97245bae5adbc62b3e0cedefab712a71ba422b992756a47eab9d192f9e
     HEAD_REF main
 )
 

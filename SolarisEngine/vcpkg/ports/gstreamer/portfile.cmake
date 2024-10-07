@@ -9,7 +9,7 @@ vcpkg_from_gitlab(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO gstreamer/gstreamer
     REF "${VERSION}"
-    SHA512 0d69896d0a83452320df0d0f56c710df1365a259cd3f48dc7cd4df18d45b27caea7174aafa15ae5eb8637ccdef192c1047185b369b7232db4eaacbc57ffaaa22
+    SHA512 c181c8048ef859dfdd17d2bf1487d078704fdd289fed4e13fc00aebca055965c186286e60f3703c69d816734ef4be344b32650058d72517576927f9df18db2df
     HEAD_REF main
     PATCHES
         fix-clang-cl.patch
@@ -21,6 +21,7 @@ vcpkg_from_gitlab(
         gstreamer-disable-no-unused.patch
         srtp_fix.patch
         fix-bz2-windows-debug-dependency.patch
+        no-downloads.patch
         ${PATCHES}
 )
 
@@ -79,6 +80,7 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
 
         plugins-bad     bad
         aes             gst-plugins-bad:aes
+        aom             gst-plugins-bad:aom
         assrender       gst-plugins-bad:assrender
         bzip2-bad       gst-plugins-bad:bz2
         chromaprint     gst-plugins-bad:chromaprint
@@ -93,6 +95,7 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         libde265        gst-plugins-bad:libde265
         microdns        gst-plugins-bad:microdns
         modplug         gst-plugins-bad:modplug
+        nvcodec         gst-plugins-bad:nvcodec
         openal          gst-plugins-bad:openal
         openh264        gst-plugins-bad:openh264
         openjpeg        gst-plugins-bad:openjpeg
@@ -152,7 +155,6 @@ vcpkg_configure_meson(
         -Dlibnice=disabled
         -Ddevtools=disabled
         -Drtsp_server=disabled
-        -Domx=disabled
         -Dvaapi=disabled
         -Dsharp=disabled
         -Drs=disabled
@@ -199,20 +201,17 @@ vcpkg_configure_meson(
         -Dgst-plugins-good:pulse=auto
         -Dgst-plugins-good:qt5=disabled
         -Dgst-plugins-good:shout2=disabled
-        -Dgst-plugins-good:soup=disabled
+        #-Dgst-plugins-good:soup=disabled 
         -Dgst-plugins-good:twolame=disabled
         -Dgst-plugins-good:waveform=auto
         -Dgst-plugins-good:wavpack=disabled # Error during plugin build
         # gst-plugins-ugly
         -Dgst-plugins-ugly:a52dec=disabled
-        -Dgst-plugins-ugly:amrnb=disabled
-        -Dgst-plugins-ugly:amrwbdec=disabled
         -Dgst-plugins-ugly:cdio=disabled
         -Dgst-plugins-ugly:dvdread=disabled
         -Dgst-plugins-ugly:mpeg2dec=disabled # libmpeg2 not found
         -Dgst-plugins-ugly:sidplay=disabled
         # gst-plugins-bad
-        -Dgst-plugins-bad:aom=disabled # Error during plugin build
         -Dgst-plugins-bad:avtp=disabled
         -Dgst-plugins-bad:androidmedia=auto
         -Dgst-plugins-bad:applemedia=auto
@@ -237,7 +236,6 @@ vcpkg_configure_meson(
         -Dgst-plugins-bad:gsm=disabled
         -Dgst-plugins-bad:ipcpipeline=auto
         -Dgst-plugins-bad:iqa=disabled
-        -Dgst-plugins-bad:kate=disabled
         -Dgst-plugins-bad:kms=disabled
         -Dgst-plugins-bad:ladspa=disabled
         -Dgst-plugins-bad:ldac=disabled
@@ -248,7 +246,6 @@ vcpkg_configure_meson(
         -Dgst-plugins-bad:msdk=disabled
         -Dgst-plugins-bad:musepack=disabled
         -Dgst-plugins-bad:neon=disabled
-        -Dgst-plugins-bad:nvcodec=disabled
         -Dgst-plugins-bad:onnx=disabled # libonnxruntime not found
         -Dgst-plugins-bad:openaptx=disabled
         -Dgst-plugins-bad:opencv=disabled # opencv not found
