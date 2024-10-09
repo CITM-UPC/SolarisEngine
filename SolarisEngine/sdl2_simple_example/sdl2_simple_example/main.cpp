@@ -6,6 +6,10 @@
 #include <SDL2/SDL_events.h>
 #include "MyWindow.h"
 
+#include <stdio.h>
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 
 
@@ -20,6 +24,10 @@ using vec3 = glm::dvec3;
 static const ivec2 WINDOW_SIZE(512, 512);
 static const unsigned int FPS = 60;
 static const auto FRAME_DT = 1.0s / FPS;
+
+
+const char* file = "ht.fbx";
+const struct aiScene* scene = aiImportFile(file, aiProcess_Triangulate);
 
 static void init_openGL() {
 	glewInit();
@@ -146,6 +154,67 @@ static void draw_cube() {
 
 }
 
+std::vector<GLuint> VAOs(scene->mNumMeshes);
+std::vector<GLuint> VBOs(scene->mNumMeshes);
+
+static void DrawFBX() {
+	if (!scene) {
+		fprintf(stderr, "Error al cargar el archivo: %s\n", aiGetErrorString());
+		return;
+	}
+
+	for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
+		aiMesh* mesh = scene->mMeshes[i];
+
+	
+		glGenVertexArrays(1, &VAOs[i]);
+		glGenBuffers(1, &VBOs[i]);
+
+		glBindVertexArray(VAOs[i]);
+
+		float multi = 0.05;
+
+		// Cargar los vértices
+		std::vector<GLfloat> vertices(mesh->mNumVertices * 3);
+		for (unsigned int v = 0; v < mesh->mNumVertices; v++) {
+			aiVector3D vertex = mesh->mVertices[v];
+			vertices[v * 3] = vertex.x * multi;
+			vertices[v * 3 + 1] = vertex.z * multi - 0.5;
+			vertices[v * 3 + 2] = vertex.y * multi;
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBOs[i]);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+
+
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		// Dibuja la malla
+		glDrawArrays(GL_TRIANGLES, 0, mesh->mNumVertices);
+
+		
+		// Limpiar
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+
+
+		for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
+			glBindVertexArray(VAOs[i]);
+			glDrawArrays(GL_TRIANGLES, 0, scene->mMeshes[i]->mNumVertices);
+		}
+
+		for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
+			glDeleteVertexArrays(1, &VAOs[i]);
+			glDeleteBuffers(1, &VBOs[i]);
+		}
+
+		
+	}
+}
+
 static void draw_triangle(const u8vec4& color, const vec3& center, double size) {
 	/*glColor4ub(color.r, color.g, color.b, color.a);
 	glBegin(GL_TRIANGLES);
@@ -203,10 +272,12 @@ static void draw_triangle(const u8vec4& color, const vec3& center, double size) 
 
 static void display_func() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	draw_triangle(u8vec4(255, 0, 0, 255), vec3(0.0, 0.0, 0.0), 0.5);
-	draw_cube();
-	glRotatef(0.1f, 1.0f, 1.0f, 0.0f);
+	//draw_triangle(u8vec4(255, 0, 0, 255), vec3(0.5, 0.0, 0.0), 0.5);
+	//draw_cube();
 
+
+	DrawFBX();
+	glRotatef(1.0f, 0.0f, 1.0f, 0.0f);
 
 
 }
@@ -243,3 +314,4 @@ int main(int argc, char** argv) {
 
 	return 0;
 }
+
