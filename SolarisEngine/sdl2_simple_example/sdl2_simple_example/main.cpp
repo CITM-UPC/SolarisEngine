@@ -26,14 +26,23 @@ static const unsigned int FPS = 60;
 static const auto FRAME_DT = 1.0s / FPS;
 
 
-const char* file = "ht.fbx";
+const char* file = "h.fbx";
 const struct aiScene* scene = aiImportFile(file, aiProcess_Triangulate);
+
+static const int CHECKERS_HEIGHT = 64;
+static const int CHECKERS_WIDTH = 64;
+
+
 
 static void init_openGL() {
 	glewInit();
 	if (!GLEW_VERSION_3_0) throw exception("OpenGL 3.0 API is not  available.");
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.5, 0.5, 0.5, 1.0);
+
+
+
+
 }
 
 static void draw_cube() {
@@ -172,15 +181,15 @@ static void DrawFBX() {
 
 		glBindVertexArray(VAOs[i]);
 
-		float multi = 0.05;
+		float multi = 1;
 
 		// Cargar los vértices
 		std::vector<GLfloat> vertices(mesh->mNumVertices * 3);
 		for (unsigned int v = 0; v < mesh->mNumVertices; v++) {
 			aiVector3D vertex = mesh->mVertices[v];
 			vertices[v * 3] = vertex.x * multi;
-			vertices[v * 3 + 1] = vertex.z * multi - 0.5;
-			vertices[v * 3 + 2] = vertex.y * multi;
+			vertices[v * 3 + 1] = vertex.y * multi;
+			vertices[v * 3 + 2] = vertex.z * multi;
 		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBOs[i]);
@@ -214,6 +223,109 @@ static void DrawFBX() {
 		
 	}
 }
+
+GLuint textureID;
+
+static void drawTexture() {
+	// Generar textura de tablero de ajedrez
+	GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
+	for (int i = 0; i < CHECKERS_HEIGHT; i++) {
+		for (int j = 0; j < CHECKERS_WIDTH; j++) {
+			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
+			checkerImage[i][j][0] = (GLubyte)c;
+			checkerImage[i][j][1] = (GLubyte)c;
+			checkerImage[i][j][2] = (GLubyte)c;
+			checkerImage[i][j][3] = (GLubyte)255;
+		}
+	}
+
+	// Configurar la textura
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
+
+	// Habilitar texturas
+	glEnable(GL_TEXTURE_2D);
+
+	// Asegúrate de que tu escena sea válida
+	if (!scene) {
+		fprintf(stderr, "Error al cargar el archivo: %s\n", aiGetErrorString());
+		return;
+	}
+
+	// Iterar sobre los meshes de la escena
+	for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
+		aiMesh* mesh = scene->mMeshes[i];
+
+		// Crear VAO y VBO
+		GLuint VAO, VBO, texCoordVBO;
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+		glGenBuffers(1, &texCoordVBO);
+
+		glBindVertexArray(VAO);
+
+		float multi = 0.05f;
+
+		// Cargar los vértices
+		std::vector<GLfloat> vertices(mesh->mNumVertices * 3);
+		for (unsigned int v = 0; v < mesh->mNumVertices; v++) {
+			aiVector3D vertex = mesh->mVertices[v];
+			vertices[v * 3] = vertex.x * multi;
+			vertices[v * 3 + 1] = vertex.y * multi;
+			vertices[v * 3 + 2] = vertex.z * multi;
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		// Cargar coordenadas de textura
+		std::vector<GLfloat> texCoords(mesh->mNumVertices * 2);
+		for (unsigned int v = 0; v < mesh->mNumVertices; v++) {
+			if (mesh->HasTextureCoords(0)) {
+				aiVector3D texCoord = mesh->mTextureCoords[0][v];
+				texCoords[v * 2] = texCoord.x;  // Usar las coordenadas directamente
+				texCoords[v * 2 + 1] = texCoord.y;
+			}
+			else {
+				texCoords[v * 2] = 0.0f; // Valor por defecto si no hay coordenadas de textura
+				texCoords[v * 2 + 1] = 0.0f;
+			}
+		}
+
+		// Cargar el VBO de coordenadas de textura
+		glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO);
+		glBufferData(GL_ARRAY_BUFFER, texCoords.size() * sizeof(GLfloat), texCoords.data(), GL_STATIC_DRAW);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexCoordPointer(2, GL_FLOAT, 0, (void*)0);
+
+		// Dibuja la malla
+		glBindTexture(GL_TEXTURE_2D, textureID); // Asegúrate de que la textura esté activada
+		glDrawArrays(GL_TRIANGLES, 0, mesh->mNumVertices);
+
+		// Limpiar
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		// Eliminar VAOs y VBOs después de usar
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &texCoordVBO);
+	}
+
+	// Deshabilitar texturas
+	glDisable(GL_TEXTURE_2D);
+}
+
+
 
 static void draw_triangle(const u8vec4& color, const vec3& center, double size) {
 	/*glColor4ub(color.r, color.g, color.b, color.a);
@@ -276,8 +388,10 @@ static void display_func() {
 	//draw_cube();
 
 
-	DrawFBX();
-	glRotatef(1.0f, 0.0f, 1.0f, 0.0f);
+	/*DrawFBX();
+	glTexCoordPointer();*/
+	drawTexture();
+	glRotatef(1.0f, 1.0f, 1.0f, 1.0f);
 
 
 }
