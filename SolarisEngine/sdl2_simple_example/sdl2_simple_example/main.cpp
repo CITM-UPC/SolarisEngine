@@ -11,6 +11,10 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <IL/il.h>
+#include <IL/ilu.h>
+#include <iostream>
+
 
 
 
@@ -226,38 +230,60 @@ static void DrawFBX() {
 
 GLuint textureID;
 
-static void drawTexture() {
-	// Generar textura de tablero de ajedrez
-	GLubyte checkerImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
-	for (int i = 0; i < CHECKERS_HEIGHT; i++) {
-		for (int j = 0; j < CHECKERS_WIDTH; j++) {
-			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
-			checkerImage[i][j][0] = (GLubyte)c;
-			checkerImage[i][j][1] = (GLubyte)c;
-			checkerImage[i][j][2] = (GLubyte)c;
-			checkerImage[i][j][3] = (GLubyte)255;
-		}
+void initializeDevIL() {
+	ilInit();
+	iluInit();
+}
+
+bool loadImageWithDevIL(const char* filename) {
+	ILuint imageID;
+	ilGenImages(1, &imageID);
+	ilBindImage(imageID);
+
+	if (!ilLoadImage((const wchar_t*)filename)) {
+		std::cerr << "Error loading image: " << ilGetError() << std::endl;
+		ilDeleteImages(1, &imageID);
+		return false;
 	}
 
-	// Configurar la textura
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	// Obtener el tamaño de la imagen
+	int width = ilGetInteger(IL_IMAGE_WIDTH);
+	int height = ilGetInteger(IL_IMAGE_HEIGHT);
+
+	// Obtener los datos de los píxeles
+	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+	GLubyte* imageData = ilGetData();
+
+	// Generar la textura en OpenGL
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CHECKERS_WIDTH, CHECKERS_HEIGHT, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
 
-	// Habilitar texturas
-	glEnable(GL_TEXTURE_2D);
+	// Limpiar
+	ilDeleteImages(1, &imageID);
+	return true;
+}
+
+static void drawTexture(const char* imagePath) {
+	initializeDevIL();
+
+	// Cargar la imagen como textura
+	if (!loadImageWithDevIL(imagePath)) {
+		return;
+	}
 
 	// Asegúrate de que tu escena sea válida
 	if (!scene) {
-		fprintf(stderr, "Error al cargar el archivo: %s\n", aiGetErrorString());
+		//std::cerr << "Error al cargar el archivo: " << aiGetErrorString() << std::endl;
 		return;
 	}
+
+	// Habilitar texturas
+	glEnable(GL_TEXTURE_2D);
 
 	// Iterar sobre los meshes de la escena
 	for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
@@ -270,6 +296,7 @@ static void drawTexture() {
 		glGenBuffers(1, &texCoordVBO);
 
 		glBindVertexArray(VAO);
+
 
 		float multi = 0.05f;
 
@@ -390,7 +417,7 @@ static void display_func() {
 
 	/*DrawFBX();
 	glTexCoordPointer();*/
-	drawTexture();
+	drawTexture("cat.jpg");
 	glRotatef(1.0f, 1.0f, 1.0f, 1.0f);
 
 
