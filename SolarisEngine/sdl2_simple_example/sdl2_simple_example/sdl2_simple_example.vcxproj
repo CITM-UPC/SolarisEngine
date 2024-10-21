@@ -128,13 +128,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CameraEditor.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyWindow.cpp" />
+    <ClCompile Include="Primitivos.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraEditor.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="MyWindow.h" />
+    <ClInclude Include="Primitivos.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,8 +4,11 @@
 #include <exception>
 #include <glm/glm.hpp>
 #include <SDL2/SDL_events.h>
+#include "imgui_impl_sdl2.h"
 #include "MyWindow.h"
 #include "Importer.h"
+#include "CameraEditor.h"
+
 
 #include <stdio.h>
 #include <assimp/cimport.h>
@@ -16,6 +19,8 @@
 #include <IL/ilu.h>
 #include <iostream>
 #include <vector>
+#include "Primitivos.h"
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace std;
 
@@ -30,6 +35,12 @@ static const auto FRAME_DT = 1.0s / FPS;
 
 GLuint textureID;
 const char* fbxFilePath = "./Assets/h.fbx";
+
+    
+CameraEditor camera(glm::vec3(0.0f, 0.3f, 0.2f), // Posición inicial
+    glm::vec3(0.0f, 0.0f, -1.0f), // Dirección de la cámara
+    glm::vec3(0.0f, 1.0f, 0.0f)); // Vector up
+
 
 static void init_openGL() {
     if (glewInit() != GLEW_OK) throw exception("Failed to initialize GLEW.");
@@ -48,7 +59,7 @@ bool loadImageWithDevIL(const char* filename) {
     ilGenImages(1, &imageID);
     ilBindImage(imageID);
 
-    if (!ilLoadImage(filename)) {
+    if (!ilLoadImage((const wchar_t*)filename)) {
         std::cerr << "Error loading image: " << ilGetError() << std::endl;
         ilDeleteImages(1, &imageID);
         return false;
@@ -130,24 +141,129 @@ static void display_func(const struct aiScene* scene) {
 static bool processEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT) return false;
+        switch (event.type) {
+        case SDL_QUIT:
+            return false; 
+            break;
+        case SDL_KEYDOWN:
+            camera.processInput(event.key.keysym.sym); // Procesa entradas de la cámara
+            break;
+        case SDL_MOUSEMOTION: {
+            // Obtiene el desplazamiento del ratón
+            float xoffset = event.motion.xrel;
+            float yoffset = event.motion.yrel;
+            camera.processMouseMovement(xoffset, yoffset); // Procesa el movimiento del ratón
+        }
+            break;
+        default:
+            ImGui_ImplSDL2_ProcessEvent(&event);
+            break;
+        }
+        
     }
     return true;
 }
+
+
+static bool Start() {
+
+   
+
+    return true;
+}
+
+
+static bool PreUpdate() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    return true;
+}
+
+glm::mat4x4 lookAt(vec3  const& eye, vec3  const& center, vec3  const& up)
+{
+    vec3  f = normalize(center - eye);
+    vec3  u = normalize(up);
+    vec3  s = normalize(cross(f, u));
+    u = cross(s, f);
+
+    glm::mat4x4 Result(1);
+    Result[0][0] = s.x;
+    Result[1][0] = s.y;
+    Result[2][0] = s.z;
+    Result[0][1] = u.x;
+    Result[1][1] = u.y;
+    Result[2][1] = u.z;
+    Result[0][2] = -f.x;
+    Result[1][2] = -f.y;
+    Result[2][2] = -f.z;
+    Result[3][0] = -dot(s, eye);
+    Result[3][1] = -dot(u, eye);
+    Result[3][2] = dot(f, eye);
+    return Result;
+}
+
+#include <glm/gtc/matrix_transform.hpp>
+
+float fov = glm::radians(90.0f); // Campo de visión en radianes
+float nearPlane = 0.01f; // Plano cercano
+float farPlane = 100.0f; // Plano lejano
+float aspectRatio = (float)WINDOW_SIZE.x / (float)WINDOW_SIZE.y; // Relación de aspecto
+
+glm::mat4 projection = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
+
+static bool Update() {
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixf(glm::value_ptr(projection)); // Cargar la matriz de proyección
+
+    glm::mat4 view = camera.getViewMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadMatrixf(glm::value_ptr(view)); // Cargar la matriz de vista
+
+
+
+    CubeImmediateMode cubo;
+    cubo.draw();
+
+    /*const float radius = 4.2f;
+    float camX = sin(0.2f) * radius;
+    float camZ = cos(0.5f) * radius;
+    glm::mat4 view;
+
+    
+
+    view = lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));*/
+    
+
+    return true;
+
+}
+
+
 
 int main(int argc, char** argv) {
     MyWindow window("SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
     Importer& importer = Importer::getInstance(); 
 
     // Import the model
-    const struct aiScene* scene = importer.Importar(fbxFilePath);
+    //const struct aiScene* scene = importer.Importar(fbxFilePath);
 
     init_openGL();
+
+    Start();
+
 
     while (processEvents()) {
         const auto t0 = hrclock::now();
 
-        display_func(scene);
+        //display_func(scene);
+
+        //Preupdate
+        PreUpdate();
+
+        //Update //Dibujar
+        Update();
+
+
 
         window.swapBuffers();
 
@@ -167,3 +283,8 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+
+
+
+
+

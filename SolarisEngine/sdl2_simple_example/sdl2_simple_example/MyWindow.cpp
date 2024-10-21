@@ -69,6 +69,13 @@ void MyWindow::swapBuffers() const {
             }
             ImGui::EndMenu();
         }
+        if (ImGui::BeginMenu("Primitive")) {
+            if (ImGui::MenuItem("Cube")) {
+                //Aparecer un cubo
+            }
+        }
+
+
         ImGui::EndMainMenuBar();
     }
     
