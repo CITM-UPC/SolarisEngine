@@ -59,6 +59,19 @@ public:
         return true;
     }
 
+    template <typename TComponent>
+    bool AddComponent(std::unique_ptr<TComponent> component) {
+        // Check for already existing Component
+        if (GetComponent<TComponent>() != nullptr) {
+           
+            return false;
+        }
+
+        component->Enable(); // Habilitar el componente si es necesario
+        components.push_back(std::move(component)); // Mueve el componente al vector
+        return true;
+    }
+
     void RemoveComponent(ComponentType type);
 
 

@@ -1,4 +1,8 @@
 #include "Importer.h"
+#include "GameObject.h"
+#include "Component_Mesh.h" // Asegúrate de que tienes esta clase definida
+#include <memory> // Para std::shared_ptr
+
 namespace fs = std::filesystem;
 
 Importer::Importer() {
@@ -15,19 +19,35 @@ Importer::Importer() {
     ilInit(); // Inicializa DevIL
 }
 
-void Importer::Importar(const std::string& filepath) {
+std::shared_ptr<GameObject> Importer::Importar(const std::string& filepath) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
 
     if (!scene) {
         std::cerr << "Error al cargar el archivo: " << importer.GetErrorString() << std::endl;
-        return;
+        return nullptr;
     }
 
     std::cout << "Archivo cargado exitosamente: " << filepath << std::endl;
 
     LoadMaterials(scene);
-    ProcessMeshes(scene);
+
+    auto gameObject = std::make_shared<GameObject>("ImportedFBX");
+
+    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
+        aiMesh* ai_mesh = scene->mMeshes[i];
+        std::string meshName = ai_mesh->mName.C_Str();
+        meshes.push_back(meshName);
+
+        // Crear y agregar un componente de malla al GameObject
+        auto meshComponent = std::make_unique<Component_Mesh>(gameObject);
+        meshComponent->LoadMesh(ai_mesh); // Implementa esta función en Component_Mesh
+        gameObject->AddComponent<Component_Mesh>(std::move(meshComponent));
+
+        std::cout << "Malla procesada: " << meshName << " con " << ai_mesh->mNumVertices << " vértices." << std::endl;
+    }
+
+    return gameObject; // Devuelve el GameObject creado
 }
 
 void Importer::LoadMaterials(const aiScene* scene) {
@@ -56,7 +76,6 @@ void Importer::LoadMaterials(const aiScene* scene) {
 
                     textureIds[name.C_Str()] = textureId; // Guardar ID de textura
                     std::cout << "Textura cargada: " << fullPath << std::endl;
-                   
                 }
                 else {
                     std::cerr << "Error al cargar la textura: " << fullPath << std::endl;
@@ -68,37 +87,13 @@ void Importer::LoadMaterials(const aiScene* scene) {
     }
 }
 
-void Importer::ProcessMeshes(const aiScene* scene) {
-    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        aiMesh* ai_mesh = scene->mMeshes[i];
-        std::string meshName = ai_mesh->mName.C_Str();
-        meshes.push_back(meshName);
-
-        // Aquí puedes almacenar los VBO y VAO
-        // Ejemplo simple:
-        GLuint vao, vbo;
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-
-        glGenBuffers(1, &vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, ai_mesh->mNumVertices * sizeof(aiVector3D), ai_mesh->mVertices, GL_STATIC_DRAW);
-
-        // Configura tus atributos aquí (posiciones, normales, etc.)
-        // Ejemplo:
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-
-        // Puedes almacenar el VAO y otros datos necesarios en un mapa
-        // vaos[meshName] = vao; // Asegúrate de declarar esto como un mapa en tu clase
-
-        std::cout << "Malla procesada: " << meshName << " con " << ai_mesh->mNumVertices << " vértices." << std::endl;
+void Importer::Draw(const std::shared_ptr<GameObject>& gameObject) {
+    if (gameObject) {
+        gameObject->Draw(); // Llama al método Draw del GameObject
     }
-}
-
-GLuint Importer::GetTextureIdForModel(const std::string& modelName) {
-    auto it = textureIds.find(modelName);
-    return (it != textureIds.end()) ? it->second : 0; // Devuelve 0 si no se encuentra
+    else {
+        std::cerr << "El GameObject es nulo, no se puede dibujar." << std::endl;
+    }
 }
 
 void Importer::Draw(const std::string& modelName) {

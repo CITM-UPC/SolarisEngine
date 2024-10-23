@@ -46,6 +46,10 @@ CameraEditor camera(glm::vec3(0.0f, 0.3f, 0.2f), // Posici�n inicial
     glm::vec3(0.0f, 1.0f, 0.0f)); // Vector up
 
 
+
+std::shared_ptr<GameObject> gameObject;
+
+
 static void init_openGL() {
 	if (glewInit() != GLEW_OK) throw exception("Failed to initialize GLEW.");
 	if (!GLEW_VERSION_3_0) throw exception("OpenGL 3.0 API is not available.");
@@ -170,11 +174,9 @@ static bool processEvents() {
 		case SDL_MOUSEWHEEL: {
 			// Procesa el desplazamiento de la rueda del ratón
 			if (event.wheel.y > 0) {
-				printf("UP");
 				camera.MouseWheel(true);
 			}
 			else if (event.wheel.y < 0) {
-				printf("DOWN");
 				camera.MouseWheel(false);
 			}
 			break;
@@ -191,8 +193,8 @@ static bool processEvents() {
 
 static bool Start() {
 
-    importer.Importar(fbxFilePath);
-   
+    //importer.Importar(fbxFilePath);
+	gameObject = importer.Importar(fbxFilePath);
 
 
 	return true;
@@ -215,10 +217,16 @@ static bool Update() {
 	cubo.draw();
 
 
-    importer.Draw("PDAFT Miku_mesh");
+    //importer.Draw("PDAFT Miku_mesh");
 
     //DrawFBX(scene);
 
+	
+
+	if (gameObject) {
+		// En tu ciclo de renderizado
+		gameObject->Draw(); // Llama al método Draw del GameObject importado
+	}
 
 
 

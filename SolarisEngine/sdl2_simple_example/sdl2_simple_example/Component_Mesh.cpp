@@ -23,3 +23,20 @@ void Component_Mesh::Update(double dt) {
 void Component_Mesh::DrawComponent() {
     // Lógica para dibujar el mesh
 }
+
+void Component_Mesh::LoadMesh(aiMesh* ai_mesh) {
+    // Configura tu VAO y VBO aquí
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, ai_mesh->mNumVertices * sizeof(aiVector3D), ai_mesh->mVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // Guarda el VAO y otros datos necesarios para el dibujo
+    this->vao = vao; // Asegúrate de tener un campo para almacenar esto
+}

@@ -10,6 +10,8 @@
 #include <assimp/postprocess.h>
 #include <IL/il.h>
 #include <GL/glew.h> // Asegúrate de incluir GLEW o tu librería de OpenGL preferida
+#include "GameObject.h"
+#include "Component.h"
 
 #define ASSETS_DIR "./Assets"
 #define LIBRARY_DIR "./Library"
@@ -27,12 +29,18 @@ public:
     Importer(const Importer&) = delete;
     void operator=(const Importer&) = delete;
 
-    void Importar(const std::string& filepath);
+
     void Draw(const std::string& modelName);
+    void Draw(const std::shared_ptr<GameObject>& gameObject);
+    std::shared_ptr<GameObject> Importar(const std::string& filepath);
 
 private:
     Importer();
+   
     void LoadMaterials(const aiScene* scene);
+    
+
+
     void ProcessMeshes(const aiScene* scene);
     GLuint GetTextureIdForModel(const std::string& modelName);
 
