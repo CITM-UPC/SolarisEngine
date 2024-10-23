@@ -31,7 +31,7 @@ glm::mat4x4 CameraEditor::lookAt(vec3  const& eye, vec3  const& center, vec3  co
 float fov = glm::radians(90.0f); // Campo de visión en radianes
 float nearPlane = 0.01f; // Plano cercano
 float farPlane = 100.0f; // Plano lejano
-float aspectRatio = (float)512  / (float)512; // Relación de aspecto
+float aspectRatio = (float)1024 / (float)720; // Relación de aspecto
 
 glm::mat4 projection = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
 
@@ -100,4 +100,18 @@ void CameraEditor::Update() {
     glm::mat4 view = getViewMatrix();
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(glm::value_ptr(view)); // Cargar la matriz de vista
+}
+
+void CameraEditor::MouseWheel(bool zoom)
+{
+    const float cameraSpeed = 0.05f;
+    if (zoom) {
+        position += cameraSpeed * front;
+    
+    }
+    else
+    {
+        position -= cameraSpeed * front;
+    }
+
 }
