@@ -19,6 +19,8 @@ public:
     void updatePosition(glm::vec3 delta);
     void Update();
 
+    void MouseWheel(bool zoom);
+
 private:
     glm::vec3 position; // Posición de la cámara
     glm::vec3 front;    // Dirección hacia donde apunta la cámara
