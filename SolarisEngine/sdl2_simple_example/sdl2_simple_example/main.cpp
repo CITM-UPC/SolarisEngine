@@ -178,47 +178,11 @@ static bool PreUpdate() {
     return true;
 }
 
-glm::mat4x4 lookAt(vec3  const& eye, vec3  const& center, vec3  const& up)
-{
-    vec3  f = normalize(center - eye);
-    vec3  u = normalize(up);
-    vec3  s = normalize(cross(f, u));
-    u = cross(s, f);
 
-    glm::mat4x4 Result(1);
-    Result[0][0] = s.x;
-    Result[1][0] = s.y;
-    Result[2][0] = s.z;
-    Result[0][1] = u.x;
-    Result[1][1] = u.y;
-    Result[2][1] = u.z;
-    Result[0][2] = -f.x;
-    Result[1][2] = -f.y;
-    Result[2][2] = -f.z;
-    Result[3][0] = -dot(s, eye);
-    Result[3][1] = -dot(u, eye);
-    Result[3][2] = dot(f, eye);
-    return Result;
-}
-
-#include <glm/gtc/matrix_transform.hpp>
-
-float fov = glm::radians(90.0f); // Campo de visión en radianes
-float nearPlane = 0.01f; // Plano cercano
-float farPlane = 100.0f; // Plano lejano
-float aspectRatio = (float)WINDOW_SIZE.x / (float)WINDOW_SIZE.y; // Relación de aspecto
-
-glm::mat4 projection = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
 
 static bool Update() {
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(glm::value_ptr(projection)); // Cargar la matriz de proyección
-
-    glm::mat4 view = camera.getViewMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadMatrixf(glm::value_ptr(view)); // Cargar la matriz de vista
-
+    camera.Update();
 
 
     CubeImmediateMode cubo;

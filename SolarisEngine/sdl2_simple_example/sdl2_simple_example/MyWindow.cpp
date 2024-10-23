@@ -73,6 +73,7 @@ void MyWindow::swapBuffers() const {
             if (ImGui::MenuItem("Cube")) {
                 //Aparecer un cubo
             }
+            ImGui::EndMenu();
         }
 
 

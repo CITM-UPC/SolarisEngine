@@ -5,14 +5,19 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
+using vec3 = glm::dvec3;
+
 class CameraEditor {
 public:
+    glm::mat4x4 lookAt(vec3 const& eye, vec3 const& center, vec3 const& up);
     CameraEditor(glm::vec3 position, glm::vec3 front, glm::vec3 up);
 
     glm::mat4 getViewMatrix() const;
     void processInput(unsigned char key);
     void processMouseMovement(float xoffset, float yoffset);
     void updatePosition(glm::vec3 delta);
+    void Update();
 
 private:
     glm::vec3 position; // Posición de la cámara
