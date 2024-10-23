@@ -36,6 +36,10 @@ static const auto FRAME_DT = 1.0s / FPS;
 GLuint textureID;
 const char* fbxFilePath = "./Assets/h.fbx";
 
+const struct aiScene* scene = aiImportFile(fbxFilePath, aiProcess_Triangulate);
+
+Importer& importer = Importer::getInstance();
+
     
 CameraEditor camera(glm::vec3(0.0f, 0.3f, 0.2f), // Posición inicial
     glm::vec3(0.0f, 0.0f, -1.0f), // Dirección de la cámara
@@ -167,6 +171,7 @@ static bool processEvents() {
 
 static bool Start() {
 
+    importer.Importar(fbxFilePath);
    
 
     return true;
@@ -187,6 +192,14 @@ static bool Update() {
 
     CubeImmediateMode cubo;
     cubo.draw();
+
+
+    importer.Draw("PDAFT Miku_mesh");
+
+    //DrawFBX(scene);
+
+
+
 
     /*const float radius = 4.2f;
     float camX = sin(0.2f) * radius;
