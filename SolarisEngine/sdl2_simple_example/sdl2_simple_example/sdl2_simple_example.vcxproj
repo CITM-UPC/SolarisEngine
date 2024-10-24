@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="App.cpp" />
     <ClCompile Include="CameraEditor.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Component_Material.cpp" />
@@ -142,6 +143,7 @@
     <ClCompile Include="UIDGen.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="App.h" />
     <ClInclude Include="CameraEditor.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Component_Material.h" />

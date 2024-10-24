@@ -3,6 +3,17 @@
 
 #include <stdio.h>
 #include <vector>
+#include <glm/glm.hpp>
+#include <chrono>
+
+
+
+using hrclock = std::chrono::high_resolution_clock;
+using namespace std::chrono_literals;
+using u8vec4 = glm::u8vec4;
+using ivec2 = glm::ivec2;
+using vec3 = glm::dvec3;
+
 
 //  NULL just in case ----------------------
 

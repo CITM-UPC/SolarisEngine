@@ -9,6 +9,7 @@ glm::mat4x4 CameraEditor::lookAt(vec3  const& eye, vec3  const& center, vec3  co
     vec3  s = normalize(cross(f, u));
     u = cross(s, f);
 
+
     glm::mat4x4 Result(1);
     Result[0][0] = s.x;
     Result[1][0] = s.y;
