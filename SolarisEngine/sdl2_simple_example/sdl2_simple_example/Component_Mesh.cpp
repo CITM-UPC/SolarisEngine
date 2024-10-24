@@ -25,17 +25,44 @@ void Component_Mesh::Update(double dt) {
 }
 
 void Component_Mesh::DrawComponent() {
-    // Lógica para dibujar el mesh
-    for (const auto& mesh : meshes) {
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 0, mesh.vertices.data());
-
-        glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, mesh.indices.data());
-
-        glDisableClientState(GL_VERTEX_ARRAY);
+    // Verifica si la textura está válida antes de intentar enlazarla
+    if (textureID == 0) {
+        std::cerr << "Error: Textura no válida." << std::endl;
+        return; // Salimos si no hay textura válida
     }
 
+    // Activa la textura
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // Habilita el estado del array de vértices
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, nullptr); // Usaremos nullptr y estableceremos el puntero en el bucle
+
+    for (const auto& mesh : meshes) {
+        // Asigna el puntero de vértices para la malla actual
+        glVertexPointer(3, GL_FLOAT, 0, mesh.vertices.data());
+
+        // Habilita el array de coordenadas de textura si lo necesitas
+        if (!mesh.texCoords.empty()) {
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glTexCoordPointer(2, GL_FLOAT, 0, mesh.texCoords.data());
+        }
+
+        // Dibuja la malla
+        glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, mesh.indices.data());
+
+        // Deshabilita el array de coordenadas de textura si fue habilitado
+        if (!mesh.texCoords.empty()) {
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        }
+    }
+
+    // Deshabilita el estado del array de vértices
+    glDisableClientState(GL_VERTEX_ARRAY);
 }
+
+
+
 
 void Component_Mesh::LoadMesh(aiMesh* ai_mesh) {
     // Configura tu VAO y VBO aquí
@@ -52,4 +79,51 @@ void Component_Mesh::LoadMesh(aiMesh* ai_mesh) {
 
     // Guarda el VAO y otros datos necesarios para el dibujo
     this->vao = vao; // Asegúrate de tener un campo para almacenar esto
+}
+
+void Component_Mesh::LoadMesh(const aiScene* ai_scene)
+{
+    for (unsigned int i = 0; i < ai_scene->mNumMeshes; ++i) {
+        Mesh mesh;
+        const aiMesh* aiMesh = ai_scene->mMeshes[i];
+
+        for (unsigned int j = 0; j < aiMesh->mNumVertices; ++j) {
+            mesh.vertices.push_back(aiMesh->mVertices[j].x);
+            mesh.vertices.push_back(aiMesh->mVertices[j].y);
+            mesh.vertices.push_back(aiMesh->mVertices[j].z);
+
+            // Cargar las coordenadas de textura si están disponibles
+            if (aiMesh->mTextureCoords[0]) { // Comprobamos si hay coordenadas de textura
+                mesh.texCoords.push_back(aiMesh->mTextureCoords[0][j].x);
+                mesh.texCoords.push_back(aiMesh->mTextureCoords[0][j].y);
+            }
+            else {
+                // Si no hay coordenadas de textura, puedes asignar (0,0) o cualquier valor por defecto
+                mesh.texCoords.push_back(0.0f);
+                mesh.texCoords.push_back(0.0f);
+            }
+
+            // Cargar las normales si están disponibles
+            if (aiMesh->mNormals) {
+                // Aquí puedes almacenar las normales si necesitas usarlas
+                // Por ejemplo: normals.push_back(aiMesh->mNormals[j].x); // Puedes añadir un vector normals en la malla
+            }
+
+
+        }
+
+        for (unsigned int j = 0; j < aiMesh->mNumFaces; ++j) {
+            const aiFace& face = aiMesh->mFaces[j];
+            for (unsigned int k = 0; k < face.mNumIndices; ++k) {
+                mesh.indices.push_back(face.mIndices[k]);
+            }
+        }
+
+        meshes.push_back(mesh);
+    }
+}
+
+void Component_Mesh::SetTexture(ILuint textureID)
+{
+    this->textureID = textureID;
 }

@@ -35,7 +35,12 @@ public:
 
     void Draw(const std::string& modelName);
     void Draw(const std::shared_ptr<GameObject>& gameObject);
-    std::shared_ptr<GameObject> Importar(const std::string& filepath);
+    std::shared_ptr<GameObject> Importar(const std::string& modelPath);
+    std::shared_ptr<GameObject> Importar(const std::string& modelPath, const std::string& texturePath);
+
+    unsigned int LoadTexture(const std::string& texturePath); // Declaración de LoadTexture
+
+
     //::shared_ptr<GameObject> Importar(const std::string& filepath);
 
    

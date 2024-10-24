@@ -47,7 +47,7 @@ bool App::Start()
 
     
     //importer->Importar("./Assets/h.fbx");
-    gameObject = importer->Importar("./Assets/BakerHouse.fbx");
+    gameObject = importer->Importar("./Assets/BakerHouse.fbx", "./Assets/Baker_house.png");
     
 
     return true;
@@ -180,10 +180,12 @@ bool App::DoUpdate()
     //std::cout << "App::DoUpdate called" << std::endl;
 
     cameraEditor->Update();
-    CubeImmediateMode cube;
-    cube.draw();
+   
+    /* CubeImmediateMode cube;
+    cube.draw();*/
 
     gameObject->Draw();
+
 
    
 
@@ -234,6 +236,7 @@ bool App::INIT_openGL() {
 
     //glEnable(GL_DEPTH_TEST);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
     //glEnable(GL_LIGHTING);
     //glEnable(GL_LIGHT0);
     glClearColor(0.5, 0.5, 0.5, 1.0);

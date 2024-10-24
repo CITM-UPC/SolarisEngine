@@ -50,10 +50,10 @@ Importer::Importer() {
 //    return gameObject; // Devuelve el GameObject creado
 //}
 
-std::shared_ptr<GameObject> Importer::Importar(const std::string& filePath)
+std::shared_ptr<GameObject> Importer::Importar(const std::string& modelPath)
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_FlipUVs);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         std::cerr << "Error al cargar el modelo: " << importer.GetErrorString() << std::endl;
@@ -62,29 +62,61 @@ std::shared_ptr<GameObject> Importer::Importar(const std::string& filePath)
 
     auto newGameObject = std::make_shared<GameObject>(scene->mName.C_Str());
     newGameObject->AddComponent<Component_Mesh>();
-
-    // Recorrer todos los nodos de la escena y extraer los datos del modelo
-    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        Mesh mesh;
-        const aiMesh* aiMesh = scene->mMeshes[i];
-
-        for (unsigned int j = 0; j < aiMesh->mNumVertices; ++j) {
-            mesh.vertices.push_back(aiMesh->mVertices[j].x);
-            mesh.vertices.push_back(aiMesh->mVertices[j].y);
-            mesh.vertices.push_back(aiMesh->mVertices[j].z);
-        }
-
-        for (unsigned int j = 0; j < aiMesh->mNumFaces; ++j) {
-            const aiFace& face = aiMesh->mFaces[j];
-            for (unsigned int k = 0; k < face.mNumIndices; ++k) {
-                mesh.indices.push_back(face.mIndices[k]);
-            }
-        }
-
-        newGameObject->GetComponent<Component_Mesh>()->meshes.push_back(mesh);
+    auto meshComponent = newGameObject->GetComponent<Component_Mesh>();
+    if (meshComponent) {
+        meshComponent->LoadMesh(scene); // Carga las mallas
     }
+
     return newGameObject;
 }
+
+std::shared_ptr<GameObject> Importer::Importar(const std::string& modelPath, const std::string& texturePath)
+{
+    auto newGameObject = Importar(modelPath);
+    auto textureID = LoadTexture(texturePath);
+
+    newGameObject->GetComponent<Component_Mesh>()->SetTexture(textureID);
+
+
+    return newGameObject;
+}
+
+unsigned int Importer::LoadTexture(const std::string& texturePath) {
+    // Implementación para cargar la textura
+    ILuint textureID;
+    ilGenImages(1, &textureID);
+    ilBindImage(textureID);
+
+    if (!ilLoadImage((const wchar_t*)texturePath.c_str())) {
+        std::cerr << "Error al cargar la textura: " << ilGetError() << std::endl;
+        return 0; // Retorna 0 si hay un error
+    }
+
+    ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+
+    GLuint glTextureID;
+    glGenTextures(1, &glTextureID);
+    glBindTexture(GL_TEXTURE_2D, glTextureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    ilDeleteImages(1, &textureID);
+    return glTextureID;
+}
+
+
+
+
+
+
+
+
+
+
 
 void Importer::LoadMaterials(const aiScene* scene) {
     for (unsigned int i = 0; i < scene->mNumMaterials; ++i) {
