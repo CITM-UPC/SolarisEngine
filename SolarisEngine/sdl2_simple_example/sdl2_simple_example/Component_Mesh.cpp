@@ -23,16 +23,17 @@ void Component_Mesh::Disable() {
 void Component_Mesh::Update(double dt) {
     // Lógica de actualización
 }
-
 void Component_Mesh::DrawComponent() {
-    // Verifica si la textura está válida antes de intentar enlazarla
+    // Si no hay una textura válida, cambiamos el color a rosa (1.0, 0.0, 1.0)
     if (textureID == 0) {
-        std::cerr << "Error: Textura no válida." << std::endl;
-        return; // Salimos si no hay textura válida
+        std::cerr << "Error: Textura no válida. Usando color rosa de error." << std::endl;
+        glBindTexture(GL_TEXTURE_2D, 0); // Desactiva la textura
+        glColor3f(1.0f, 0.0f, 1.0f); // Color rosa (RGB: 1.0, 0.0, 1.0)
     }
-
-    // Activa la textura
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    else {
+        glColor3f(1.0f, 1.0f, 1.0f); // Color blanco si hay textura
+        glBindTexture(GL_TEXTURE_2D, textureID); // Activa la textura
+    }
 
     // Habilita el estado del array de vértices
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -43,7 +44,7 @@ void Component_Mesh::DrawComponent() {
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices.data());
 
         // Habilita el array de coordenadas de textura si lo necesitas
-        if (!mesh.texCoords.empty()) {
+        if (!mesh.texCoords.empty() && textureID != 0) { // Si hay textura y es válida
             glEnableClientState(GL_TEXTURE_COORD_ARRAY);
             glTexCoordPointer(2, GL_FLOAT, 0, mesh.texCoords.data());
         }
@@ -52,7 +53,7 @@ void Component_Mesh::DrawComponent() {
         glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, mesh.indices.data());
 
         // Deshabilita el array de coordenadas de textura si fue habilitado
-        if (!mesh.texCoords.empty()) {
+        if (!mesh.texCoords.empty() && textureID != 0) {
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         }
     }
@@ -60,6 +61,7 @@ void Component_Mesh::DrawComponent() {
     // Deshabilita el estado del array de vértices
     glDisableClientState(GL_VERTEX_ARRAY);
 }
+
 
 
 

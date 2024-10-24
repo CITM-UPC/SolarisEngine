@@ -47,7 +47,9 @@ bool App::Start()
 
     
     //importer->Importar("./Assets/h.fbx");
-    gameObject = importer->Importar("./Assets/BakerHouse.fbx", "./Assets/Baker_house.png");
+    //gameObject = importer->Importar("./Assets/BakerHouse.fbx", "./Assets/Baker_house.png");
+    gameObject = importer->Importar("./Assets/BakerHouse.fbx");
+    gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png");
     
 
     return true;
@@ -185,7 +187,7 @@ bool App::DoUpdate()
     cube.draw();*/
 
     gameObject->Draw();
-
+    gameObject2->Draw();
 
    
 

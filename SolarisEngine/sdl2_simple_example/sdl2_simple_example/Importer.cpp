@@ -67,6 +67,9 @@ std::shared_ptr<GameObject> Importer::Importar(const std::string& modelPath)
         meshComponent->LoadMesh(scene); // Carga las mallas
     }
 
+
+
+
     return newGameObject;
 }
 

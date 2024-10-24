@@ -114,6 +114,7 @@ public:
 	static inline const auto FRAME_DT = 1.0s / FPS;
 
 	std::shared_ptr<GameObject> gameObject;
+	std::shared_ptr<GameObject> gameObject2;
 
 private:
 

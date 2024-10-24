@@ -56,7 +56,7 @@ public:
 
     GLuint vao;
     std::vector<Mesh> meshes;
-    ILuint textureID;
+    ILuint textureID = 0;
 
 };
 
