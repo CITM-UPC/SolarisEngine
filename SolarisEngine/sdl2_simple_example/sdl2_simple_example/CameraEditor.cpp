@@ -1,41 +1,17 @@
 #include "CameraEditor.h"
-#include <SDL2/SDL_scancode.h>
+#include "App.h"  // Incluye App.h para acceder a la instancia de App
 
 
-glm::mat4x4 CameraEditor::lookAt(vec3  const& eye, vec3  const& center, vec3  const& up)
-{
-    vec3  f = normalize(center - eye);
-    vec3  u = normalize(up);
-    vec3  s = normalize(cross(f, u));
-    u = cross(s, f);
 
-
-    glm::mat4x4 Result(1);
-    Result[0][0] = s.x;
-    Result[1][0] = s.y;
-    Result[2][0] = s.z;
-    Result[0][1] = u.x;
-    Result[1][1] = u.y;
-    Result[2][1] = u.z;
-    Result[0][2] = -f.x;
-    Result[1][2] = -f.y;
-    Result[2][2] = -f.z;
-    Result[3][0] = -dot(s, eye);
-    Result[3][1] = -dot(u, eye);
-    Result[3][2] = dot(f, eye);
-    return Result;
-}
-
-#include <glm/gtc/matrix_transform.hpp>
-#include <GL/glew.h>
 
 float fov = glm::radians(90.0f); // Campo de visión en radianes
 float nearPlane = 0.01f; // Plano cercano
 float farPlane = 100.0f; // Plano lejano
-float aspectRatio = (float)1024 / (float)720; // Relación de aspecto
+
+
+float aspectRatio = (float)app->WINDOW_SIZE.x / (float)app->WINDOW_SIZE.y; // Relación de aspecto
 
 glm::mat4 projection = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
-
 
 // Constructor de la cámara
 CameraEditor::CameraEditor(glm::vec3 position, glm::vec3 front, glm::vec3 up)
@@ -64,7 +40,7 @@ void CameraEditor::processInput(unsigned char key) {
     if (key == 'q') {
         position += cameraSpeed * up; // Mover hacia arriba
     }
-    if (key == SDL_SCANCODE_LCTRL) {
+    if (key == 'e') { // Cambia LCTRL por 'e' para mover hacia abajo
         position -= cameraSpeed * up; // Mover hacia abajo
     }
 }
@@ -88,13 +64,7 @@ void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
     this->front = glm::normalize(front);
 }
 
-void CameraEditor::updatePosition(glm::vec3 delta) {
-    position += delta; // Método para actualizar la posición
-}
-
-
 void CameraEditor::Update() {
-
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(projection)); // Cargar la matriz de proyección
 
@@ -103,16 +73,12 @@ void CameraEditor::Update() {
     glLoadMatrixf(glm::value_ptr(view)); // Cargar la matriz de vista
 }
 
-void CameraEditor::MouseWheel(bool zoom)
-{
+void CameraEditor::MouseWheel(bool zoom) {
     const float cameraSpeed = 0.05f;
     if (zoom) {
         position += cameraSpeed * front;
-    
     }
-    else
-    {
+    else {
         position -= cameraSpeed * front;
     }
-
 }

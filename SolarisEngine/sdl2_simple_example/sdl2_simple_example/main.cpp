@@ -16,13 +16,15 @@ enum MainState
 	EXIT
 };
 
-App* app = NULL;
+
 
 int main(int argc, char* args[])
 {
 
 	MainState state = CREATE;
 	int result = EXIT_FAILURE;
+
+
 
 	while (state != EXIT)
 	{

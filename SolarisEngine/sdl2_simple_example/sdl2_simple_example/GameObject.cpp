@@ -20,6 +20,14 @@ GameObject::~GameObject() {
     // Aquí podrías limpiar recursos si es necesario
 }
 
+void GameObject::Awake(double dt)
+{
+}
+
+void GameObject::Start(double dt)
+{
+}
+
 // Actualiza el GameObject
 void GameObject::Update(double dt) {
     // Lógica de actualización, si corresponde
@@ -28,6 +36,10 @@ void GameObject::Update(double dt) {
             component->Update(dt);
         }
     }
+}
+
+void GameObject::LateUpdate(double dt)
+{
 }
 
 // Dibuja el GameObject

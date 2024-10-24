@@ -21,7 +21,10 @@ public:
     GameObject(std::string name = "gameObject");
     ~GameObject();
 
+    void Awake(double dt);
+    void Start(double dt);
     void Update(double dt);
+    void LateUpdate(double dt);
     void Draw();
 
 

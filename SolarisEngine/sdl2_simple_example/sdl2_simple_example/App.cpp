@@ -1,10 +1,16 @@
-﻿#include "App.h"
+﻿#include <GL/glew.h> // Asegúrate de incluir GLEW antes de OpenGL
+#include <GL/gl.h>
+
+#include "App.h"
 #include "Defs.h"
 #include <iostream>
 #include <exception>
 #include <imgui_impl_sdl2.h>
 #include <SDL2/SDL_events.h>
 #include "Primitivos.h"
+
+
+App* app = NULL;
 
 // Constructor
 App::App(int argc, char* args[]) : argc(argc), args(args), loadRequest(false), saveRequest(false), isSaving(false)
@@ -207,10 +213,19 @@ bool App::SaveFromFile()
     return true;
 }
 
-bool App::INIT_openGL()
-{
-    if (glewInit() != GLEW_OK) throw std::exception("Failed to initialize GLEW.");
-    if (!GLEW_VERSION_3_0) throw std::exception("OpenGL 3.0 API is not available.");
+bool App::INIT_openGL() {
+    // Inicializar GLEW después de crear el contexto de OpenGL
+    GLenum err = glewInit();
+    if (err != GLEW_OK) {
+        std::cerr << "Error inicializando GLEW: " << glewGetErrorString(err) << std::endl;
+        return false;
+    }
+
+    // Asegúrate de que la versión de OpenGL es la que necesitas
+    if (!GLEW_VERSION_3_0) {
+        std::cerr << "OpenGL 3.0 no está disponible." << std::endl;
+        return false;
+    }
 
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.5, 0.5, 0.5, 1.0);
