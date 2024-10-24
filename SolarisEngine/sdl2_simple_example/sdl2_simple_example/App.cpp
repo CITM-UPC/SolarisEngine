@@ -46,8 +46,9 @@ bool App::Start()
     // Iniciar las cosas necesarias antes del primer frame
 
     
-
-
+    //importer->Importar("./Assets/h.fbx");
+    gameObject = importer->Importar("./Assets/BakerHouse.fbx");
+    
 
     return true;
 }
@@ -182,6 +183,10 @@ bool App::DoUpdate()
     CubeImmediateMode cube;
     cube.draw();
 
+    gameObject->Draw();
+
+   
+
     return true;
 }
 
@@ -215,19 +220,22 @@ bool App::SaveFromFile()
 
 bool App::INIT_openGL() {
     // Inicializar GLEW después de crear el contexto de OpenGL
-    GLenum err = glewInit();
-    if (err != GLEW_OK) {
-        std::cerr << "Error inicializando GLEW: " << glewGetErrorString(err) << std::endl;
-        return false;
-    }
+    //GLenum err = glewInit();
+    //if (err != GLEW_OK) {
+    //    std::cerr << "Error inicializando GLEW: " << glewGetErrorString(err) << std::endl;
+    //    return false;
+    //}
 
-    // Asegúrate de que la versión de OpenGL es la que necesitas
-    if (!GLEW_VERSION_3_0) {
-        std::cerr << "OpenGL 3.0 no está disponible." << std::endl;
-        return false;
-    }
+    //// Asegúrate de que la versión de OpenGL es la que necesitas
+    //if (!GLEW_VERSION_3_0) {
+    //    std::cerr << "OpenGL 3.0 no está disponible." << std::endl;
+    //    return false;
+    //}
 
+    //glEnable(GL_DEPTH_TEST);
     glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHT0);
     glClearColor(0.5, 0.5, 0.5, 1.0);
     return true;
 }

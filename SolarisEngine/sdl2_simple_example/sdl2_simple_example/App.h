@@ -113,6 +113,7 @@ public:
 	static const unsigned int FPS = 60;
 	static inline const auto FRAME_DT = 1.0s / FPS;
 
+	std::shared_ptr<GameObject> gameObject;
 
 private:
 

@@ -8,6 +8,10 @@
 #include <assimp/postprocess.h>
 #include <GL/glew.h>
 
+struct Mesh {
+    std::vector<GLfloat> vertices;
+    std::vector<GLuint> indices;
+};
 
 class Component_Mesh : public Component {
 public:
@@ -25,6 +29,7 @@ public:
     void LoadMesh(const std::string& path);
 
     GLuint vao;
+    std::vector<Mesh> meshes;
 };
 
 #endif // !__COMPONENT_MESH_H__

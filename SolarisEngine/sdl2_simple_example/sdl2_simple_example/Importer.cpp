@@ -18,36 +18,72 @@ Importer::Importer() {
 
     ilInit(); // Inicializa DevIL
 }
+//
+//std::shared_ptr<GameObject> Importer::Importar(const std::string& filepath) {
+//    Assimp::Importer importer;
+//    const aiScene* scene = importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
+//
+//    if (!scene) {
+//        std::cerr << "Error al cargar el archivo: " << importer.GetErrorString() << std::endl;
+//        return nullptr;
+//    }
+//
+//    std::cout << "Archivo cargado exitosamente: " << filepath << std::endl;
+//
+//    LoadMaterials(scene);
+//
+//    auto gameObject = std::make_shared<GameObject>("ImportedFBX");
+//
+//    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
+//        aiMesh* ai_mesh = scene->mMeshes[i];
+//        std::string meshName = ai_mesh->mName.C_Str();
+//        //meshes.push_back(meshName);
+//
+//        // Crear y agregar un componente de malla al GameObject
+//        auto meshComponent = std::make_unique<Component_Mesh>(gameObject);
+//        meshComponent->LoadMesh(ai_mesh); // Implementa esta función en Component_Mesh
+//        gameObject->AddComponent<Component_Mesh>(std::move(meshComponent));
+//
+//        std::cout << "Malla procesada: " << meshName << " con " << ai_mesh->mNumVertices << " vértices." << std::endl;
+//    }
+//
+//    return gameObject; // Devuelve el GameObject creado
+//}
 
-std::shared_ptr<GameObject> Importer::Importar(const std::string& filepath) {
+std::shared_ptr<GameObject> Importer::Importar(const std::string& filePath)
+{
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
+    const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
 
-    if (!scene) {
-        std::cerr << "Error al cargar el archivo: " << importer.GetErrorString() << std::endl;
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+        std::cerr << "Error al cargar el modelo: " << importer.GetErrorString() << std::endl;
         return nullptr;
     }
 
-    std::cout << "Archivo cargado exitosamente: " << filepath << std::endl;
+    auto newGameObject = std::make_shared<GameObject>(scene->mName.C_Str());
+    newGameObject->AddComponent<Component_Mesh>();
 
-    LoadMaterials(scene);
-
-    auto gameObject = std::make_shared<GameObject>("ImportedFBX");
-
+    // Recorrer todos los nodos de la escena y extraer los datos del modelo
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        aiMesh* ai_mesh = scene->mMeshes[i];
-        std::string meshName = ai_mesh->mName.C_Str();
-        meshes.push_back(meshName);
+        Mesh mesh;
+        const aiMesh* aiMesh = scene->mMeshes[i];
 
-        // Crear y agregar un componente de malla al GameObject
-        auto meshComponent = std::make_unique<Component_Mesh>(gameObject);
-        meshComponent->LoadMesh(ai_mesh); // Implementa esta función en Component_Mesh
-        gameObject->AddComponent<Component_Mesh>(std::move(meshComponent));
+        for (unsigned int j = 0; j < aiMesh->mNumVertices; ++j) {
+            mesh.vertices.push_back(aiMesh->mVertices[j].x);
+            mesh.vertices.push_back(aiMesh->mVertices[j].y);
+            mesh.vertices.push_back(aiMesh->mVertices[j].z);
+        }
 
-        std::cout << "Malla procesada: " << meshName << " con " << ai_mesh->mNumVertices << " vértices." << std::endl;
+        for (unsigned int j = 0; j < aiMesh->mNumFaces; ++j) {
+            const aiFace& face = aiMesh->mFaces[j];
+            for (unsigned int k = 0; k < face.mNumIndices; ++k) {
+                mesh.indices.push_back(face.mIndices[k]);
+            }
+        }
+
+        newGameObject->GetComponent<Component_Mesh>()->meshes.push_back(mesh);
     }
-
-    return gameObject; // Devuelve el GameObject creado
+    return newGameObject;
 }
 
 void Importer::LoadMaterials(const aiScene* scene) {
