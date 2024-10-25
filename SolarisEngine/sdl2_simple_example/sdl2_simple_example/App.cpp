@@ -48,9 +48,9 @@ bool App::Start()
     
     //importer->Importar("./Assets/h.fbx");
     //gameObject = importer->Importar("./Assets/BakerHouse.fbx", "./Assets/Baker_house.png");
-    gameObject = importer->Importar("./Assets/BakerHouse.fbx");
-    gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png");
-    
+    gameObject = importer->Importar("./Assets/BakerHouse.fbx", "./Assets/Baker_house.png"); // <-- Modelo con 1 textura
+    gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
+
 
     return true;
 }
