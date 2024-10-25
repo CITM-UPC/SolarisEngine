@@ -1,45 +1,17 @@
 #pragma once
-#ifndef __COMPONENT_MESH_H__
-#define __COMPONENT_MESH_H__
-
 #include "Component.h"
-#include <assimp/cimport.h>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "Component_Material.h"
+#include "GameObject.h" // Asegúrate de incluir esto
+#include <vector>
+#include <memory>
+#include <assimp/scene.h>  // Incluye Assimp para la importación de mallas
 #include <GL/glew.h>
-#include <IL/il.h>
-
-struct Mesh {
-    std::vector<GLfloat> vertices;     // Vértices en 3D
-    std::vector<GLfloat> texCoords;    // Coordenadas de textura
-    std::vector<GLuint> indices;        // Índices de los vértices
-
-    // Constructor por defecto
-    Mesh() = default;
-
-    // Método para agregar vértices
-    void AddVertex(GLfloat x, GLfloat y, GLfloat z) {
-        vertices.push_back(x);
-        vertices.push_back(y);
-        vertices.push_back(z);
-    }
-
-    // Método para agregar coordenadas de textura
-    void AddTexCoord(GLfloat u, GLfloat v) {
-        texCoords.push_back(u);
-        texCoords.push_back(v);
-    }
-
-    // Método para agregar índices
-    void AddIndex(GLuint index) {
-        indices.push_back(index);
-    }
-};
+#include <gl/GL.h>
 
 class Component_Mesh : public Component {
 public:
     Component_Mesh(std::shared_ptr<GameObject> containerGO);
-    virtual ~Component_Mesh() override;
+    ~Component_Mesh();
 
     void Enable() override;
     void Disable() override;
@@ -47,17 +19,18 @@ public:
     void DrawComponent() override;
 
     void LoadMesh(aiMesh* ai_mesh);
-
-    // Métodos específicos para el mesh
-    //void LoadMesh(const std::string& path);
     void LoadMesh(const aiScene* ai_scene);
 
-    void SetTexture(ILuint textureID);
+    void SetMaterial(const std::shared_ptr<Component_Material>& material);  // Nuevo: Establece el material asociado
 
-    GLuint vao;
+private:
+    struct Mesh {
+        std::vector<float> vertices;
+        std::vector<float> texCoords;
+        std::vector<unsigned int> indices;
+    };
+
     std::vector<Mesh> meshes;
-    ILuint textureID = 0;
-
+    GLuint vao;
+    std::shared_ptr<Component_Material> material; // Debe ser std::shared_ptr
 };
-
-#endif // !__COMPONENT_MESH_H__

@@ -60,25 +60,25 @@ std::shared_ptr<GameObject> Importer::Importar(const std::string& modelPath)
         return nullptr;
     }
 
-    auto newGameObject = std::make_shared<GameObject>(scene->mName.C_Str());
+    auto newGameObject = GameObject::Create(scene->mName.C_Str());
     newGameObject->AddComponent<Component_Mesh>();
     auto meshComponent = newGameObject->GetComponent<Component_Mesh>();
     if (meshComponent) {
-        meshComponent->LoadMesh(scene); // Carga las mallas
+        meshComponent->LoadMesh(scene);
     }
-
-
-
 
     return newGameObject;
 }
 
+
 std::shared_ptr<GameObject> Importer::Importar(const std::string& modelPath, const std::string& texturePath)
 {
     auto newGameObject = Importar(modelPath);
-    auto textureID = LoadTexture(texturePath);
+    //auto textureID = LoadTexture(texturePath);
 
-    newGameObject->GetComponent<Component_Mesh>()->SetTexture(textureID);
+    //newGameObject->GetComponent<Component_Mesh>()->SetTexture(textureID);
+    newGameObject->AddComponent<Component_Material>();
+    newGameObject->GetComponent<Component_Material>()->SetTexture(texturePath);
 
 
     return newGameObject;

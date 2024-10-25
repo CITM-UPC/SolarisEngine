@@ -8,6 +8,7 @@
 #include <imgui_impl_sdl2.h>
 #include <SDL2/SDL_events.h>
 #include "Primitivos.h"
+#include "Component_Material.h"
 
 
 App* app = NULL;
@@ -48,9 +49,12 @@ bool App::Start()
     
     //importer->Importar("./Assets/h.fbx");
     //gameObject = importer->Importar("./Assets/BakerHouse.fbx", "./Assets/Baker_house.png");
-    gameObject = importer->Importar("./Assets/BakerHouse.fbx", "./Assets/Baker_house.png"); // <-- Modelo con 1 textura
-    gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
+    gameObject = importer->Importar("./Assets/BakerHouse.fbx"); // <-- Modelo con 1 textura
+    gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
+    //gameObject->GetComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
 
+
+    //gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
 
     return true;
 }
@@ -187,7 +191,7 @@ bool App::DoUpdate()
     cube.draw();*/
 
     gameObject->Draw();
-    gameObject2->Draw();
+    //gameObject2->Draw();
 
    
 
@@ -223,24 +227,11 @@ bool App::SaveFromFile()
 }
 
 bool App::INIT_openGL() {
-    // Inicializar GLEW después de crear el contexto de OpenGL
-    //GLenum err = glewInit();
-    //if (err != GLEW_OK) {
-    //    std::cerr << "Error inicializando GLEW: " << glewGetErrorString(err) << std::endl;
-    //    return false;
-    //}
 
-    //// Asegúrate de que la versión de OpenGL es la que necesitas
-    //if (!GLEW_VERSION_3_0) {
-    //    std::cerr << "OpenGL 3.0 no está disponible." << std::endl;
-    //    return false;
-    //}
-
-    //glEnable(GL_DEPTH_TEST);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     //glEnable(GL_LIGHTING);
-    //glEnable(GL_LIGHT0);
+    //glEnable(GL_LIGHT7);
     glClearColor(0.5, 0.5, 0.5, 1.0);
     return true;
 }

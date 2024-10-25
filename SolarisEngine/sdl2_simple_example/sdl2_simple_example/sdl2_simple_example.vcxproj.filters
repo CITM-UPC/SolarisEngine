@@ -19,6 +19,9 @@
     <Filter Include="Header Files\Componentes">
       <UniqueIdentifier>{e4103833-7857-4b7c-b867-c3402dd5e5c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="InLine Files">
+      <UniqueIdentifier>{ee461ddf-e547-476b-b95a-751a7091f82b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -101,5 +104,10 @@
     <ClInclude Include="App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GameObject.inl">
+      <Filter>InLine Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

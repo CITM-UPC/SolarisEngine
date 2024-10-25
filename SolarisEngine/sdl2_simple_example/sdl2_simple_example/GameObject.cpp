@@ -1,41 +1,31 @@
 #include "GameObject.h"
-#include "Component.h" // Asegúrate de que esta cabecera esté presente
-#include "Defs.h"     // Asegúrate de que esta cabecera esté presente
-#include <iostream>
+#include "Component.h"
 #include "Component_Transform.h"
+#include <iostream>
 
-// Constructor por defecto
-GameObject::GameObject()
-    : name("gameObject"), isStatic(false), enabled(true) {
-    CreateUID(); // Genera un UID al crear el GameObject
-
-    //AddComponent<Component_Transform>();
-
+// Método estático para crear el GameObject e inicializarlo con un Component_Transform
+std::shared_ptr<GameObject> GameObject::Create(const std::string& name) {
+    auto gameObject = std::shared_ptr<GameObject>(new GameObject(name));
+    gameObject->AddComponent<Component_Transform>();  // Agrega el componente Transform
+    return gameObject;
 }
 
-// Constructor con nombre
-GameObject::GameObject(std::string name)
-    : name(std::move(name)), isStatic(false), enabled(true) {
-    CreateUID(); // Genera un UID al crear el GameObject
-    //AddComponent<Component_Transform>();
+// Constructor privado
+GameObject::GameObject(const std::string& name)
+    : name(name), isStatic(false), enabled(true) {
+    CreateUID();
 }
 
 // Destructor
 GameObject::~GameObject() {
-    // Aquí podrías limpiar recursos si es necesario
+    // Limpieza de recursos, si es necesario
 }
 
-void GameObject::Awake(double dt)
-{
-}
+void GameObject::Awake(double dt) { }
 
-void GameObject::Start(double dt)
-{
-}
+void GameObject::Start(double dt) { }
 
-// Actualiza el GameObject
 void GameObject::Update(double dt) {
-    // Lógica de actualización, si corresponde
     for (const auto& component : components) {
         if (component->IsEnabled()) {
             component->Update(dt);
@@ -43,11 +33,8 @@ void GameObject::Update(double dt) {
     }
 }
 
-void GameObject::LateUpdate(double dt)
-{
-}
+void GameObject::LateUpdate(double dt) { }
 
-// Dibuja el GameObject
 void GameObject::Draw() {
     for (const auto& component : components) {
         if (component->IsEnabled()) {
@@ -56,7 +43,6 @@ void GameObject::Draw() {
     }
 }
 
-// Remueve un componente por tipo
 void GameObject::RemoveComponent(ComponentType type) {
     components.erase(std::remove_if(components.begin(), components.end(),
         [type](const std::unique_ptr<Component>& component) {
@@ -64,47 +50,22 @@ void GameObject::RemoveComponent(ComponentType type) {
         }), components.end());
 }
 
-// Comprueba si el GameObject está habilitado
-bool GameObject::IsEnabled() const {
-    return enabled;
-}
+bool GameObject::IsEnabled() const { return enabled; }
 
-// Habilita el GameObject
-void GameObject::Enable() {
-    enabled = true;
-}
+void GameObject::Enable() { enabled = true; }
 
-// Deshabilita el GameObject
-void GameObject::Disable() {
-    enabled = false;
-}
+void GameObject::Disable() { enabled = false; }
 
-// Marca el GameObject para ser eliminado
-void GameObject::Delete() {
-    // Aquí podrías agregar lógica para manejar la eliminación
-}
+void GameObject::Delete() { }
 
-// Obtiene el nombre del GameObject
-std::string GameObject::GetName() const {
-    return name;
-}
+std::string GameObject::GetName() const { return name; }
 
-// Establece el nombre del GameObject
-void GameObject::SetName(const std::string& name) {
-    this->name = name;
-}
+void GameObject::SetName(const std::string& name) { this->name = name; }
 
-// Comprueba si el GameObject es estático
-bool GameObject::IsStatic() const {
-    return isStatic;
-}
+bool GameObject::IsStatic() const { return isStatic; }
 
-// Establece si el GameObject es estático
-void GameObject::SetStatic(bool isStatic) {
-    this->isStatic = isStatic;
-}
+void GameObject::SetStatic(bool isStatic) { this->isStatic = isStatic; }
 
-// Genera un UID único
 void GameObject::CreateUID() {
-    UID = UIDGen::GenerateRandomUint32(); // Asegúrate de que UIDGen esté correctamente referenciado
+    UID = UIDGen::GenerateRandomUint32();
 }

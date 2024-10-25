@@ -157,6 +157,9 @@
     <ClInclude Include="Primitivos.h" />
     <ClInclude Include="UIDGen.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="GameObject.inl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
