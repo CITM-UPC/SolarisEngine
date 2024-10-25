@@ -2,17 +2,22 @@
 #include "Component.h" // Asegúrate de que esta cabecera esté presente
 #include "Defs.h"     // Asegúrate de que esta cabecera esté presente
 #include <iostream>
+#include "Component_Transform.h"
 
 // Constructor por defecto
 GameObject::GameObject()
     : name("gameObject"), isStatic(false), enabled(true) {
     CreateUID(); // Genera un UID al crear el GameObject
+
+    //AddComponent<Component_Transform>();
+
 }
 
 // Constructor con nombre
 GameObject::GameObject(std::string name)
     : name(std::move(name)), isStatic(false), enabled(true) {
     CreateUID(); // Genera un UID al crear el GameObject
+    //AddComponent<Component_Transform>();
 }
 
 // Destructor
