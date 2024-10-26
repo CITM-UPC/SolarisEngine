@@ -275,9 +275,21 @@ bool InputEditor::processEvents()
 		}
 		case(SDL_DROPFILE): {
 			std::string dropped_filedir = event.drop.file;
+			std::string extension;
+			size_t dotPos = dropped_filedir.find_last_of('.');
+			if (dotPos != std::string::npos) {
+				extension = dropped_filedir.substr(dotPos + 1);
+			}
+
+				// Convertir a minúsculas para evitar problemas de mayúsculas/minúsculas
+				std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+
 			printf("Archivo soltado: %s\n", dropped_filedir);
 			//SDL_free(dropped_filedir);
-			app->gameObject3 = app->importer->Importar(dropped_filedir);
+			if(extension == "fbx")
+				app->gameObject3 = app->importer->Importar(dropped_filedir);
+			if (app->gameObject3 && extension == "png" )
+				app->gameObject3->AddComponent<Component_Material>()->SetTexture(dropped_filedir);
 			break;
 		}
 		default:
