@@ -253,8 +253,9 @@ bool InputEditor::processEvents()
 			float xoffset = event.motion.xrel;
 			float yoffset = event.motion.yrel;
 
-			if (event.type == SDL_MOUSEBUTTONDOWN) {
-				printf("Mouse button %d pressed\n", event.button.button);
+			if (event.button.button == SDL_BUTTON_X1) {
+				app->cameraEditor->processMouseMovement(xoffset, yoffset);
+				
 			}
 
 
