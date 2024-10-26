@@ -1,5 +1,7 @@
 
 #include "Input.h"
+#include "MyWindow.h"
+#include <SDL2/SDL.h>
 
 
 

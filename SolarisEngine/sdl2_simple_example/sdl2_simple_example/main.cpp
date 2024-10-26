@@ -1,8 +1,6 @@
 ﻿#include "App.h"
 
 #include "Defs.h"
-
-
 #include <stdlib.h>
 
 enum MainState

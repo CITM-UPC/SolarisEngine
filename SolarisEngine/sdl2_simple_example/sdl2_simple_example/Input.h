@@ -4,10 +4,9 @@
 #define MAX_KEYS 256
 #define MAX_PADS 4
 
-#include "SDL2/SDL.h"
-#include "Defs.h"
 #include "App.h"
 #include <imgui_impl_sdl2.h>
+
 struct _SDL_GameController;
 struct _SDL_Haptic;
 
