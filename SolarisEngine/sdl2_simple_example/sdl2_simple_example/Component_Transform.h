@@ -6,6 +6,10 @@
 #include <glm/glm.hpp>                 // Incluye GLM para vectores
 #include <glm/gtc/quaternion.hpp>      // Incluye GLM para cuaterniones
 #include <glm/gtc/matrix_transform.hpp> // Para transformaciones
+#include <glm/gtc/type_ptr.hpp>
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Component_Transform : public Component {
 public:
@@ -25,6 +29,9 @@ public:
     const glm::vec3& GetPosition() const;
     const glm::vec3& GetScale() const;
     glm::quat GetRotation() const;
+
+    glm::mat4 GetModelMatrix() const;
+
 
 private:
     glm::vec3 position;  // Posición

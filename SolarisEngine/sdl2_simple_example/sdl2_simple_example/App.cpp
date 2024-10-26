@@ -9,6 +9,7 @@
 #include <SDL2/SDL_events.h>
 #include "Primitivos.h"
 #include "Component_Material.h"
+#include "Component_Transform.h"
 
 
 App* app = NULL;
@@ -189,6 +190,9 @@ bool App::DoUpdate()
    
     /* CubeImmediateMode cube;
     cube.draw();*/
+
+    Component_Transform* ct = gameObject->GetComponent<Component_Transform>();
+    ct->SetPosition(ct->GetPosition().x + 0.01f, ct->GetPosition().y, ct->GetPosition().z);
 
     gameObject->Draw();
     //gameObject2->Draw();

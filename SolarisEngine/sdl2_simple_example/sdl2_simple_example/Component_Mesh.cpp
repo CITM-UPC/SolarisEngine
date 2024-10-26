@@ -1,5 +1,6 @@
 #include "Component_Mesh.h"
 #include <iostream>
+#include "Component_Transform.h"
 
 Component_Mesh::Component_Mesh(std::shared_ptr<GameObject> containerGO)
     : Component(containerGO, ComponentType::Mesh), vao(0) {
@@ -31,27 +32,40 @@ void Component_Mesh::DrawComponent() {
         return; // El objeto ha sido destruido
     }
 
-    // Verificar si hay material asociado
+    // Obtener la matriz de transformación desde Component_Transform
+    auto transform = containerGOLock->GetComponent<Component_Transform>();
+    if (!transform) {
+        std::cerr << "Error: No se pudo obtener el componente de transformación." << std::endl;
+        return;
+    }
+    glm::mat4 modelMatrix = transform->GetModelMatrix();
+
+    // Aplicar la matriz de transformación en el modelo
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glMultMatrixf(glm::value_ptr(modelMatrix));
+
+    // Configurar el material y textura (similar a lo que ya tienes)
     if (material) {
-        GLuint textureID = material->GetTextureID();  // Obtener el ID de textura del material
+        GLuint textureID = material->GetTextureID();
         if (textureID == 0) {
             std::cerr << "Advertencia: Textura no válida en material. Usando color rosa de error." << std::endl;
             glBindTexture(GL_TEXTURE_2D, 0);
-            glColor3f(1.0f, 0.0f, 1.0f);  // Color rosa de error
-        } else {
-            glBindTexture(GL_TEXTURE_2D, textureID);  // Activa la textura del material
-            glColor3f(1.0f, 1.0f, 1.0f);  // Color blanco cuando hay textura
+            glColor3f(1.0f, 0.0f, 1.0f); // Color rosa de error
         }
-    } else {
+        else {
+            glBindTexture(GL_TEXTURE_2D, textureID);
+            glColor3f(1.0f, 1.0f, 1.0f);
+        }
+    }
+    else {
         glBindTexture(GL_TEXTURE_2D, 0);
-        glColor3f(1.0f, 0.0f, 1.0f);  // Si no hay material, usar rosa de error
+        glColor3f(1.0f, 0.0f, 1.0f); // Color rosa si no hay material
         material = std::shared_ptr<Component_Material>(containerGOLock->GetComponent<Component_Material>());
-
     }
 
-    // Dibujo de malla usando OpenGL
+    // Dibujo de la malla usando OpenGL
     glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, nullptr);
 
     for (const auto& mesh : meshes) {
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices.data());
@@ -69,6 +83,7 @@ void Component_Mesh::DrawComponent() {
     }
 
     glDisableClientState(GL_VERTEX_ARRAY);
+    glPopMatrix(); // Restablecer la matriz después de dibujar
 }
 
 void Component_Mesh::LoadMesh(aiMesh* ai_mesh) {
