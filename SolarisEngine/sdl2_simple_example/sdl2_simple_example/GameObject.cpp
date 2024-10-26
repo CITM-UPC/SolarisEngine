@@ -19,6 +19,7 @@ GameObject::GameObject(const std::string& name)
 // Destructor
 GameObject::~GameObject() {
     // Limpieza de recursos, si es necesario
+    components.clear();
 }
 
 void GameObject::Awake(double dt) { }
@@ -27,7 +28,7 @@ void GameObject::Start(double dt) { }
 
 void GameObject::Update(double dt) {
     for (const auto& component : components) {
-        if (component->IsEnabled()) {
+        if (component && component->IsEnabled()) {
             component->Update(dt);
         }
     }
@@ -37,7 +38,7 @@ void GameObject::LateUpdate(double dt) { }
 
 void GameObject::Draw() {
     for (const auto& component : components) {
-        if (component->IsEnabled()) {
+        if (component && component->IsEnabled()) {
             component->DrawComponent();
         }
     }
@@ -56,7 +57,10 @@ void GameObject::Enable() { enabled = true; }
 
 void GameObject::Disable() { enabled = false; }
 
-void GameObject::Delete() { }
+void GameObject::Delete() { 
+    Disable();
+    components.clear();
+}
 
 std::string GameObject::GetName() const { return name; }
 

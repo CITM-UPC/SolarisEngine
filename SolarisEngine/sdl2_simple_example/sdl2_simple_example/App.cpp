@@ -94,6 +94,8 @@ bool App::Update()
 bool App::CleanUp()
 {
     std::cout << "App::CleanUp called" << std::endl;
+    gameObject->Delete();
+    gameObject2->Delete();
     // Limpiar y liberar recursos antes de salir
     return true;
 }
@@ -189,18 +191,23 @@ bool App::DoUpdate()
     /* CubeImmediateMode cube;
     cube.draw();*/
 
-    Component_Transform* ct = gameObject->GetComponent<Component_Transform>();
-    ct->SetPosition(ct->GetPosition().x + 0.01f, ct->GetPosition().y, ct->GetPosition().z);
-    ct->SetScale(ct->GetScale().x, ct->GetScale().y + 0.01f, ct->GetScale().z);
-    gameObject->Draw();
+    if (gameObject) {
+        Component_Transform* ct = gameObject->GetComponent<Component_Transform>();
+        ct->SetPosition(ct->GetPosition().x + 0.01f, ct->GetPosition().y, ct->GetPosition().z);
+        ct->SetScale(ct->GetScale().x, ct->GetScale().y + 0.01f, ct->GetScale().z);
+        gameObject->Draw();
+    }
+    
+    if (gameObject2) {
+        Component_Transform* ct = gameObject2->GetComponent<Component_Transform>();
+        //ct->SetScale(ct->GetScale().x + 0.01f, ct->GetScale().y + 0.01f, ct->GetScale().z);
+        ct->SetRotation(ct->GetRotation().x + 1, 0, 0);
+        gameObject2->Draw();
+    }
 
 
 
-
-    ct = gameObject2->GetComponent<Component_Transform>();
-    //ct->SetScale(ct->GetScale().x + 0.01f, ct->GetScale().y + 0.01f, ct->GetScale().z);
-    ct->SetRotation(ct->GetRotation().x+1, 0, 0);
-    gameObject2->Draw();
+   
 
    
 
