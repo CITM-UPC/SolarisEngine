@@ -11,6 +11,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Defs.h"
+
 class Component_Transform : public Component {
 public:
     Component_Transform(std::shared_ptr<GameObject> containerGO);
@@ -23,6 +25,7 @@ public:
 
     // Métodos específicos para la transformación
     void SetPosition(float x, float y, float z);
+    void SetPosition(vec3 vec3);
     void SetScale(float x, float y, float z);
     void SetRotation(float angle, float x, float y, float z);
 

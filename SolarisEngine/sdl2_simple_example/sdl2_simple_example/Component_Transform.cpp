@@ -30,6 +30,11 @@ void Component_Transform::SetPosition(float x, float y, float z) {
     position = glm::vec3(x, y, z);
 }
 
+void Component_Transform::SetPosition(vec3 vec3)
+{
+    position = vec3;
+}
+
 void Component_Transform::SetScale(float x, float y, float z) {
     scale = glm::vec3(x, y, z);
 }
