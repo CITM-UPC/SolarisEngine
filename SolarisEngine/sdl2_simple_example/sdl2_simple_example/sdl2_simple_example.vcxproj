@@ -137,6 +137,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Importer.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyWindow.cpp" />
     <ClCompile Include="Primitivos.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Defs.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Importer.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="MyWindow.h" />
     <ClInclude Include="Primitivos.h" />
     <ClInclude Include="UIDGen.h" />

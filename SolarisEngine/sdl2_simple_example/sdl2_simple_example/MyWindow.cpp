@@ -55,7 +55,7 @@ void MyWindow::swapBuffers() const {
         }
         if (ImGui::BeginMenu("Primitive")) {
             if (ImGui::MenuItem("Cube")) {
-                // Aquí se puede implementar la aparición del cubo.
+                // Aqu?se puede implementar la aparición del cubo.
             }
             ImGui::EndMenu();
         }

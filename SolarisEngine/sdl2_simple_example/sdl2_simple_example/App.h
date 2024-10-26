@@ -6,14 +6,16 @@
 #include <thread>
 
 
-#include "Primitivos.h"
-
 
 #include "MyWindow.h"
 #include "Importer.h"
 #include "CameraEditor.h"
+#include "Input.h"
 
 
+#include "Primitivos.h"
+#include "Component_Material.h"
+#include "Component_Transform.h"
 
 #ifndef __APP_H__
 #define __APP_H__
@@ -25,6 +27,7 @@
 class MyWindow;
 class Importer;
 class CameraEditor;
+class InputEditor;
 
 
 class App
@@ -97,7 +100,6 @@ private:
 
 	bool INIT_openGL();
 
-	bool processEvents();
 
 
 
@@ -108,6 +110,7 @@ public:
 	Importer* importer;
 	CameraEditor* cameraEditor;
 	MyWindow* myWindow;
+	InputEditor* inputEditor;
 
 	static inline const glm::ivec2 WINDOW_SIZE = { 1024, 720 };
 	static const unsigned int FPS = 60;

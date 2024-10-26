@@ -7,9 +7,7 @@
 #include <exception>
 #include <imgui_impl_sdl2.h>
 #include <SDL2/SDL_events.h>
-#include "Primitivos.h"
-#include "Component_Material.h"
-#include "Component_Transform.h"
+
 
 
 App* app = NULL;
@@ -66,7 +64,7 @@ bool App::Update()
     PrepareUpdate();
 
 
-    while (processEvents()) {
+    while (inputEditor->processEvents()) {
         const auto t0 = hrclock::now();
 
         if (!PreUpdate()) return false;
@@ -153,7 +151,7 @@ bool App::LoadConfig()
         glm::vec3(0.0f, 0.0f, -1.0f),   // Dirección de la c�mara
         glm::vec3(0.0f, 1.0f, 0.0f));   // Vector up
 
-
+    inputEditor = new InputEditor();
     INIT_openGL();
 
 
@@ -251,50 +249,50 @@ bool App::INIT_openGL() {
     glClearColor(0.5, 0.5, 0.5, 1.0);
     return true;
 }
-
-bool App::processEvents()
-{
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_QUIT: {
-            return false;
-            break;
-        }
-        case SDL_KEYDOWN: {
-            cameraEditor->processInput(event.key.keysym.sym); // Procesa entradas de la cámara
-            break;
-        }
-        case SDL_MOUSEMOTION: {
-            // Obtiene el desplazamiento del ratón
-             // Procesa el movimiento del ratón
-
-            float xoffset = event.motion.xrel;
-            float yoffset = event.motion.yrel;
-
-            if (event.button.button == SDL_BUTTON_MIDDLE) {
-                cameraEditor->processMouseMovement(xoffset, yoffset);
-            }
-
-            break;
-        }
-        case SDL_MOUSEWHEEL: {
-            // Procesa el desplazamiento de la rueda del ratón
-            if (event.wheel.y > 0) {
-                cameraEditor->MouseWheel(true);
-            }
-            else if (event.wheel.y < 0) {
-                cameraEditor->MouseWheel(false);
-            }
-            break;
-        }
-        default:
-            ImGui_ImplSDL2_ProcessEvent(&event);
-            break;
-        }
-
-    }
-    return true;
-}
+//
+//bool App::processEvents()
+//{
+//    SDL_Event event;
+//    while (SDL_PollEvent(&event)) {
+//        switch (event.type) {
+//        case SDL_QUIT: {
+//            return false;
+//            break;
+//        }
+//        case SDL_KEYDOWN: {
+//            cameraEditor->processInput(event.key.keysym.sym); // Procesa entradas de la cámara
+//            break;
+//        }
+//        case SDL_MOUSEMOTION: {
+//            // Obtiene el desplazamiento del ratón
+//             // Procesa el movimiento del ratón
+//
+//            float xoffset = event.motion.xrel;
+//            float yoffset = event.motion.yrel;
+//
+//            if (event.button.button == SDL_BUTTON_MIDDLE) {
+//                cameraEditor->processMouseMovement(xoffset, yoffset);
+//            }
+//
+//            break;
+//        }
+//        case SDL_MOUSEWHEEL: {
+//            // Procesa el desplazamiento de la rueda del ratón
+//            if (event.wheel.y > 0) {
+//                cameraEditor->MouseWheel(true);
+//            }
+//            else if (event.wheel.y < 0) {
+//                cameraEditor->MouseWheel(false);
+//            }
+//            break;
+//        }
+//        default:
+//            ImGui_ImplSDL2_ProcessEvent(&event);
+//            break;
+//        }
+//
+//    }
+//    return true;
+//}
 
 
