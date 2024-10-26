@@ -11,6 +11,7 @@
 #include "Importer.h"
 #include "CameraEditor.h"
 #include "Input.h"
+#include "WindowEditor.h"
 
 
 #include "Primitivos.h"
@@ -28,7 +29,7 @@ class MyWindow;
 class Importer;
 class CameraEditor;
 class InputEditor;
-
+class WindowEditor;
 
 class App
 {
@@ -111,7 +112,7 @@ public:
 	CameraEditor* cameraEditor;
 	MyWindow* myWindow;
 	InputEditor* inputEditor;
-
+	WindowEditor* windowEditor;
 	static inline const glm::ivec2 WINDOW_SIZE = { 1024, 720 };
 	static const unsigned int FPS = 60;
 	static inline const auto FRAME_DT = 1.0s / FPS;

@@ -142,6 +142,7 @@
     <ClCompile Include="MyWindow.cpp" />
     <ClCompile Include="Primitivos.cpp" />
     <ClCompile Include="UIDGen.cpp" />
+    <ClCompile Include="WindowEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="MyWindow.h" />
     <ClInclude Include="Primitivos.h" />
     <ClInclude Include="UIDGen.h" />
+    <ClInclude Include="WindowEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GameObject.inl" />
