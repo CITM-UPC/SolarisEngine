@@ -29,7 +29,7 @@ MyWindow::MyWindow(const std::string& title, int w, int h) : _width(w), _height(
     ImGui_ImplSDL2_InitForOpenGL(_window, _ctx);
     ImGui_ImplOpenGL3_Init("#version 130");
 }
-
+    
 MyWindow::~MyWindow() {
     ImGui_ImplSDL2_Shutdown();
     ImGui_ImplOpenGL3_Shutdown();

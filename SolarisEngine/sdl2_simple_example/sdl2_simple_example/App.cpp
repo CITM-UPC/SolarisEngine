@@ -72,7 +72,9 @@ bool App::Update()
         if (!PostUpdate()) return false;
         if (!PostLateUpdate()) return false;
 
-        myWindow->swapBuffers();
+        //myWindow->swapBuffers();
+        windowEditor->Render();
+
 
         const auto t1 = hrclock::now();
         const auto dt = t1 - t0;
@@ -144,7 +146,7 @@ bool App::IsSaving()
 
 bool App::LoadConfig()
 {
-    myWindow = new MyWindow("SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
+    //myWindow = new MyWindow("SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
     importer = &Importer::getInstance();
     cameraEditor = new CameraEditor(
         glm::vec3(0.0f, 0.3f, 0.2f),    // Posici�n inicial
@@ -152,6 +154,8 @@ bool App::LoadConfig()
         glm::vec3(0.0f, 1.0f, 0.0f));   // Vector up
 
     inputEditor = new InputEditor();
+    windowEditor = new WindowEditor();
+    windowEditor->Create();
     INIT_openGL();
 
 
