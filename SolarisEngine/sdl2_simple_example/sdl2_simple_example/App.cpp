@@ -48,14 +48,12 @@ bool App::Start()
     // Iniciar las cosas necesarias antes del primer frame
 
     
-    //importer->Importar("./Assets/h.fbx");
-    //gameObject = importer->Importar("./Assets/BakerHouse.fbx", "./Assets/Baker_house.png");
+    //Forma1
     gameObject = importer->Importar("./Assets/BakerHouse.fbx"); // <-- Modelo con 1 textura
     gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
-    //gameObject->GetComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
 
-
-    //gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
+    //Forma2
+    gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
 
     return true;
 }
@@ -193,9 +191,16 @@ bool App::DoUpdate()
 
     Component_Transform* ct = gameObject->GetComponent<Component_Transform>();
     ct->SetPosition(ct->GetPosition().x + 0.01f, ct->GetPosition().y, ct->GetPosition().z);
-
+    ct->SetScale(ct->GetScale().x, ct->GetScale().y + 0.01f, ct->GetScale().z);
     gameObject->Draw();
-    //gameObject2->Draw();
+
+
+
+
+    ct = gameObject2->GetComponent<Component_Transform>();
+    //ct->SetScale(ct->GetScale().x + 0.01f, ct->GetScale().y + 0.01f, ct->GetScale().z);
+    ct->SetRotation(ct->GetRotation().x+1, 0, 0);
+    gameObject2->Draw();
 
    
 

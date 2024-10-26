@@ -27,11 +27,11 @@ public:
     void SetPosition(float x, float y, float z);
     void SetPosition(vec3 vec3);
     void SetScale(float x, float y, float z);
-    void SetRotation(float angle, float x, float y, float z);
+    void SetRotation(float pitch, float yaw, float roll);
 
     const glm::vec3& GetPosition() const;
     const glm::vec3& GetScale() const;
-    glm::quat GetRotation() const;
+    glm::vec3 GetRotation() const;
 
     glm::mat4 GetModelMatrix() const;
 

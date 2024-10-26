@@ -74,9 +74,6 @@ std::shared_ptr<GameObject> Importer::Importar(const std::string& modelPath)
 std::shared_ptr<GameObject> Importer::Importar(const std::string& modelPath, const std::string& texturePath)
 {
     auto newGameObject = Importar(modelPath);
-    //auto textureID = LoadTexture(texturePath);
-
-    //newGameObject->GetComponent<Component_Mesh>()->SetTexture(textureID);
     newGameObject->AddComponent<Component_Material>();
     newGameObject->GetComponent<Component_Material>()->SetTexture(texturePath);
 

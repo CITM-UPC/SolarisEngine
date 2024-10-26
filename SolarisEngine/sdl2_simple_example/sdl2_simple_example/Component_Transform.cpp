@@ -39,9 +39,11 @@ void Component_Transform::SetScale(float x, float y, float z) {
     scale = glm::vec3(x, y, z);
 }
 
-void Component_Transform::SetRotation(float angle, float x, float y, float z) {
-    glm::vec3 axis(x, y, z);
-    rotationQuat = glm::angleAxis(glm::radians(angle), glm::normalize(axis));
+// Modificado para aceptar ángulos de Euler (pitch, yaw, roll)
+void Component_Transform::SetRotation(float pitch, float yaw, float roll) {
+    // Convertir ángulos de Euler a cuaternión
+    glm::vec3 eulerAngles(glm::radians(pitch), glm::radians(yaw), glm::radians(roll));
+    rotationQuat = glm::quat(eulerAngles); // Convertir a cuaternión
 }
 
 const glm::vec3& Component_Transform::GetPosition() const {
@@ -52,8 +54,10 @@ const glm::vec3& Component_Transform::GetScale() const {
     return scale;
 }
 
-glm::quat Component_Transform::GetRotation() const {
-    return rotationQuat;
+
+glm::vec3 Component_Transform::GetRotation() const {
+    glm::vec3 eulerAngles = glm::eulerAngles(rotationQuat);
+    return glm::degrees(eulerAngles); // Convertir a grados
 }
 
 glm::mat4 Component_Transform::GetModelMatrix() const {
