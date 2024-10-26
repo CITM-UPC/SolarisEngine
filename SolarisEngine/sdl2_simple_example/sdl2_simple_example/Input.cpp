@@ -235,6 +235,7 @@ const char* InputEditor::GetControllerName(int id) const
 
 bool InputEditor::processEvents()
 {
+
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
@@ -270,6 +271,13 @@ bool InputEditor::processEvents()
 			else if (event.wheel.y < 0) {
 				app->cameraEditor->MouseWheel(false);
 			}
+			break;
+		}
+		case(SDL_DROPFILE): {
+			std::string dropped_filedir = event.drop.file;
+			printf("Archivo soltado: %s\n", dropped_filedir);
+			//SDL_free(dropped_filedir);
+			app->gameObject3 = app->importer->Importar(dropped_filedir);
 			break;
 		}
 		default:
