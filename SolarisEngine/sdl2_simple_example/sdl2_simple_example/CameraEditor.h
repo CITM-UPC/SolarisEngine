@@ -26,7 +26,7 @@ private:
     glm::vec3 front;
     glm::vec3 up;
 
-    float yaw = 0.0f; // Ángulo de rotación alrededor del eje Y
+    float yaw = -90.0f; // Ángulo de rotación alrededor del eje Y
     float pitch = 0.0f; // Ángulo de rotación alrededor del eje X
     float sensitivity = 0.1f; // Sensibilidad del ratón
 };

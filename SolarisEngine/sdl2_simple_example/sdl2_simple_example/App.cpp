@@ -36,6 +36,7 @@ bool App::Awake()
 {
     std::cout << "App::Awake called" << std::endl;
     // Aquí podrías cargar la configuración del juego
+    
     return LoadConfig();
 }
 
@@ -59,6 +60,27 @@ bool App::Start()
 // Called each loop iteration
 bool App::Update()
 {
+    //SDL_bool done;
+    //SDL_Event event;
+    //SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+
+    //while (SDL_PollEvent(&event)) {
+    //    switch (event.type)
+    //    {
+    //    case(SDL_QUIT): {
+    //        return false; // Finaliza la ejecución si se recibe SDL_QUIT
+    //    }
+    //    case(SDL_DROPFILE): {
+    //        char* dropped_filedir = event.drop.file;
+    //        printf("Archivo soltado: %s\n", dropped_filedir);
+    //        SDL_free(dropped_filedir);
+    //        break;
+    //    }
+    //    default:
+    //        ImGui_ImplSDL2_ProcessEvent(&event);
+    //        break;
+    //    }
+    //}
     std::cout << "App::Update called" << std::endl;
 
     PrepareUpdate();
@@ -205,6 +227,10 @@ bool App::DoUpdate()
         //ct->SetScale(ct->GetScale().x + 0.01f, ct->GetScale().y + 0.01f, ct->GetScale().z);
         ct->SetRotation(ct->GetRotation().x + 1, 0, 0);
         gameObject2->Draw();
+    }
+
+    if (gameObject3) {
+        gameObject3->Draw();
     }
 
 

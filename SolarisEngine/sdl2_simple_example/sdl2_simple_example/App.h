@@ -119,6 +119,7 @@ public:
 
 	std::shared_ptr<GameObject> gameObject;
 	std::shared_ptr<GameObject> gameObject2;
+	std::shared_ptr<GameObject> gameObject3;
 
 private:
 
