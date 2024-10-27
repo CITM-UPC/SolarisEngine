@@ -10,7 +10,7 @@
 
 class Component_Mesh : public Component {
 public:
-    Component_Mesh(std::shared_ptr<GameObject> containerGO);
+    Component_Mesh(GameObject* containerGO); // Cambiado a puntero crudo
     ~Component_Mesh();
 
     void Enable() override;
@@ -21,7 +21,7 @@ public:
     void LoadMesh(aiMesh* ai_mesh);
     void LoadMesh(const aiScene* ai_scene);
 
-    void SetMaterial(const std::shared_ptr<Component_Material>& material);  // Nuevo: Establece el material asociado
+    void SetMaterial(Component_Material* material);  // Cambiado a puntero crudo
 
 private:
     struct Mesh {
@@ -32,5 +32,5 @@ private:
 
     std::vector<Mesh> meshes;
     GLuint vao;
-    std::shared_ptr<Component_Material> material; // Debe ser std::shared_ptr
+    Component_Material* material; // Cambiado a puntero crudo
 };

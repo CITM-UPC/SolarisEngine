@@ -19,9 +19,6 @@
 #define MATERIALS_DIR "Library/Materials"
 #define MODELS_DIR "Library/Models"
 
-
-
-
 class Importer {
 public:
     static Importer& getInstance() {
@@ -32,35 +29,21 @@ public:
     Importer(const Importer&) = delete;
     void operator=(const Importer&) = delete;
 
-
     void Draw(const std::string& modelName);
-    void Draw(const std::shared_ptr<GameObject>& gameObject);
-    std::shared_ptr<GameObject> Importar(const std::string& modelPath);
-    std::shared_ptr<GameObject> Importar(const std::string& modelPath, const std::string& texturePath);
+    void Draw(GameObject* gameObject); // Cambiado a puntero crudo
+    GameObject* Importar(const std::string& modelPath); // Cambiado a puntero crudo
+    GameObject* Importar(const std::string& modelPath, const std::string& texturePath); // Cambiado a puntero crudo
 
     unsigned int LoadTexture(const std::string& texturePath); // Declaración de LoadTexture
 
-
-    //::shared_ptr<GameObject> Importar(const std::string& filepath);
-
-   
-
 private:
     Importer();
-   
+
     void LoadMaterials(const aiScene* scene);
-    
-
-
     void ProcessMeshes(const aiScene* scene);
     GLuint GetTextureIdForModel(const std::string& modelName);
 
     std::vector<std::string> materials;
-    //std::vector<std::string> meshes;
     std::map<std::string, GLuint> textureIds; // Mapear nombre de modelo a ID de textura
-    // Aquí puedes agregar estructuras para almacenar información de las mallas
-
     std::map<std::string, GLuint> vaos;
-
-    //std::vector<Mesh> meshes;
 };

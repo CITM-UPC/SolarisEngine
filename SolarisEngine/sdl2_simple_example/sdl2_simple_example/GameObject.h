@@ -6,13 +6,12 @@
 #include "Defs.h"
 #include <string>
 #include <vector>
-#include <memory>
+#include <memory> // Para std::unique_ptr
 
-class GameObject : public std::enable_shared_from_this<GameObject>
-{
+class GameObject {
 public:
     // Método estático para crear un GameObject y agregar el Component_Transform
-    static std::shared_ptr<GameObject> Create(const std::string& name = "gameObject");
+    static GameObject* Create(const std::string& name = "gameObject");
 
     ~GameObject();
 
@@ -35,7 +34,8 @@ public:
     bool IsEnabled() const;
     void Enable();
     void Disable();
-    void Delete();
+    void Delete(); // Método para eliminar
+
 
     std::string GetName() const;
     void SetName(const std::string& name);
@@ -51,13 +51,13 @@ private:
     GameObject(const std::string& name = "gameObject");
 
 public:
-    std::weak_ptr<GameObject> parent;
-    std::vector<std::shared_ptr<GameObject>> children;
+    GameObject* parent; // Cambiado a puntero crudo
+    std::vector<GameObject*> children; // Cambiado a punteros crudos
     bool isStatic;
 
 private:
     std::string name;
-    std::vector<std::unique_ptr<Component>> components;
+    std::vector<Component*> components; // Cambiado a punteros crudos
     uint32_t UID;
     bool enabled;
 };

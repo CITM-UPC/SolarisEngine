@@ -2,11 +2,10 @@
 #include <iostream>
 #include "Component_Transform.h"
 
-Component_Mesh::Component_Mesh(std::shared_ptr<GameObject> containerGO)
-    : Component(containerGO, ComponentType::Mesh), vao(0) {
+Component_Mesh::Component_Mesh(GameObject* containerGO)  // Cambiado a puntero crudo
+    : Component(containerGO, ComponentType::Mesh), vao(0), material(nullptr) {
     // Intenta obtener el componente de material del GameObject
-    material = std::shared_ptr<Component_Material>(containerGO->GetComponent<Component_Material>());
-
+    material = containerGO->GetComponent<Component_Material>();
 }
 
 Component_Mesh::~Component_Mesh() {}
@@ -26,14 +25,15 @@ void Component_Mesh::Update(double dt) {
 void Component_Mesh::DrawComponent() {
     if (!enabled) return;
 
-    auto containerGOLock = containerGO.lock();
-    if (!containerGOLock) {
-        std::cerr << "Error: El GameObject asociado ya no está disponible." << std::endl;
-        return; // El objeto ha sido destruido
-    }
+    // Obtener el GameObject contenedor
+    //auto containerGOLock = containerGO.lock();
+    //if (!containerGOLock) {
+    //    std::cerr << "Error: El GameObject asociado ya no está disponible." << std::endl;
+    //    return; // El objeto ha sido destruido
+    //}
 
     // Obtener la matriz de transformación desde Component_Transform
-    auto transform = containerGOLock->GetComponent<Component_Transform>();
+    auto transform = containerGO->GetComponent<Component_Transform>();
     if (!transform) {
         std::cerr << "Error: No se pudo obtener el componente de transformación." << std::endl;
         return;
@@ -61,7 +61,7 @@ void Component_Mesh::DrawComponent() {
     else {
         glBindTexture(GL_TEXTURE_2D, 0);
         glColor3f(1.0f, 0.0f, 1.0f); // Color rosa si no hay material
-        material = std::shared_ptr<Component_Material>(containerGOLock->GetComponent<Component_Material>());
+        material = containerGO->GetComponent<Component_Material>(); // No usar shared_ptr
     }
 
     // Dibujo de la malla usando OpenGL
@@ -114,7 +114,8 @@ void Component_Mesh::LoadMesh(const aiScene* ai_scene) {
             if (aiMesh->mTextureCoords[0]) {
                 mesh.texCoords.push_back(aiMesh->mTextureCoords[0][j].x);
                 mesh.texCoords.push_back(aiMesh->mTextureCoords[0][j].y);
-            } else {
+            }
+            else {
                 mesh.texCoords.push_back(0.0f);
                 mesh.texCoords.push_back(0.0f);
             }

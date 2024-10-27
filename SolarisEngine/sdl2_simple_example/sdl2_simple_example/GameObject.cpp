@@ -4,22 +4,30 @@
 #include <iostream>
 
 // Método estático para crear el GameObject e inicializarlo con un Component_Transform
-std::shared_ptr<GameObject> GameObject::Create(const std::string& name) {
-    auto gameObject = std::shared_ptr<GameObject>(new GameObject(name));
+GameObject* GameObject::Create(const std::string& name) {
+    GameObject* gameObject(new GameObject(name));
     gameObject->AddComponent<Component_Transform>();  // Agrega el componente Transform
     return gameObject;
 }
 
 // Constructor privado
 GameObject::GameObject(const std::string& name)
-    : name(name), isStatic(false), enabled(true) {
+    : name(name), isStatic(false), enabled(true), parent(nullptr) {
     CreateUID();
 }
 
 // Destructor
 GameObject::~GameObject() {
-    // Limpieza de recursos, si es necesario
+    // Limpieza de recursos
+    for (auto component : components) {
+        delete component; // Limpiar cada componente
+    }
     components.clear();
+    // Limpiar los hijos
+    for (auto child : children) {
+        delete child; // Limpiar cada hijo
+    }
+    children.clear();
 }
 
 void GameObject::Awake(double dt) { }
@@ -27,7 +35,7 @@ void GameObject::Awake(double dt) { }
 void GameObject::Start(double dt) { }
 
 void GameObject::Update(double dt) {
-    for (const auto& component : components) {
+    for (auto component : components) {
         if (component && component->IsEnabled()) {
             component->Update(dt);
         }
@@ -37,7 +45,7 @@ void GameObject::Update(double dt) {
 void GameObject::LateUpdate(double dt) { }
 
 void GameObject::Draw() {
-    for (const auto& component : components) {
+    for (auto component : components) {
         if (component && component->IsEnabled()) {
             component->DrawComponent();
         }
@@ -46,7 +54,7 @@ void GameObject::Draw() {
 
 void GameObject::RemoveComponent(ComponentType type) {
     components.erase(std::remove_if(components.begin(), components.end(),
-        [type](const std::unique_ptr<Component>& component) {
+        [type](Component* component) {
             return component->GetType() == type;
         }), components.end());
 }
@@ -57,11 +65,17 @@ void GameObject::Enable() { enabled = true; }
 
 void GameObject::Disable() { enabled = false; }
 
-void GameObject::Delete() { 
+void GameObject::Delete() {
     Disable();
+    for (auto component : components) {
+        delete component; // Limpiar los componentes
+    }
     components.clear();
+    delete this;
 }
 
+
+// Otros métodos
 std::string GameObject::GetName() const { return name; }
 
 void GameObject::SetName(const std::string& name) { this->name = name; }

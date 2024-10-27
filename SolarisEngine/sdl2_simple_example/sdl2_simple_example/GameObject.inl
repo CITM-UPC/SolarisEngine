@@ -1,10 +1,10 @@
-// GameObject.inl
-
 #include "GameObject.h"
+
+// Método para obtener un componente de tipo TComponent
 template <typename TComponent>
 TComponent* GameObject::GetComponent() {
     for (const auto& component : components) {
-        TComponent* castedComponent = dynamic_cast<TComponent*>(component.get());
+        TComponent* castedComponent = dynamic_cast<TComponent*>(component);
         if (castedComponent) {
             return castedComponent; // Retorna el componente si el casting es exitoso
         }
@@ -12,18 +12,19 @@ TComponent* GameObject::GetComponent() {
     return nullptr; // Si no se encuentra, retorna nullptr
 }
 
+// Método para agregar un componente de tipo TComponent
 template <typename TComponent>
 TComponent* GameObject::AddComponent() {
     if (GetComponent<TComponent>() != nullptr) {
         return nullptr;  // El componente ya existe
     }
 
-    auto newComponent = std::make_unique<TComponent>(shared_from_this());
+    // Crea una nueva instancia del componente utilizando el constructor por defecto
+    TComponent* newComponent = new TComponent(this); // Puntero crudo
     newComponent->Enable();  // Habilita el componente si es necesario
 
     // Almacena el nuevo componente en la lista
-    TComponent* componentPtr = newComponent.get(); // Guardamos el puntero crudo
-    components.push_back(std::move(newComponent));
+    components.push_back(newComponent); // Almacena el puntero crudo
 
-    return componentPtr; // Devolvemos el puntero crudo
+    return newComponent; // Devolvemos el puntero crudo
 }

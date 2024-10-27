@@ -3,7 +3,6 @@
 #define __COMPONENT_H__
 
 #include <string>
-#include <memory>
 #include "UIDGen.h"
 
 class GameObject;
@@ -19,7 +18,7 @@ enum class ComponentType {
 
 class Component {
 public:
-    Component(std::shared_ptr<GameObject> containerGO, ComponentType type);
+    Component(GameObject* containerGO, ComponentType type); // Usar puntero crudo
     virtual ~Component();
 
     virtual void Enable() = 0;  // Hacerlo puro virtual
@@ -30,14 +29,14 @@ public:
     std::string GetName();
     void CreateNameFromType(ComponentType type);
     ComponentType GetType() const;
-    std::shared_ptr<GameObject> GetContainerGO() const;
+    GameObject* GetContainerGO() const; // Usar puntero crudo
     bool IsEnabled() const;
 
     void CreateUID() { UID = UIDGen::GenerateRandomUint32(); }
     uint32_t GetUID() { return UID; }
 
 protected:
-    std::weak_ptr<GameObject> containerGO;
+    GameObject* containerGO; // Cambiado a puntero crudo
     ComponentType type;
     std::string name;
     uint32_t UID;

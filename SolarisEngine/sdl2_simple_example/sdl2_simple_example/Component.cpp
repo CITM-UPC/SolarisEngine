@@ -2,8 +2,8 @@
 #include "GameObject.h"
 
 // Constructor
-Component::Component(std::shared_ptr<GameObject> containerGO, ComponentType type)
-    : containerGO(std::move(containerGO)), type(type), enabled(true) {
+Component::Component(GameObject* containerGO, ComponentType type)
+    : containerGO(containerGO), type(type), enabled(true) {
     CreateNameFromType(type);
     CreateUID(); // Genera un UID al crear el componente
 }
@@ -36,8 +36,8 @@ ComponentType Component::GetType() const {
 }
 
 // Obtiene el GameObject contenedor
-std::shared_ptr<GameObject> Component::GetContainerGO() const {
-    return containerGO.lock(); // Devuelve el GameObject si todavía es válido
+GameObject* Component::GetContainerGO() const {
+    return containerGO; // Devuelve el puntero crudo
 }
 
 // Comprueba si el componente está habilitado

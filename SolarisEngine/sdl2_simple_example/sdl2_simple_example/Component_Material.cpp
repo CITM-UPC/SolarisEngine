@@ -1,8 +1,7 @@
 #include "Component_Material.h"
 #include <iostream>
 
-
-Component_Material::Component_Material(std::shared_ptr<GameObject> containerGO)
+Component_Material::Component_Material(GameObject* containerGO)  // Usar puntero crudo
     : Component(containerGO, ComponentType::Material), textureID(0) {
     diffuseColor[0] = 1.0f;  // Inicializa el color difuso a blanco
     diffuseColor[1] = 1.0f;
@@ -60,7 +59,6 @@ bool Component_Material::LoadTextureFromFile(const std::string& filePath) {
 ILuint Component_Material::GetTextureID() const {
     return textureID;
 }
-
 
 void Component_Material::Enable() {
     enabled = true;

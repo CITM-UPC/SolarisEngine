@@ -12,7 +12,7 @@
 class Component_Material : public Component {
 public:
     // Constructor y Destructor
-    Component_Material(std::shared_ptr<GameObject> containerGO);
+    Component_Material(GameObject* containerGO); // Usar puntero crudo
     ~Component_Material();
 
     // Métodos de configuración de material
@@ -34,7 +34,6 @@ private:
 
     // Método de carga de textura
     bool LoadTextureFromFile(const std::string& filePath);
-  
 };
 
 #endif // !__COMPONENT_MATERIAL_H__

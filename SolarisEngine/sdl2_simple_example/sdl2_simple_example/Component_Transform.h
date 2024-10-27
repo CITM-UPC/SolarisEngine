@@ -8,14 +8,11 @@
 #include <glm/gtc/matrix_transform.hpp> // Para transformaciones
 #include <glm/gtc/type_ptr.hpp>
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include "Defs.h"
 
 class Component_Transform : public Component {
 public:
-    Component_Transform(std::shared_ptr<GameObject> containerGO);
+    Component_Transform(GameObject* containerGO); // Cambiado a puntero crudo
     virtual ~Component_Transform() override;
 
     void Enable() override;
@@ -25,7 +22,7 @@ public:
 
     // Métodos específicos para la transformación
     void SetPosition(float x, float y, float z);
-    void SetPosition(vec3 vec3);
+    void SetPosition(glm::vec3 vec3); // Asegúrate de usar glm::vec3
     void SetScale(float x, float y, float z);
     void SetRotation(float pitch, float yaw, float roll);
 
@@ -34,7 +31,6 @@ public:
     glm::vec3 GetRotation() const;
 
     glm::mat4 GetModelMatrix() const;
-
 
 private:
     glm::vec3 position;  // Posición

@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Component_Mesh.h" // Asegúrate de que tienes esta clase definida
 #include <memory> // Para std::shared_ptr
+#include <filesystem>
 
 namespace fs = std::filesystem;
 
@@ -18,40 +19,8 @@ Importer::Importer() {
 
     ilInit(); // Inicializa DevIL
 }
-//
-//std::shared_ptr<GameObject> Importer::Importar(const std::string& filepath) {
-//    Assimp::Importer importer;
-//    const aiScene* scene = importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
-//
-//    if (!scene) {
-//        std::cerr << "Error al cargar el archivo: " << importer.GetErrorString() << std::endl;
-//        return nullptr;
-//    }
-//
-//    std::cout << "Archivo cargado exitosamente: " << filepath << std::endl;
-//
-//    LoadMaterials(scene);
-//
-//    auto gameObject = std::make_shared<GameObject>("ImportedFBX");
-//
-//    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-//        aiMesh* ai_mesh = scene->mMeshes[i];
-//        std::string meshName = ai_mesh->mName.C_Str();
-//        //meshes.push_back(meshName);
-//
-//        // Crear y agregar un componente de malla al GameObject
-//        auto meshComponent = std::make_unique<Component_Mesh>(gameObject);
-//        meshComponent->LoadMesh(ai_mesh); // Implementa esta función en Component_Mesh
-//        gameObject->AddComponent<Component_Mesh>(std::move(meshComponent));
-//
-//        std::cout << "Malla procesada: " << meshName << " con " << ai_mesh->mNumVertices << " vértices." << std::endl;
-//    }
-//
-//    return gameObject; // Devuelve el GameObject creado
-//}
 
-std::shared_ptr<GameObject> Importer::Importar(const std::string& modelPath)
-{
+GameObject* Importer::Importar(const std::string& modelPath) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_FlipUVs);
 
@@ -60,9 +29,9 @@ std::shared_ptr<GameObject> Importer::Importar(const std::string& modelPath)
         return nullptr;
     }
 
-    auto newGameObject = GameObject::Create(scene->mName.C_Str());
+    GameObject* newGameObject = GameObject::Create(scene->mName.C_Str());
     newGameObject->AddComponent<Component_Mesh>();
-    auto meshComponent = newGameObject->GetComponent<Component_Mesh>();
+    Component_Mesh* meshComponent = newGameObject->GetComponent<Component_Mesh>();
     if (meshComponent) {
         meshComponent->LoadMesh(scene);
     }
@@ -70,13 +39,10 @@ std::shared_ptr<GameObject> Importer::Importar(const std::string& modelPath)
     return newGameObject;
 }
 
-
-std::shared_ptr<GameObject> Importer::Importar(const std::string& modelPath, const std::string& texturePath)
-{
-    auto newGameObject = Importar(modelPath);
+GameObject* Importer::Importar(const std::string& modelPath, const std::string& texturePath) {
+    GameObject* newGameObject = Importar(modelPath);
     newGameObject->AddComponent<Component_Material>();
     newGameObject->GetComponent<Component_Material>()->SetTexture(texturePath);
-
 
     return newGameObject;
 }
@@ -107,16 +73,6 @@ unsigned int Importer::LoadTexture(const std::string& texturePath) {
     ilDeleteImages(1, &textureID);
     return glTextureID;
 }
-
-
-
-
-
-
-
-
-
-
 
 void Importer::LoadMaterials(const aiScene* scene) {
     for (unsigned int i = 0; i < scene->mNumMaterials; ++i) {
@@ -155,7 +111,7 @@ void Importer::LoadMaterials(const aiScene* scene) {
     }
 }
 
-void Importer::Draw(const std::shared_ptr<GameObject>& gameObject) {
+void Importer::Draw(GameObject* gameObject) {
     if (gameObject) {
         gameObject->Draw(); // Llama al método Draw del GameObject
     }
