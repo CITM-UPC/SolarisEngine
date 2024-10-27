@@ -37,6 +37,8 @@ void WindowImGui::HandleSDLEvent(SDL_Event& e) {
 
 void WindowImGui::Render() {
     // Renderiza cada panel en la lista
+    menuBar->Render();
+
     for (auto panel : panels) {
         panel->Render(); // Llama al método de renderizado de cada panel
     }

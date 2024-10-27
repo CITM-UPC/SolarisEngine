@@ -81,6 +81,9 @@
     <ClCompile Include="PanelHierarchy.cpp">
       <Filter>Source Files\Panel</Filter>
     </ClCompile>
+    <ClCompile Include="MenuBar.cpp">
+      <Filter>Source Files\Panel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyWindow.h">
@@ -132,6 +135,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PanelHierarchy.h">
+      <Filter>Header Files\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuBar.h">
       <Filter>Header Files\Panels</Filter>
     </ClInclude>
   </ItemGroup>

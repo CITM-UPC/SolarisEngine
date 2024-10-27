@@ -45,7 +45,10 @@ bool App::Start()
     gameObject = importer->Importar("./Assets/BakerHouse.fbx"); // <-- Modelo con 1 textura
     gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
 
+    windowEditor->AddGameObjectToHierarchy(gameObject);
+
     gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
+    windowEditor->AddGameObjectToHierarchy(gameObject2);
 
     return true;
 }

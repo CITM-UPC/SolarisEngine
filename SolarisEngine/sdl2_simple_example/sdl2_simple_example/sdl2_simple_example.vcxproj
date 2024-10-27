@@ -139,6 +139,7 @@
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MenuBar.cpp" />
     <ClCompile Include="MyWindow.cpp" />
     <ClCompile Include="PanelHierarchy.cpp" />
     <ClCompile Include="Primitivos.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="MenuBar.h" />
     <ClInclude Include="MyWindow.h" />
     <ClInclude Include="PanelHierarchy.h" />
     <ClInclude Include="Primitivos.h" />

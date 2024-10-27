@@ -10,6 +10,11 @@ PanelHierarchy::~PanelHierarchy() {
 }
 
 void PanelHierarchy::Render() {
+
+
+ 
+
+
     ImGui::Begin("Hierarchy"); // Nombre del panel
 
     // Renderiza cada GameObject en la lista
