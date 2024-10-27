@@ -44,10 +44,10 @@ bool App::Start()
     // Crear los objetos con new
     gameObject = importer->Importar("./Assets/BakerHouse.fbx"); // <-- Modelo con 1 textura
     gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
-
-    
-
     gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
+
+    app->gameObjects.push_back(gameObject);
+    app->gameObjects.push_back(gameObject2);
 
 
     return true;
@@ -184,8 +184,10 @@ bool App::PreUpdate()
 
 
     if (contador >= 0.5f && gameObject2) {
-        gameObject2->Delete();
-        gameObject2 = nullptr;
+        
+        RemoveGameObject(gameObject2); //Lo borro de la lista de la escena
+        gameObject2->Delete(); //Borro y libero la memoria de el y de sus componentes
+        gameObject2 = nullptr; //Borro el puntero
     }
     else {
         contador += dt;
@@ -249,4 +251,11 @@ bool App::INIT_openGL() {
     glEnable(GL_TEXTURE_2D);
     glClearColor(0.5, 0.5, 0.5, 1.0);
     return true;
+}
+
+void App::RemoveGameObject(GameObject* gameObject) {
+    auto it = std::remove(gameObjects.begin(), gameObjects.end(), gameObject);
+    if (it != gameObjects.end()) {
+        gameObjects.erase(it, gameObjects.end()); // Eliminar de la lista
+    }
 }

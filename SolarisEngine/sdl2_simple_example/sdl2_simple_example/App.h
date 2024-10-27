@@ -90,6 +90,8 @@ private:
 
     bool INIT_openGL();
 
+    void RemoveGameObject(GameObject* gameObject);
+
 public:
 
     double dt;
