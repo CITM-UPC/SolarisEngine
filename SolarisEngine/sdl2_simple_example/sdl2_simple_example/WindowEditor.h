@@ -2,7 +2,7 @@
 #include <string>
 #include "App.h"
 #include <imgui_impl_sdl2.h>
-
+#include <imgui_impl_opengl3.h>
 
 
 struct  SDL_Window;
@@ -10,30 +10,30 @@ struct  SDL_Window;
 
 class WindowEditor
 {
-	SDL_Window* _window = nullptr;
-	void* _ctx = nullptr;
 public:
-	WindowEditor();
-	~WindowEditor();
-	void Create();
-	void Shutdown();
+    WindowEditor();
+    ~WindowEditor();
 
-	void HandleSDLEvent(SDL_Event& e);
-	
-	bool PumpEvents();
+    // 创建和销毁窗口
+    void Create();
+    void Shutdown();
 
-	void GetSize(int& w, int& h);
+    // 事件处理
+    void HandleSDLEvent(SDL_Event& e);
+    bool PumpEvents();
 
-	SDL_Window* GetSDLWindow() { return _window; }
-	void* GetGLContext() { return _ctx; }
-	void BeginRender();
-	void Render();
-	void EndRender();
+    // 渲染控制
+    void BeginRender();
+    void Render();
+    void EndRender();
 
+    // 获取窗口信息
+    void GetSize(int& w, int& h);
+    SDL_Window* GetSDLWindow() { return _window; }
+    void* GetGLContext() { return _ctx; }
 
 private:
-	//SDL_Window* mWindow;
-	////SDL_GLContext* mGLContext;
-	//void* mGLContext;
-	////WindowEditor mWindowEditor;
+    SDL_Window* _window = nullptr;  // SDL 窗口
+    void* _ctx = nullptr;           // OpenGL 上下文
+    bool _shouldClose = false;      // 用于指示退出请求
 };
