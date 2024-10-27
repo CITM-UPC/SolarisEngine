@@ -205,27 +205,35 @@ bool App::DoUpdate(double dt)
 {
     cameraEditor->Update();
 
-    if (gameObject) {
-       /* Component_Transform* ct = gameObject->GetComponent<Component_Transform>();
-        ct->SetPosition(ct->GetPosition().x + 0.01f, ct->GetPosition().y, ct->GetPosition().z);
-        ct->SetScale(ct->GetScale().x, ct->GetScale().y + 0.01f, ct->GetScale().z);*/
-        gameObject->Draw();
-    }
+    //if (gameObject) {
+    //   /* Component_Transform* ct = gameObject->GetComponent<Component_Transform>();
+    //    ct->SetPosition(ct->GetPosition().x + 0.01f, ct->GetPosition().y, ct->GetPosition().z);
+    //    ct->SetScale(ct->GetScale().x, ct->GetScale().y + 0.01f, ct->GetScale().z);*/
+    //    gameObject->Draw();
+    //}
 
 
 
 
-    if (gameObject2) {
-        Component_Transform* ct = gameObject2->GetComponent<Component_Transform>();
-        ct->SetRotation(ct->GetRotation().x + 1, 0, 0);
-        gameObject2->Draw();
-    }
+    //if (gameObject2) {
+    //    Component_Transform* ct = gameObject2->GetComponent<Component_Transform>();
+    //    ct->SetRotation(ct->GetRotation().x + 1, 0, 0);
+    //    gameObject2->Draw();
+    //}
 
    
 
-    if (gameObject3) {
-        gameObject3->Draw();
+    //if (gameObject3) {
+    //    gameObject3->Draw();
+    //}
+
+    for(GameObject* gameObject : gameObjects)
+    {
+        if (gameObject && gameObject->IsEnabled()) {
+            gameObject->Draw();
+        }
     }
+
 
     return true;
 }
