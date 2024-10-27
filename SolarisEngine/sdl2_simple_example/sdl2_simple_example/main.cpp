@@ -3,6 +3,8 @@
 #include "Defs.h"
 #include <stdlib.h>
 
+
+
 enum MainState
 {
 	CREATE = 1,
@@ -13,6 +15,7 @@ enum MainState
 	FAIL,
 	EXIT
 };
+
 
 
 

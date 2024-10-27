@@ -22,6 +22,12 @@
     <Filter Include="InLine Files">
       <UniqueIdentifier>{ee461ddf-e547-476b-b95a-751a7091f82b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Panels">
+      <UniqueIdentifier>{4acd7f41-6e3a-4e07-b1ac-efd7100b2184}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Panel">
+      <UniqueIdentifier>{6b76a494-5014-4582-b9d4-c9045fe83714}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -69,6 +75,12 @@
     <ClCompile Include="WindowEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WindowImGui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelHierarchy.cpp">
+      <Filter>Source Files\Panel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyWindow.h">
@@ -115,6 +127,12 @@
     </ClInclude>
     <ClInclude Include="WindowEditor.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowImGui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelHierarchy.h">
+      <Filter>Header Files\Panels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
