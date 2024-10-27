@@ -60,6 +60,11 @@ ILuint Component_Material::GetTextureID() const {
     return textureID;
 }
 
+glm::vec3 Component_Material::GetDiffuseColor() const
+{
+    return glm::vec3(diffuseColor[0], diffuseColor[1], diffuseColor[2]);
+}
+
 void Component_Material::Enable() {
     enabled = true;
 }
@@ -76,11 +81,12 @@ void Component_Material::DrawComponent() {
     if (enabled) {
         if (textureID != 0) {
             glBindTexture(GL_TEXTURE_2D, textureID); // Activa la textura
-            glColor3f(1.0f, 1.0f, 1.0f);             // Color blanco si hay textura
+            glColor3f(0.0f, 0.0f, 1.0f);             // Color blanco si hay textura
+            //glColor3f(diffuseColor[0], diffuseColor[1], diffuseColor[2]); // Color difuso
         }
         else {
             glBindTexture(GL_TEXTURE_2D, 0); // Desactiva la textura
-            glColor3f(diffuseColor[0], diffuseColor[1], diffuseColor[2]); // Color difuso
+            glColor3f(1, diffuseColor[1], 1); // Color difuso
         }
     }
 }

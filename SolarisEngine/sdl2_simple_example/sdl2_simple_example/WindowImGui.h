@@ -17,10 +17,12 @@ public:
     void HandleSDLEvent(SDL_Event& e); // Manejar eventos de SDL
     void Render(); // Método para renderizar todos los paneles
 
-private:
-    void CreatePanels(); // Método para inicializar los paneles
-    std::vector<Panel*> panels; // Lista de paneles
     PanelHierarchy* hierarchyPanel; // Panel de jerarquía
     PanelInspector* inspectorPanel; // Panel del inspector
     MenuBar* menuBar;
+
+private:
+    void CreatePanels(); // Método para inicializar los paneles
+    std::vector<Panel*> panels; // Lista de paneles
+
 };

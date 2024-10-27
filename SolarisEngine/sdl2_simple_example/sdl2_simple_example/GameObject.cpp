@@ -59,6 +59,10 @@ void GameObject::RemoveComponent(ComponentType type) {
         }), components.end());
 }
 
+std::vector<Component*> GameObject::GetComponents() {
+    return components; // Devuelve la lista de componentes
+}
+
 bool GameObject::IsEnabled() const { return enabled; }
 
 void GameObject::Enable() { enabled = true; }

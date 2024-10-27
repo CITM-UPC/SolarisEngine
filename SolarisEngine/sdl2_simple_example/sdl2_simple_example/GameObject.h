@@ -30,6 +30,8 @@ public:
 
     void RemoveComponent(ComponentType type);
 
+    std::vector<Component*> GetComponents();
+
     // Get/Set
     bool IsEnabled() const;
     void Enable();

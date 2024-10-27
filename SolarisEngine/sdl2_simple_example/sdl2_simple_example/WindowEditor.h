@@ -21,10 +21,12 @@ public:
     void Render();
     void EndRender();
 
+    WindowImGui* _windowImGui;     // Instancia de WindowImGui
+
 private:
     void resizeViewport(int width, int height);
     SDL_Window* _window = nullptr;  // SDL Window
     void* _ctx = nullptr;           // OpenGL context
     bool _shouldClose = false;      // Flag to indicate if the window should close
-    WindowImGui* _windowImGui;     // Instancia de WindowImGui
+   
 };

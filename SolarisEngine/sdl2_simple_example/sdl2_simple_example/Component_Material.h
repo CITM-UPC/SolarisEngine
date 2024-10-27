@@ -27,6 +27,8 @@ public:
 
     ILuint GetTextureID() const;
 
+    glm::vec3 GetDiffuseColor() const;
+
 private:
     // Propiedades del material
     float diffuseColor[3]; // Color difuso del material (RGB)

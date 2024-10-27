@@ -1,9 +1,10 @@
 #include "PanelHierarchy.h"
 #include "imgui.h"
 #include "App.h"
+#include "PanelInspector.h" // Asegúrate de incluir el header para el PanelInspector
 
-PanelHierarchy::PanelHierarchy() {
-    // Inicialización si es necesaria
+PanelHierarchy::PanelHierarchy()
+    : selectedGameObject(nullptr) { // Inicializa el puntero seleccionado a nullptr
 }
 
 PanelHierarchy::~PanelHierarchy() {
@@ -24,10 +25,9 @@ void PanelHierarchy::Render() {
 void PanelHierarchy::DrawGameObject(GameObject* gameObject) {
     ImGui::Text(gameObject->GetName().c_str()); // Dibuja el nombre del GameObject
 
-    // Puedes añadir más interactividad, como un botón para seleccionar o eliminar el GameObject
+    // Detecta clic en el GameObject
     if (ImGui::IsItemClicked()) {
-        // Acción cuando se hace clic en el GameObject (ejemplo: seleccionarlo)
-        ImGui::Text("Selected: %s", gameObject->GetName().c_str());
+        selectedGameObject = gameObject; // Actualiza el GameObject seleccionado
+        app->windowEditor->_windowImGui->inspectorPanel->SetSelectedGameObject(selectedGameObject); // Notifica al PanelInspector
     }
 }
-
