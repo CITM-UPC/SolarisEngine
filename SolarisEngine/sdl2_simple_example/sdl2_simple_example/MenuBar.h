@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MENU_BAR_H__
+#define __MENU_BAR_H__
 
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
@@ -10,3 +11,5 @@ public:
 
     void Render(); // Método para renderizar la barra de menú
 };
+
+#endif // __MENU_BAR_H__

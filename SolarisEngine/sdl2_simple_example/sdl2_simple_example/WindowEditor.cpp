@@ -113,9 +113,3 @@ void WindowEditor::resizeViewport(int width, int height) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
-
-void WindowEditor::AddGameObjectToHierarchy(GameObject* gameObject) {
-    if (_windowImGui) {
-        _windowImGui->AddGameObjectToHierarchy(gameObject); // Pasa el GameObject al panel de jerarquía
-    }
-}

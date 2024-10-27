@@ -109,6 +109,8 @@ public:
     GameObject* gameObject2; // Cambiado a puntero crudo
     GameObject* gameObject3; // Cambiado a puntero crudo
 
+    std::vector<GameObject*> gameObjects; // Lista de GameObjects en la jerarquía
+
 private:
 
     int argc;

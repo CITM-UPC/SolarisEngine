@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 
 WindowImGui::WindowImGui()
-    : hierarchyPanel(nullptr) {
+    : hierarchyPanel(nullptr), inspectorPanel(nullptr) {
     CreatePanels(); // Crea los paneles al inicializar
 }
 
@@ -19,6 +19,9 @@ WindowImGui::~WindowImGui() {
 void WindowImGui::CreatePanels() {
     hierarchyPanel = new PanelHierarchy(); // Crea el panel de jerarquía
     panels.push_back(hierarchyPanel); // Añade el panel a la lista de panels
+
+    inspectorPanel = new PanelInspector(); // Crea el panel del inspector
+    panels.push_back(inspectorPanel); // Añade el panel a la lista de panels
 }
 
 void WindowImGui::Create() {
@@ -41,11 +44,5 @@ void WindowImGui::Render() {
 
     for (auto panel : panels) {
         panel->Render(); // Llama al método de renderizado de cada panel
-    }
-}
-
-void WindowImGui::AddGameObjectToHierarchy(GameObject* gameObject) {
-    if (hierarchyPanel) {
-        hierarchyPanel->AddGameObject(gameObject); // Añade un GameObject al panel de jerarquía
     }
 }

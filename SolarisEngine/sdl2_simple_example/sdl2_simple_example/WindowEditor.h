@@ -21,8 +21,6 @@ public:
     void Render();
     void EndRender();
 
-    void AddGameObjectToHierarchy(GameObject* gameObject); // Método para añadir GameObjects al editor
-
 private:
     void resizeViewport(int width, int height);
     SDL_Window* _window = nullptr;  // SDL Window

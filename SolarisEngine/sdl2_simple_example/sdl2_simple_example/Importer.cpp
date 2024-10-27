@@ -29,7 +29,7 @@ GameObject* Importer::Importar(const std::string& modelPath) {
         return nullptr;
     }
 
-    GameObject* newGameObject = GameObject::Create(scene->mName.C_Str());
+    GameObject* newGameObject = GameObject::Create(scene->GetShortFilename(modelPath.c_str()));
     newGameObject->AddComponent<Component_Mesh>();
     Component_Mesh* meshComponent = newGameObject->GetComponent<Component_Mesh>();
     if (meshComponent) {

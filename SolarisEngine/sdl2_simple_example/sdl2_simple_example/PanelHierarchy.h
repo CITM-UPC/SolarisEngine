@@ -1,19 +1,22 @@
-#pragma once
+#ifndef __PANEL_HIERARCHY_H__
+#define __PANEL_HIERARCHY_H__
 
 #include <vector>
 #include <string>
 #include "GameObject.h" // Asegúrate de incluir tu clase GameObject
+#include "Panel.h" // Incluir la clase base Panel
 
-class PanelHierarchy {
+
+
+class PanelHierarchy : public Panel { // Hereda de Panel
 public:
     PanelHierarchy();
     ~PanelHierarchy();
 
-    void Render(); // Método para renderizar el panel de jerarquía
-    void AddGameObject(GameObject* gameObject); // Método para añadir un GameObject a la jerarquía
+    void Render() override; // Implementa el método Render
 
 private:
-    std::vector<GameObject*> gameObjects; // Lista de GameObjects en la jerarquía
     void DrawGameObject(GameObject* gameObject); // Método para dibujar un GameObject
 };
 
+#endif // __PANEL_HIERARCHY_H__
