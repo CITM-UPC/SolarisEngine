@@ -92,6 +92,8 @@ private:
 
     void RemoveGameObject(GameObject* gameObject);
 
+    bool HandleEvents();
+
 public:
 
     double dt;

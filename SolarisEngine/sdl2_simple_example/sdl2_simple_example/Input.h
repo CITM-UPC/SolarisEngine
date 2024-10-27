@@ -72,7 +72,9 @@ public:
 	// Deactivates SDL device funcionallity when a gamepad has been disconnected
 	void HandleDeviceRemoval(int index);
 
-	bool processEvents();
+	bool processEvents(const SDL_Event& event);
+
+	void handleDroppedFile(const char* filePath);
 
 	// Called at PreUpdate
 	// Iterates through all active gamepads and update all input data

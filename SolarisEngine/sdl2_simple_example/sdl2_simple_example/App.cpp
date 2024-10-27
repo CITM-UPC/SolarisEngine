@@ -60,15 +60,16 @@ bool App::Update()
 
     PrepareUpdate();
 
-    while (inputEditor->processEvents()) {
+    while (HandleEvents()) {
         const auto t0 = hrclock::now();
 
         if (!PreUpdate()) return false;
         if (!DoUpdate(dt)) return false;
         if (!PostUpdate(dt)) return false;
-        if (!PostLateUpdate(dt)) return false;
 
-        windowEditor->Render();
+        
+
+        if (!PostLateUpdate(dt)) return false;
 
         const auto t1 = hrclock::now();
         dt = std::chrono::duration_cast<std::chrono::duration<double>>(t1 - t0).count();
@@ -76,6 +77,8 @@ bool App::Update()
         if (dt < FRAME_DT.count()) {
             std::this_thread::sleep_for(FRAME_DT - std::chrono::duration<double>(dt));
         }
+
+        windowEditor->Render(); // Renderiza ImGui aquí
     }
 
     FinishUpdate();
@@ -188,10 +191,11 @@ bool App::PreUpdate()
         RemoveGameObject(gameObject2); //Lo borro de la lista de la escena
         gameObject2->Delete(); //Borro y libero la memoria de el y de sus componentes
         gameObject2 = nullptr; //Borro el puntero
+        std::cout << "Se ha eliminado automaticamente el gameObject 2, lina +-191 en el app.cpp" << std::endl;
     }
     else {
         contador += dt;
-        std::cout << contador << std::endl;
+        
     }
 
     return true;
@@ -233,6 +237,7 @@ bool App::PostUpdate(double dt)
 
 bool App::PostLateUpdate(double dt)
 {
+    
     return true;
 }
 
@@ -258,4 +263,25 @@ void App::RemoveGameObject(GameObject* gameObject) {
     if (it != gameObjects.end()) {
         gameObjects.erase(it, gameObjects.end()); // Eliminar de la lista
     }
+}
+
+bool App::HandleEvents() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        // Manejar el evento de salida
+        if (event.type == SDL_QUIT) {
+            return false; // Salir de la aplicación
+        }
+
+        // Delegar el evento al InputEditor
+        if (!inputEditor->processEvents(event)) {
+            return false; // Si processEvents devuelve false, salir
+        }
+
+        // Delegar el evento al WindowEditor
+        if (!windowEditor->PumpEvents(event)) {
+            return false; // Si PumpEvents devuelve false, salir
+        }
+    }
+    return true; // Todo bien
 }

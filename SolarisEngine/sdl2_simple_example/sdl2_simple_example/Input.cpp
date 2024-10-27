@@ -233,70 +233,47 @@ const char* InputEditor::GetControllerName(int id) const
 
 
 
-bool InputEditor::processEvents()
+bool InputEditor::processEvents(const SDL_Event& event)
 {
-
-	SDL_Event event;
-	while (SDL_PollEvent(&event)) {
-		switch (event.type) {
-		case SDL_QUIT: {
-			return false;
-			break;
-		}
-		case SDL_KEYDOWN: {
-			app->cameraEditor->processInput(event.key.keysym.sym); // Procesa entradas de la c¨¢mara
-			break;
-		}
-		case SDL_MOUSEMOTION: {
-			// Obtiene el desplazamiento del rat¨®n
-			 // Procesa el movimiento del rat¨®n
-
+	
+	switch (event.type) {
+	case SDL_QUIT:
+		return false;
+	case SDL_KEYDOWN:
+		app->cameraEditor->processInput(event.key.keysym.sym);
+		break;
+	case SDL_MOUSEMOTION:
+		// Procesar solo si se mueve el mouse
+		if (event.motion.state & SDL_BUTTON(SDL_BUTTON_X1)) {
 			float xoffset = event.motion.xrel;
 			float yoffset = event.motion.yrel;
-
-			if (event.button.button == SDL_BUTTON_X1) {
-				app->cameraEditor->processMouseMovement(xoffset, yoffset);
-				
-			}
-
-
-
-			break;
+			app->cameraEditor->processMouseMovement(xoffset, yoffset);
 		}
-		case SDL_MOUSEWHEEL: {
-			// Procesa el desplazamiento de la rueda del rat¨®n
-			if (event.wheel.y > 0) {
-				app->cameraEditor->MouseWheel(true);
-			}
-			else if (event.wheel.y < 0) {
-				app->cameraEditor->MouseWheel(false);
-			}
-			break;
-		}
-		case(SDL_DROPFILE): {
-			std::string dropped_filedir = event.drop.file;
-			std::string extension;
-			size_t dotPos = dropped_filedir.find_last_of('.');
-			if (dotPos != std::string::npos) {
-				extension = dropped_filedir.substr(dotPos + 1);
-			}
-
-				// Convertir a minúsculas para evitar problemas de mayúsculas/minúsculas
-				std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-
-			printf("Archivo soltado: %s\n", dropped_filedir);
-			//SDL_free(dropped_filedir);
-			if(extension == "fbx")
-				app->gameObject3 = app->importer->Importar(dropped_filedir);
-			if (app->gameObject3 && extension == "png" )
-				app->gameObject3->AddComponent<Component_Material>()->SetTexture(dropped_filedir);
-			break;
-		}
-		default:
-			ImGui_ImplSDL2_ProcessEvent(&event);
-			break;
-		}
-
+		break;
+	case SDL_MOUSEWHEEL:
+		app->cameraEditor->MouseWheel(event.wheel.y > 0);
+		break;
+	case SDL_DROPFILE:
+		// Procesar el archivo soltado
+		handleDroppedFile(event.drop.file);
+		break;
+	default:
+		ImGui_ImplSDL2_ProcessEvent(&event);
+		break;
 	}
+	
 	return true;
+}
+
+void InputEditor::handleDroppedFile(const char* filePath)
+{
+	std::string droppedFile = filePath;
+	std::string extension = droppedFile.substr(droppedFile.find_last_of('.') + 1);
+	std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+	if (extension == "fbx") {
+		app->gameObject3 = app->importer->Importar(droppedFile);
+	}
+	else if (app->gameObject3 && extension == "png") {
+		app->gameObject3->AddComponent<Component_Material>()->SetTexture(droppedFile);
+	}
 }

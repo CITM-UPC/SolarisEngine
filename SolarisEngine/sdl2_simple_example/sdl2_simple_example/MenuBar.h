@@ -10,6 +10,12 @@ public:
     ~MenuBar() = default;
 
     void Render(); // Método para renderizar la barra de menú
+
+    bool showDemo = false;
+
+private:
+    
+
 };
 
 #endif // __MENU_BAR_H__

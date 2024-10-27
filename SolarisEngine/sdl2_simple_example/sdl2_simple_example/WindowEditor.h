@@ -16,7 +16,7 @@ public:
     void Create();
     void Shutdown();
     void HandleSDLEvent(SDL_Event& e);
-    bool PumpEvents();
+    bool PumpEvents(SDL_Event& event);
     void BeginRender();
     void Render();
     void EndRender();

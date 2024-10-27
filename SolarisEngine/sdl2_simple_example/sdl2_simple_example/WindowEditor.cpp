@@ -76,7 +76,6 @@ void WindowEditor::BeginRender() {
 }
 
 void WindowEditor::Render() {
-    PumpEvents();
     BeginRender();
 
     // Renderiza WindowImGui
@@ -88,14 +87,13 @@ void WindowEditor::Render() {
     SDL_GL_SwapWindow(_window);
 }
 
-bool WindowEditor::PumpEvents() {
-    SDL_Event e;
-    while (SDL_PollEvent(&e)) {
-        HandleSDLEvent(e);
-        if (e.type == SDL_QUIT) {
-            return false; // Cierra el editor si se recibe un evento de salida
-        }
+bool WindowEditor::PumpEvents(SDL_Event& e) {
+   
+    HandleSDLEvent(e);
+    if (e.type == SDL_QUIT) {
+        return false; // Cierra el editor si se recibe un evento de salida
     }
+    
     return true;
 }
 
