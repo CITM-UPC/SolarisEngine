@@ -27,12 +27,16 @@ public:
     void Render();
     void EndRender();
 
+    
+
     // 获取窗口信息
     void GetSize(int& w, int& h);
     SDL_Window* GetSDLWindow() { return _window; }
     void* GetGLContext() { return _ctx; }
 
+
 private:
+    void resizeViewport(int width, int height);
     SDL_Window* _window = nullptr;  // SDL 窗口
     void* _ctx = nullptr;           // OpenGL 上下文
     bool _shouldClose = false;      // 用于指示退出请求
