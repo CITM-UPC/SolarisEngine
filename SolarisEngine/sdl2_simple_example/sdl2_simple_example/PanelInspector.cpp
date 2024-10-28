@@ -1,5 +1,6 @@
 #include "PanelInspector.h"
 #include "imgui.h"
+#include "App.h"
 
 PanelInspector::PanelInspector() {
     // Inicialización si es necesaria
@@ -10,6 +11,11 @@ PanelInspector::~PanelInspector() {
 }
 
 void PanelInspector::Render() {
+
+    if (!app->windowEditor->_windowImGui->inspectorPanel) {
+        return;
+    }
+
     ImGui::Begin("Inspector"); // Nombre del panel
 
     if (selectedGameObject) {

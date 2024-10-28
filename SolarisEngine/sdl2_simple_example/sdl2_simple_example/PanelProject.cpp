@@ -1,6 +1,7 @@
 ﻿#include "PanelProject.h"
 #include "imgui.h"
 #include "Defs.h"
+#include "App.h"
 
 namespace fs = std::filesystem;
 
@@ -16,6 +17,11 @@ PanelProject::~PanelProject() {
 }
 
 void PanelProject::Render() {
+    if (!app->windowEditor->_windowImGui->projectPanel) {
+        return;
+    }
+
+
     ImGui::Begin("Project Explorer"); // Begin creating the panel window
 
     ShowFileSystemTree(projectPath); // Show the file system starting from the project path

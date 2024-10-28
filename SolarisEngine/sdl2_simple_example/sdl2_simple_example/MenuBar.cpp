@@ -138,7 +138,13 @@ void MenuBar::Render() {
         }
 
         if (ImGui::BeginMenu("Ventana")) {
+
+            ImGui::MenuItem("Inspector", nullptr, &app->windowEditor->_windowImGui->showinspectorPanel); // Opción para mostrar/ocultar Inspector
+            ImGui::MenuItem("Consola", nullptr, &app->windowEditor->_windowImGui->showconsolaPanel); // Opción para mostrar/ocultar Consola
+            ImGui::MenuItem("Jerarquía", nullptr, &app->windowEditor->_windowImGui->showHierarchyPanel); // Opción para mostrar/ocultar Jerarquía
+            ImGui::MenuItem("Proyecto", nullptr, &app->windowEditor->_windowImGui->showprojectPanel); // Opción para mostrar/ocultar Proyecto
             ImGui::EndMenu();
+
         }
 
         if (ImGui::BeginMenu("Ayuda")) {
