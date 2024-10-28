@@ -247,10 +247,19 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			mouseRightIsPressed = true;  
 		}
+		if (event.button.button == SDL_BUTTON_MIDDLE)
+		{
+			mouseMiddleIsPressed = true;
+		}
+
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			mouseRightIsPressed = false;  
+		}
+		if (event.button.button == SDL_BUTTON_MIDDLE)
+		{
+			mouseMiddleIsPressed = false;
 		}
 		break;
 	case SDL_MOUSEMOTION:
@@ -259,6 +268,11 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 			float xoffset = event.motion.xrel;
 			float yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMovement(xoffset, yoffset);
+		}
+		else if (mouseMiddleIsPressed) {
+			float xoffset = event.motion.xrel;
+			float yoffset = event.motion.yrel;
+			app->cameraEditor->processMouseMiddle(xoffset, yoffset);
 		}
 		break;
 	case SDL_MOUSEWHEEL:

@@ -122,6 +122,19 @@ void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
     this->front = glm::normalize(front);
 }
 
+void CameraEditor::processMouseMiddle(float xoffset, float yoffset) {
+    // Sensibilidad para el desplazamiento
+    float panSpeed = 0.005f;
+
+    // Recalcula los vectores `right` y `up` con la orientación actual de la cámara
+    glm::vec3 right = glm::normalize(glm::cross(this->front, this->up));
+    glm::vec3 adjustedUp = glm::normalize(glm::cross(right, this->front));
+
+    // Ajusta la posición de la cámara en el plano de la cámara utilizando `right` y `adjustedUp`
+    position += -right * xoffset * panSpeed;       // Desplazamiento horizontal
+    position += adjustedUp * yoffset * panSpeed;    // Desplazamiento vertical en el plano de la cámara
+}
+
 void CameraEditor::Update() {
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(projection)); // Cargar la matriz de proyección

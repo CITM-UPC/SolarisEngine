@@ -91,6 +91,7 @@ public:
 	GamePad pads[MAX_PADS];
 
 	bool mouseRightIsPressed = false;
+	bool mouseMiddleIsPressed = false;
 };
 
 #endif // __ModuleInput_H__
