@@ -25,49 +25,78 @@ glm::mat4 CameraEditor::getViewMatrix() const {
 }
 
 void CameraEditor::processInput(unsigned char key, bool isPressed) {
-    switch (key) {
-    case 'w':
-        movingForward = isPressed;
-        break;
-    case 's':
-        movingBackward = isPressed;
-        break;
-    case 'a':
-        movingLeft = isPressed;
-        break;
-    case 'd':
-        movingRight = isPressed;
-        break;
-    case 'q':
-        movingUp = isPressed;
-        break;
-    case 'e':
-        movingDown = isPressed;
-        break;
+    if (app->inputEditor->mouseRightIsPressed) { // Solo procesar si el botón derecho está presionado
+        switch (key) {
+        case 'w':
+            movingForward = isPressed;  // Activar/desactivar el movimiento hacia adelante
+            break;
+        case 's':
+            movingBackward = isPressed;  // Activar/desactivar el movimiento hacia atrás
+            break;
+        case 'a':
+            movingLeft = isPressed;      // Activar/desactivar el movimiento hacia la izquierda
+            break;
+        case 'd':
+            movingRight = isPressed;     // Activar/desactivar el movimiento hacia la derecha
+            break;
+        case 'q':
+            movingUp = isPressed;        // Activar/desactivar el movimiento hacia arriba
+            break;
+        case 'e':
+            movingDown = isPressed;      // Activar/desactivar el movimiento hacia abajo
+            break;
+        }
+    }
+    else {
+        // Si el mouse no está presionado, no permitimos el movimiento
+        if (isPressed) {
+            // Opción: podrías limpiar los movimientos si el mouse no está presionado
+            switch (key) {
+            case 'w':
+            case 's':
+            case 'a':
+            case 'd':
+            case 'q':
+            case 'e':
+                // Podrías hacer que no se active el movimiento en absoluto o manejar de otra manera
+                break;
+            }
+        }
     }
 }
 void CameraEditor::updateCameraPosition() {
     // Determina la velocidad de la cámara en función del estado de Shift
     float cameraSpeed = (SDL_GetModState() & KMOD_SHIFT) ? boostedSpeed : baseSpeed;
 
-    // Mueve la cámara en función de las teclas activas
-    if (movingForward) {
-        position += cameraSpeed * front;
+    // Solo mueve la cámara si el botón derecho está presionado
+    if (app->inputEditor->mouseRightIsPressed) {
+        if (movingForward) {
+            position += cameraSpeed * front;
+        }
+        if (movingBackward) {
+            position -= cameraSpeed * front;
+        }
+        if (movingLeft) {
+            position -= glm::normalize(glm::cross(front, up)) * cameraSpeed;
+        }
+        if (movingRight) {
+            position += glm::normalize(glm::cross(front, up)) * cameraSpeed;
+        }
+        if (movingUp) {
+            position += cameraSpeed * up;
+        }
+        if (movingDown) {
+            position -= cameraSpeed * up;
+        }
     }
-    if (movingBackward) {
-        position -= cameraSpeed * front;
-    }
-    if (movingLeft) {
-        position -= glm::normalize(glm::cross(front, up)) * cameraSpeed;
-    }
-    if (movingRight) {
-        position += glm::normalize(glm::cross(front, up)) * cameraSpeed;
-    }
-    if (movingUp) {
-        position += cameraSpeed * up;
-    }
-    if (movingDown) {
-        position -= cameraSpeed * up;
+    else {
+        // Aquí puedes resetear los estados de movimiento si lo deseas
+        movingForward = false;
+        movingBackward = false;
+        movingLeft = false;
+        movingRight = false;
+        movingUp = false;
+        movingDown = false;
     }
 }
 

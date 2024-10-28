@@ -89,6 +89,8 @@ public:
 
 	// An array to fill in all detected gamepads
 	GamePad pads[MAX_PADS];
+
+	bool mouseRightIsPressed = false;
 };
 
 #endif // __ModuleInput_H__

@@ -243,8 +243,19 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 	case SDL_KEYUP:
 		app->cameraEditor->processInput(event.key.keysym.sym, false);
 		break;
+	case SDL_MOUSEBUTTONDOWN:
+		if (event.button.button == SDL_BUTTON_RIGHT) {
+			mouseRightIsPressed = true;  
+		}
+		break;
+	case SDL_MOUSEBUTTONUP:
+		if (event.button.button == SDL_BUTTON_RIGHT) {
+			mouseRightIsPressed = false;  
+		}
+		break;
 	case SDL_MOUSEMOTION:
 		if (event.motion.state & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+			mouseRightIsPressed;
 			float xoffset = event.motion.xrel;
 			float yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMovement(xoffset, yoffset);
