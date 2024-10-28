@@ -17,6 +17,7 @@ private:
     std::vector<float> fpsHistory;  // Historial de FPS para graficar
     float currentFPS;               // FPS actual
     int frameCounter = 0;
+    bool showOverlayFPS = false;
     // Método para obtener el consumo de memoria en diferentes plataformas
     size_t GetMemoryUsage();
 

@@ -7,7 +7,8 @@
 #include <iostream>
 
 #if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>  // Incluye Windows.h para acceder a GlobalMemoryStatusEx
+#include <windows.h>
+#include <psapi.h>  // Para GetProcessMemoryInfo en Windows
 #elif defined(__linux__)
 #include <unistd.h>
 #include <fstream>
@@ -16,35 +17,37 @@
 #endif
 
 MenuBar::MenuBar()
-    : showDemo(false), fpsHistory{}, currentFPS(0.0f), frameCounter(0) {}
+    : showDemo(false), fpsHistory{}, currentFPS(0.0f), frameCounter(0), showOverlayFPS(false) {} // Añadido showOverlayFPS
 
 size_t MenuBar::GetMemoryUsage() {
 #if defined(_WIN32) || defined(_WIN64)
-    MEMORYSTATUSEX memInfo;
-    memInfo.dwLength = sizeof(MEMORYSTATUSEX);
-    if (GlobalMemoryStatusEx(&memInfo)) {
-        return (memInfo.ullTotalPhys - memInfo.ullAvailPhys) / (1024 * 1024);  // Devuelve en MB
+    // En Windows, obtenemos la memoria utilizada por el proceso actual
+    PROCESS_MEMORY_COUNTERS_EX memInfo;
+    if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&memInfo, sizeof(memInfo))) {
+        return memInfo.PrivateUsage / (1024 * 1024);  // Devuelve en MB
     }
     return 0;
 
 #elif defined(__linux__)
+    // En Linux, usamos /proc/self/statm para obtener el uso de memoria del proceso actual
     std::ifstream statm("/proc/self/statm");
     size_t memory = 0;
     if (statm.is_open()) {
-        statm >> memory;
-        memory *= sysconf(_SC_PAGESIZE); // Convertir a bytes
+        statm >> memory;  // Leer el tamaño de memoria residente
+        memory *= sysconf(_SC_PAGESIZE);  // Convertir a bytes
     }
-    return memory / 1024 / 1024;
+    return memory / (1024 * 1024);  // Devuelve en MB
 
 #elif defined(__APPLE__)
+    // En macOS, obtenemos el uso de memoria del proceso mediante task_info
     struct mach_task_basic_info info;
     mach_msg_type_number_t infoCount = MACH_TASK_BASIC_INFO_COUNT;
     if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&info, &infoCount) == KERN_SUCCESS) {
-        return info.resident_size / 1024 / 1024;
+        return info.resident_size / (1024 * 1024);  // Devuelve en MB
     }
     return 0;
 #else
-    return 0;
+    return 0;  // No implementado para otros sistemas
 #endif
 }
 
@@ -79,35 +82,16 @@ void MenuBar::Render() {
             ImGui::EndMenu();
         }
 
-        if (ImGui::BeginMenu("Config")) {
-            ImGui::Text("FPS: %.1f", currentFPS);
-            ImGui::PlotLines("FPS History", fpsHistory.data(), fpsHistory.size(), 0, nullptr, 0.0f, 100.0f, ImVec2(0, 80));
-
-            size_t memUsedMB = GetMemoryUsage();
-            ImGui::Text("Memory Usage: %zu MB", memUsedMB);
-
-            ImGui::Separator();
-            ImGui::Text("Hardware & Software Info:");
-            ImGui::Text("SDL Version: %d.%d.%d", SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
-            ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
-
-            ImGui::EndMenu();
-        }
-
-        
-
-        if (ImGui::BeginMenu("General")) {
-            ImGui::EndMenu();
-        }
         if (ImGui::BeginMenu("Edit")) {
             ImGui::EndMenu();
         }
+
         if (ImGui::BeginMenu("Assets")) {
             ImGui::EndMenu();
         }
-        if (ImGui::BeginMenu("GameObject")) {
 
-            if (ImGui::BeginMenu("Primitive")) {
+        if (ImGui::BeginMenu("GameObject")) {
+            if (ImGui::BeginMenu("Primitivos")) {
                 if (ImGui::MenuItem("Plane")) {
                     auto newGO = GameObject::Create("Plane");
                     auto mesh = newGO->AddComponent<Component_Mesh>();
@@ -146,20 +130,49 @@ void MenuBar::Render() {
                 }
                 ImGui::EndMenu();
             }
-
-
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("Component")) {
-            ImGui::EndMenu();
-        }
-        if (ImGui::BeginMenu("Window")) {
             ImGui::EndMenu();
         }
 
-       
+        if (ImGui::BeginMenu("Componentes")) {
+            ImGui::EndMenu();
+        }
 
+        if (ImGui::BeginMenu("Ventana")) {
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Ayuda")) {
+            if (ImGui::BeginMenu("Estadisticas")) {
+                ImGui::Text("FPS: %.1f", currentFPS);
+                ImGui::PlotLines("FPS History", fpsHistory.data(), fpsHistory.size(), 0, nullptr, 0.0f, 100.0f, ImVec2(0, 80));
+
+                // Obtener y mostrar solo la memoria utilizada por el proceso del motor
+                size_t memUsedMB = GetMemoryUsage();
+                ImGui::Text("Memory Usage (App): %zu MB", memUsedMB);
+
+                ImGui::Separator();
+                ImGui::Checkbox("Show FPS Overlay", &showOverlayFPS);  // Checkbox para mostrar overlay de FPS
+
+                ImGui::Separator();
+                ImGui::Text("Hardware & Software Info:");
+                ImGui::Text("SDL Version: %d.%d.%d", SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
+                ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
+
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenu();
+        }
         ImGui::EndMainMenuBar();
+    }
+
+    // Ventana overlay para mostrar FPS
+    if (showOverlayFPS) {
+        ImGui::SetNextWindowBgAlpha(0.5f);  // Transparencia del fondo
+        
+        ImGui::Begin("FPS Overlay", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
+        ImGui::SetWindowPos(ImVec2(2, 20));  // Posición en la esquina superior izquierda
+        ImGui::Text("Current FPS: %.1f", currentFPS);
+        ImGui::End();
     }
 
     if (showDemo) {
