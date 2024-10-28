@@ -244,6 +244,9 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 		app->cameraEditor->processInput(event.key.keysym.sym, false);
 		break;
 	case SDL_MOUSEBUTTONDOWN:
+		if (event.button.button == SDL_BUTTON_LEFT) {
+			mouseLefttIsPressed = true;
+		}
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			mouseRightIsPressed = true;  
 		}
@@ -254,6 +257,9 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 
 		break;
 	case SDL_MOUSEBUTTONUP:
+		if (event.button.button == SDL_BUTTON_LEFT) {
+			mouseLefttIsPressed = false;
+		}
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			mouseRightIsPressed = false;  
 		}

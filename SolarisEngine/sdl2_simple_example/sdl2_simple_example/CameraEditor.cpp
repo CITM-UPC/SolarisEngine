@@ -1,15 +1,12 @@
+// CameraEditor.cpp
 #include "CameraEditor.h"
 #include "App.h"  // Incluye App.h para acceder a la instancia de App
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_keyboard.h>
 
-
-
-
 float fov = glm::radians(90.0f); // Campo de visión en radianes
 float nearPlane = 0.01f; // Plano cercano
 float farPlane = 100.0f; // Plano lejano
-
 
 float aspectRatio = (float)app->WINDOW_SIZE.x / (float)app->WINDOW_SIZE.y; // Relación de aspecto
 
@@ -17,7 +14,9 @@ glm::mat4 projection = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
 
 // Constructor de la cámara
 CameraEditor::CameraEditor(glm::vec3 position, glm::vec3 front, glm::vec3 up)
-    : position(position), front(front), up(up) {}
+    : position(position), front(front), up(up), orbiting(false) {
+    right = glm::normalize(glm::cross(front, up)); // Inicializar right
+}
 
 // Devuelve la matriz de vista de la cámara
 glm::mat4 CameraEditor::getViewMatrix() const {
@@ -47,23 +46,8 @@ void CameraEditor::processInput(unsigned char key, bool isPressed) {
             break;
         }
     }
-    else {
-        // Si el mouse no está presionado, no permitimos el movimiento
-        if (isPressed) {
-            // Opción: podrías limpiar los movimientos si el mouse no está presionado
-            switch (key) {
-            case 'w':
-            case 's':
-            case 'a':
-            case 'd':
-            case 'q':
-            case 'e':
-                // Podrías hacer que no se active el movimiento en absoluto o manejar de otra manera
-                break;
-            }
-        }
-    }
 }
+
 void CameraEditor::updateCameraPosition() {
     // Determina la velocidad de la cámara con el estado de Shift y scroll
     float cameraSpeed = ((SDL_GetModState() & KMOD_SHIFT) ? boostedSpeed : baseSpeed) * scrollBoost * 10;
@@ -89,39 +73,48 @@ void CameraEditor::updateCameraPosition() {
             position -= cameraSpeed * up;
         }
     }
+
+    // Lógica de orbitación al hacer clic izquierdo y presionar Alt
+    if (app->inputEditor->mouseLefttIsPressed && (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LALT])) {
+        orbiting = true;
+    }
     else {
-        // Restaura `scrollBoost` cuando no está moviéndose la cámara
-        
-        movingForward = false;
-        movingBackward = false;
-        movingLeft = false;
-        movingRight = false;
-        movingUp = false;
-        movingDown = false;
+        orbiting = false;
+    }
+
+    if (orbiting) {
+        // Calcular el punto central de la órbita
+        orbitCenter = position + front; // Puedes ajustar esto para definir el centro de la órbita más específicamente
+
+        // Calcular el radio de la órbita como la distancia entre la cámara y el punto central
+        orbitRadius = glm::length(position - orbitCenter);
+
+        // Calcular la nueva posición de la cámara en órbita
+        position.x = orbitCenter.x + orbitRadius * cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        position.y = orbitCenter.y + orbitRadius * sin(glm::radians(pitch));
+        position.z = orbitCenter.z + orbitRadius * sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     }
 }
 
-
-    
-
-
 void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
+    if (!app->inputEditor->mouseLefttIsPressed) {
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
 
-    yaw += xoffset; // Ajustar rotación alrededor del eje Y
-    pitch -= yoffset; // Ajustar rotación alrededor del eje X
+        yaw += xoffset; // Ajustar rotación alrededor del eje Y
+        pitch -= yoffset; // Ajustar rotación alrededor del eje X
 
-    // Limitar el pitch para evitar problemas de "gimbal lock"
-    if (pitch > 89.0f) pitch = 89.0f;
-    if (pitch < -89.0f) pitch = -89.0f;
+        // Limitar el pitch para evitar problemas de "gimbal lock"
+        if (pitch > 89.0f) pitch = 89.0f;
+        if (pitch < -89.0f) pitch = -89.0f;
 
-    // Calcular la nueva dirección de la cámara
-    glm::vec3 front;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    this->front = glm::normalize(front);
+        // Calcular la nueva dirección de la cámara
+        glm::vec3 front;
+        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front.y = sin(glm::radians(pitch));
+        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        this->front = glm::normalize(front);
+    }
 }
 
 void CameraEditor::processMouseMiddle(float xoffset, float yoffset) {
@@ -142,7 +135,6 @@ void CameraEditor::Update() {
     glLoadMatrixf(glm::value_ptr(projection)); // Cargar la matriz de proyección
 
     updateCameraPosition();
-
 
     glm::mat4 view = getViewMatrix();
     glMatrixMode(GL_MODELVIEW);
@@ -172,4 +164,3 @@ void CameraEditor::MouseWheel(bool zoom) {
         }
     }
 }
-

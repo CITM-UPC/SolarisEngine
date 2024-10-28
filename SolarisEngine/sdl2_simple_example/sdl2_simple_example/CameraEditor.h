@@ -7,7 +7,6 @@
 #include <GL/gl.h> // Cambiar a OpenGL (quitar GLUT)
 #include <glm/gtc/type_ptr.hpp> // Para glm::value_ptr
 
-
 class App;  // Declaración anticipada para que el compilador conozca la clase App.
 
 class CameraEditor {
@@ -30,6 +29,9 @@ private:
     glm::vec3 up;
     glm::vec3 right = glm::normalize(glm::cross(front, up));
 
+    glm::vec3 orbitCenter;  // Punto central alrededor del cual orbitar
+    float orbitRadius = 5.0f; // Radio de la órbita
+
     float yaw = -90.0f; // Ángulo de rotación alrededor del eje Y
     float pitch = 0.0f; // Ángulo de rotación alrededor del eje X
     float sensitivity = 0.1f; // Sensibilidad del ratón
@@ -37,13 +39,14 @@ private:
     float boostedSpeed = 0.1f; // Velocidad aumentada con Shift
     float scrollBoost = 0.1f;
 
-
     bool movingForward = false;
     bool movingBackward = false;
     bool movingLeft = false;
     bool movingRight = false;
     bool movingUp = false;
     bool movingDown = false;
+
+    bool orbiting = false; // Indica si la cámara está en modo de orbitación
 };
 
 #endif // CAMERA_EDITOR_H
