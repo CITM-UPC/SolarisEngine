@@ -26,6 +26,8 @@ void WindowEditor::Create() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
+    /*ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;*/
+
     _window = SDL_CreateWindow("Solari", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, app->WINDOW_SIZE.x, app->WINDOW_SIZE.y, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     _ctx = SDL_GL_CreateContext(_window);
     if (!_ctx) {

@@ -12,12 +12,8 @@
 #include <GL/glew.h> // Asegúrate de incluir GLEW o tu librería de OpenGL preferida
 #include "GameObject.h"
 #include "Component.h"
+#include "Defs.h"
 
-#define ASSETS_DIR "./Assets"
-#define LIBRARY_DIR "./Library"
-#define MESHES_DIR "Library/Meshes"
-#define MATERIALS_DIR "Library/Materials"
-#define MODELS_DIR "Library/Models"
 
 class Importer {
 public:

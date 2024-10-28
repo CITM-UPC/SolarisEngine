@@ -26,6 +26,9 @@ void WindowImGui::CreatePanels() {
     consolaPanel = new PanelConsola(); // Crea el panel del inspector
     panels.push_back(consolaPanel); // Añade el panel a la lista de panels
 
+    projectPanel = new PanelProject(); // Crea el panel del inspector
+    panels.push_back(projectPanel); // Añade el panel a la lista de panels
+
     menuBar = new MenuBar();
 }
 
