@@ -205,6 +205,8 @@ bool App::DoUpdate(double dt)
 {
     cameraEditor->Update();
 
+        
+
     //if (gameObject) {
     //   /* Component_Transform* ct = gameObject->GetComponent<Component_Transform>();
     //    ct->SetPosition(ct->GetPosition().x + 0.01f, ct->GetPosition().y, ct->GetPosition().z);

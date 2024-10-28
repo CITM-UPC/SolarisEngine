@@ -1,5 +1,7 @@
 #include "CameraEditor.h"
 #include "App.h"  // Incluye App.h para acceder a la instancia de App
+#include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL_keyboard.h>
 
 
 
@@ -22,28 +24,55 @@ glm::mat4 CameraEditor::getViewMatrix() const {
     return glm::lookAt(position, position + front, up);
 }
 
-// Procesa las entradas del teclado para mover la cámara
-void CameraEditor::processInput(unsigned char key) {
-    const float cameraSpeed = 0.05f; // Velocidad de movimiento de la cámara
-    if (key == 'w') {
-        position += cameraSpeed * front; // Mover hacia adelante
-    }
-    if (key == 's') {
-        position -= cameraSpeed * front; // Mover hacia atrás
-    }
-    if (key == 'a') {
-        position -= glm::normalize(glm::cross(front, up)) * cameraSpeed; // Mover a la izquierda
-    }
-    if (key == 'd') {
-        position += glm::normalize(glm::cross(front, up)) * cameraSpeed; // Mover a la derecha
-    }
-    if (key == 'q') {
-        position += cameraSpeed * up; // Mover hacia arriba
-    }
-    if (key == 'e') { // Cambia LCTRL por 'e' para mover hacia abajo
-        position -= cameraSpeed * up; // Mover hacia abajo
+void CameraEditor::processInput(unsigned char key, bool isPressed) {
+    switch (key) {
+    case 'w':
+        movingForward = isPressed;
+        break;
+    case 's':
+        movingBackward = isPressed;
+        break;
+    case 'a':
+        movingLeft = isPressed;
+        break;
+    case 'd':
+        movingRight = isPressed;
+        break;
+    case 'q':
+        movingUp = isPressed;
+        break;
+    case 'e':
+        movingDown = isPressed;
+        break;
     }
 }
+void CameraEditor::updateCameraPosition() {
+    // Determina la velocidad de la cámara en función del estado de Shift
+    float cameraSpeed = (SDL_GetModState() & KMOD_SHIFT) ? boostedSpeed : baseSpeed;
+
+    // Mueve la cámara en función de las teclas activas
+    if (movingForward) {
+        position += cameraSpeed * front;
+    }
+    if (movingBackward) {
+        position -= cameraSpeed * front;
+    }
+    if (movingLeft) {
+        position -= glm::normalize(glm::cross(front, up)) * cameraSpeed;
+    }
+    if (movingRight) {
+        position += glm::normalize(glm::cross(front, up)) * cameraSpeed;
+    }
+    if (movingUp) {
+        position += cameraSpeed * up;
+    }
+    if (movingDown) {
+        position -= cameraSpeed * up;
+    }
+}
+
+    
+
 
 void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
     xoffset *= sensitivity;
@@ -67,6 +96,9 @@ void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
 void CameraEditor::Update() {
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(projection)); // Cargar la matriz de proyección
+
+    updateCameraPosition();
+
 
     glm::mat4 view = getViewMatrix();
     glMatrixMode(GL_MODELVIEW);
