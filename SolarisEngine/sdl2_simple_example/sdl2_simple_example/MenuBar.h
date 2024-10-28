@@ -3,18 +3,22 @@
 
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
+#include <vector>
 
 class MenuBar {
 public:
-    MenuBar() = default;
+    MenuBar();
     ~MenuBar() = default;
 
     void Render(); // Método para renderizar la barra de menú
 
-    bool showDemo = false;
-
 private:
-    
+    bool showDemo;                  // Muestra la ventana de demostración de ImGui
+    std::vector<float> fpsHistory;  // Historial de FPS para graficar
+    float currentFPS;               // FPS actual
+    int frameCounter = 0;
+    // Método para obtener el consumo de memoria en diferentes plataformas
+    size_t GetMemoryUsage();
 
 };
 
