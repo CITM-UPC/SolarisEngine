@@ -287,9 +287,9 @@ bool App::HandleEvents() {
         }
 
         // Delegar el evento al WindowEditor
-        //if (!windowEditor->PumpEvents(event)) {
-        //    return false; // Si PumpEvents devuelve false, salir
-        //}
+        if (!windowEditor->PumpEvents(event)) {
+            return false; // Si PumpEvents devuelve false, salir
+        }
     }
     return true; // Todo bien
 }
