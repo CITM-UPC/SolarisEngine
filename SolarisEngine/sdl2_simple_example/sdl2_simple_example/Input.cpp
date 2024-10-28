@@ -244,7 +244,7 @@ bool InputEditor::processEvents(const SDL_Event& event)
 		break;
 	case SDL_MOUSEMOTION:
 		// Procesar solo si se mueve el mouse
-		if (event.motion.state & SDL_BUTTON(SDL_BUTTON_X1)) {
+		if (event.motion.state & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
 			float xoffset = event.motion.xrel;
 			float yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMovement(xoffset, yoffset);
