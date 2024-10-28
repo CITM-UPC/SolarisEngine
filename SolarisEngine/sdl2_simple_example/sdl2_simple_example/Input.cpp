@@ -272,6 +272,7 @@ void InputEditor::handleDroppedFile(const char* filePath)
 	std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 	if (extension == "fbx") {
 		app->gameObject3 = app->importer->Importar(droppedFile);
+		app->gameObjects.push_back(app->gameObject3);
 	}
 	else if (app->gameObject3 && extension == "png") {
 		app->gameObject3->AddComponent<Component_Material>()->SetTexture(droppedFile);
