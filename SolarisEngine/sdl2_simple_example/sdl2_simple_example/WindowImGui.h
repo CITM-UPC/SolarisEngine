@@ -25,6 +25,11 @@ public:
     PanelProject* projectPanel; // Panel del proyecto
     MenuBar* menuBar;
 
+    bool showHierarchyPanel = true;
+    bool showinspectorPanel = true;
+    bool showconsolaPanel = true;
+    bool showprojectPanel = true;
+
 private:
     void CreatePanels(); // Método para inicializar los paneles
     std::vector<Panel*> panels; // Lista de paneles

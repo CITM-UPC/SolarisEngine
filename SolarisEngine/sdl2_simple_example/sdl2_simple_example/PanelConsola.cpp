@@ -1,5 +1,6 @@
 #include "PanelConsola.h"
 #include "imgui.h"
+#include "App.h"
 
 // Constructor and Destructor
 PanelConsola::PanelConsola() {
@@ -11,6 +12,11 @@ PanelConsola::~PanelConsola() {
 }
 
 void PanelConsola::Render() {
+
+    if (!app->windowEditor->_windowImGui->showconsolaPanel) {
+        return;
+    }
+
     ImGui::Begin("Console"); // Begin creating the panel window
 
     // Example scrollable area
