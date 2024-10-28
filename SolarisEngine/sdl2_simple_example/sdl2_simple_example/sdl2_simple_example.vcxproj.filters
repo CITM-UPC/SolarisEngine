@@ -90,6 +90,9 @@
     <ClCompile Include="Panel.cpp">
       <Filter>Source Files\Panel</Filter>
     </ClCompile>
+    <ClCompile Include="PanelConsola.cpp">
+      <Filter>Source Files\Panel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyWindow.h">
@@ -150,6 +153,9 @@
       <Filter>Header Files\Panels</Filter>
     </ClInclude>
     <ClInclude Include="PanelInspector.h">
+      <Filter>Header Files\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelConsola.h">
       <Filter>Header Files\Panels</Filter>
     </ClInclude>
   </ItemGroup>

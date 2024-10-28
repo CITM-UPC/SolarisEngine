@@ -6,6 +6,7 @@
 #include "MenuBar.h" 
 #include "PanelHierarchy.h" 
 #include "PanelInspector.h"
+#include "PanelConsola.h"
 
 class WindowImGui {
 public:
@@ -19,6 +20,7 @@ public:
 
     PanelHierarchy* hierarchyPanel; // Panel de jerarquía
     PanelInspector* inspectorPanel; // Panel del inspector
+    PanelConsola* consolaPanel; // Panel del inspector
     MenuBar* menuBar;
 
 private:
