@@ -15,11 +15,13 @@ public:
     CameraEditor(glm::vec3 position, glm::vec3 front, glm::vec3 up);
 
     glm::mat4 getViewMatrix() const;
-    void processInput(unsigned char key);
+    void processInput(unsigned char key, bool isPressed);
     void processMouseMovement(float xoffset, float yoffset);
     void updatePosition(glm::vec3 delta);
     void Update();
     void MouseWheel(bool zoom);
+    void updateCameraSpeed();
+    void updateCameraPosition();
 
 private:
     glm::vec3 position;
@@ -29,6 +31,15 @@ private:
     float yaw = -90.0f; // Ángulo de rotación alrededor del eje Y
     float pitch = 0.0f; // Ángulo de rotación alrededor del eje X
     float sensitivity = 0.1f; // Sensibilidad del ratón
+    float baseSpeed = 0.05f;   // Velocidad base de la cámara
+    float boostedSpeed = 0.1f; // Velocidad aumentada con Shift
+
+    bool movingForward = false;
+    bool movingBackward = false;
+    bool movingLeft = false;
+    bool movingRight = false;
+    bool movingUp = false;
+    bool movingDown = false;
 };
 
 #endif // CAMERA_EDITOR_H

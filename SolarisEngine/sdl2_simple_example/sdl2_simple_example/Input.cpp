@@ -233,18 +233,29 @@ const char* InputEditor::GetControllerName(int id) const
 
 
 
-bool InputEditor::processEvents(const SDL_Event& event)
-{
-	
+bool InputEditor::processEvents(const SDL_Event& event) {
 	switch (event.type) {
 	case SDL_QUIT:
 		return false;
 	case SDL_KEYDOWN:
-		app->cameraEditor->processInput(event.key.keysym.sym);
+		app->cameraEditor->processInput(event.key.keysym.sym, true);
+		break;
+	case SDL_KEYUP:
+		app->cameraEditor->processInput(event.key.keysym.sym, false);
+		break;
+	case SDL_MOUSEBUTTONDOWN:
+		if (event.button.button == SDL_BUTTON_RIGHT) {
+			mouseRightIsPressed = true;  
+		}
+		break;
+	case SDL_MOUSEBUTTONUP:
+		if (event.button.button == SDL_BUTTON_RIGHT) {
+			mouseRightIsPressed = false;  
+		}
 		break;
 	case SDL_MOUSEMOTION:
-		// Procesar solo si se mueve el mouse
 		if (event.motion.state & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+			mouseRightIsPressed;
 			float xoffset = event.motion.xrel;
 			float yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMovement(xoffset, yoffset);
@@ -254,16 +265,16 @@ bool InputEditor::processEvents(const SDL_Event& event)
 		app->cameraEditor->MouseWheel(event.wheel.y > 0);
 		break;
 	case SDL_DROPFILE:
-		// Procesar el archivo soltado
 		handleDroppedFile(event.drop.file);
 		break;
 	default:
 		ImGui_ImplSDL2_ProcessEvent(&event);
 		break;
 	}
-	
+
 	return true;
 }
+
 
 void InputEditor::handleDroppedFile(const char* filePath)
 {
