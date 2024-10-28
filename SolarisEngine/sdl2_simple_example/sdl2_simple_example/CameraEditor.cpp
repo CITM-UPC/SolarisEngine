@@ -65,8 +65,8 @@ void CameraEditor::processInput(unsigned char key, bool isPressed) {
     }
 }
 void CameraEditor::updateCameraPosition() {
-    // Determina la velocidad de la cámara en función del estado de Shift
-    float cameraSpeed = (SDL_GetModState() & KMOD_SHIFT) ? boostedSpeed : baseSpeed;
+    // Determina la velocidad de la cámara con el estado de Shift y scroll
+    float cameraSpeed = ((SDL_GetModState() & KMOD_SHIFT) ? boostedSpeed : baseSpeed) * scrollBoost * 10;
 
     // Solo mueve la cámara si el botón derecho está presionado
     if (app->inputEditor->mouseRightIsPressed) {
@@ -90,7 +90,8 @@ void CameraEditor::updateCameraPosition() {
         }
     }
     else {
-        // Aquí puedes resetear los estados de movimiento si lo deseas
+        // Restaura `scrollBoost` cuando no está moviéndose la cámara
+        
         movingForward = false;
         movingBackward = false;
         movingLeft = false;
@@ -99,6 +100,7 @@ void CameraEditor::updateCameraPosition() {
         movingDown = false;
     }
 }
+
 
     
 
@@ -148,11 +150,26 @@ void CameraEditor::Update() {
 }
 
 void CameraEditor::MouseWheel(bool zoom) {
-    const float cameraSpeed = 0.05f;
-    if (zoom) {
-        position += cameraSpeed * front;
+    const float scrollSpeedIncrease = 0.01f;  // Incremento por cada scroll
+    const float cameraZoomSpeed = 0.05f;
+
+    if (movingForward || movingBackward || movingLeft || movingRight || movingUp || movingDown) {
+        // Si se está moviendo, ajusta la velocidad de desplazamiento
+        if (zoom) {
+            scrollBoost += scrollSpeedIncrease;
+        }
+        else {
+            scrollBoost = std::max(0.2f, scrollBoost - scrollSpeedIncrease);  // Evitar valores menores a 1
+        }
     }
     else {
-        position -= cameraSpeed * front;
+        // Si no hay movimiento, realiza un zoom ajustando directamente la posición
+        if (zoom) {
+            position += cameraZoomSpeed * front;
+        }
+        else {
+            position -= cameraZoomSpeed * front;
+        }
     }
 }
+

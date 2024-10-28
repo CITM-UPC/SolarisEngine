@@ -35,6 +35,8 @@ private:
     float sensitivity = 0.1f; // Sensibilidad del ratón
     float baseSpeed = 0.05f;   // Velocidad base de la cámara
     float boostedSpeed = 0.1f; // Velocidad aumentada con Shift
+    float scrollBoost = 0.1f;
+
 
     bool movingForward = false;
     bool movingBackward = false;
