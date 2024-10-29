@@ -147,6 +147,7 @@
     <ClCompile Include="PanelInspector.cpp" />
     <ClCompile Include="PanelProject.cpp" />
     <ClCompile Include="Primitivos.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="UIDGen.cpp" />
     <ClCompile Include="WindowEditor.cpp" />
     <ClCompile Include="WindowImGui.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="PanelInspector.h" />
     <ClInclude Include="PanelProject.h" />
     <ClInclude Include="Primitivos.h" />
+    <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="UIDGen.h" />
     <ClInclude Include="WindowEditor.h" />
     <ClInclude Include="WindowImGui.h" />

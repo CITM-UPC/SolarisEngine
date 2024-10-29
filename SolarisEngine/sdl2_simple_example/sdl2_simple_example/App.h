@@ -13,6 +13,7 @@
 #include "CameraEditor.h"
 #include "Input.h"
 #include "WindowEditor.h"
+#include "TextureLoader.h"
 
 #include "Primitivos.h"
 #include "Component_Material.h"
@@ -24,6 +25,7 @@ class Importer;
 class CameraEditor;
 class InputEditor;
 class WindowEditor;
+class TextureLoader;
 
 class App
 {
@@ -105,6 +107,7 @@ public:
     MyWindow* myWindow;
     InputEditor* inputEditor;
     WindowEditor* windowEditor;
+    TextureLoader* textureLoader;
     static inline const glm::ivec2 WINDOW_SIZE = { 1024, 720 };
     static const unsigned int FPS = 60;
     static inline const auto FRAME_DT = 1.0s / FPS;

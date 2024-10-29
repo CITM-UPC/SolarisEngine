@@ -165,6 +165,7 @@ bool App::LoadConfig()
 
     inputEditor = new InputEditor();
     windowEditor = new WindowEditor();
+    textureLoader = new TextureLoader();
     windowEditor->Create();
     INIT_openGL();
 
