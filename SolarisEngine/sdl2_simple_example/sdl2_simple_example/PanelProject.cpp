@@ -14,6 +14,7 @@ PanelProject::PanelProject() {
     icons["file"] = (int*)app->textureLoader->LoadTextureDevIL("./Assets/file2.png");
     currentPath = projectPath; // 当前路径
     selectedItem = ""; // 选中的项目
+    pathStack.push(currentPath);
 }
 
 // Destructor
@@ -29,12 +30,6 @@ void PanelProject::Render() {
     ImGui::Begin("Project Explorer");
     ShowFileSystemTree(currentPath); // 显示当前路径的文件系统树
 
-    if (!selectedItem.empty()) {
-        if (ImGui::Button("Delete Selected")) {
-            fs::remove(currentPath / selectedItem); // 删除选中的文件或文件夹
-            selectedItem = ""; // 清空选中项
-        }
-    }
 
     ImGui::End();
 }
@@ -66,6 +61,7 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
         if (entry.is_directory()) {
             // 点击文件夹时，进入该文件夹并更新路径栈
+
             isHovered = ImGui::ImageButton((ImTextureID)icons["folder"], ImVec2(iconSize, iconSize));
             if (isHovered) {
                 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 1.0f, 0.5f)); // 悬停背景
@@ -75,6 +71,7 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
                 selectedItem = fileName; // 更新选中项
                 pathStack.push(currentPath); // 压入当前路径到栈
                 currentPath = entryPath; // 更新当前路径
+               
             }
         }
         else {
