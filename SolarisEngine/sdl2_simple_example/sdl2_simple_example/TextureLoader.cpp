@@ -4,6 +4,7 @@
 #include "imgui.h"
 
 
+
 TextureLoader::TextureLoader() {
 }
 
@@ -71,4 +72,35 @@ void TextureLoader::GenerateMipmaps(GLuint textureID, int width, int height) {
         glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
         glCopyTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, 0, 0, width, height, 0);
     }
+}
+
+ILuint TextureLoader::LoadTextureDevIL(const std::string& filePath) {
+    
+    ILuint textureID;
+    ilGenImages(1, &textureID);       // Genera un ID de textura con DevIL
+    ilBindImage(textureID);
+
+    if (ilLoadImage((const wchar_t*)filePath.c_str())) {  // Carga la imagen
+        ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE); // Convierte la imagen a RGBA
+
+        // Crea la textura en OpenGL
+        glGenTextures(1, &textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH),
+            ilGetInteger(IL_IMAGE_HEIGHT), 0, GL_RGBA, GL_UNSIGNED_BYTE,
+            ilGetData());
+
+        // Configura opciones de textura (filtrado y wrapping)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+    }
+    else {
+        ilDeleteImages(1, &textureID); // Elimina el ID si falla la carga
+        textureID = 0;
+    }
+
+    return textureID;
 }

@@ -28,7 +28,7 @@ void WindowEditor::Create() {
 
     /*ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;*/
 
-    _window = SDL_CreateWindow("Solari", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, app->WINDOW_SIZE.x, app->WINDOW_SIZE.y, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    _window = SDL_CreateWindow("Solari", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, app->WINDOW_SIZE.x, app->WINDOW_SIZE.y, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
     _ctx = SDL_GL_CreateContext(_window);
     if (!_ctx) {
         SDL_DestroyWindow(_window); // Destroy the window

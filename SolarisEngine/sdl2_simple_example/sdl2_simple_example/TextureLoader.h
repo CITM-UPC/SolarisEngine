@@ -3,6 +3,7 @@
 #include "imgui.h"
 #include <string>
 #include <map>
+#include <IL/il.h>
 
 #include <SDL2/SDL_opengl.h>
 
@@ -15,6 +16,8 @@ public:
     void Cleanup();
 
     void GenerateMipmaps(GLuint textureID, int width, int height);
+
+    ILuint LoadTextureDevIL(const std::string& filePath);
 
   
 

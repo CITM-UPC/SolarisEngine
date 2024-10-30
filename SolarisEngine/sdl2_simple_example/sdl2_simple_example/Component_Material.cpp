@@ -1,4 +1,5 @@
 #include "Component_Material.h"
+#include "App.h"
 #include <iostream>
 
 Component_Material::Component_Material(GameObject* containerGO)  // Usar puntero crudo
@@ -21,38 +22,11 @@ void Component_Material::SetDiffuseColor(float r, float g, float b) {
 }
 
 void Component_Material::SetTexture(const std::string& filePath) {
-    if (!LoadTextureFromFile(filePath)) {
+
+    textureID = app->textureLoader->LoadTextureDevIL(filePath);
+
+    if (textureID == 0) {
         std::cerr << "Error: No se pudo cargar la textura desde " << filePath << std::endl;
-    }
-}
-
-bool Component_Material::LoadTextureFromFile(const std::string& filePath) {
-    ilGenImages(1, &textureID);       // Genera un ID de textura con DevIL
-    ilBindImage(textureID);
-
-    if (ilLoadImage((const wchar_t*)filePath.c_str())) {  // Carga la imagen
-        ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE); // Convierte la imagen a RGBA
-
-        // Crea la textura en OpenGL
-        glGenTextures(1, &textureID);
-        glBindTexture(GL_TEXTURE_2D, textureID);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH),
-            ilGetInteger(IL_IMAGE_HEIGHT), 0, GL_RGBA, GL_UNSIGNED_BYTE,
-            ilGetData());
-
-        // Configura opciones de textura (filtrado y wrapping)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        return true;
-    }
-    else {
-        ilDeleteImages(1, &textureID); // Elimina el ID si falla la carga
-        textureID = 0;
-        return false;
     }
 }
 

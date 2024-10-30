@@ -33,9 +33,6 @@ private:
     // Propiedades del material
     float diffuseColor[3]; // Color difuso del material (RGB)
     ILuint textureID;      // ID de la textura de DevIL
-
-    // Método de carga de textura
-    bool LoadTextureFromFile(const std::string& filePath);
 };
 
 #endif // !__COMPONENT_MATERIAL_H__

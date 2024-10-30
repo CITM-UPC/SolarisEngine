@@ -27,8 +27,8 @@ void PanelProject::Render() {
 	ImGui::Begin("Project Explorer"); // Begin creating the panel window
 
 
-	icons["folder"] = app->textureLoader->LoadTexture("./Assets/file.png");
-	icons["file"] = app->textureLoader->LoadTexture("./Assets/file.png");
+	icons["folder"] = (int*)app->textureLoader->LoadTextureDevIL("./Assets/file2.png");
+	icons["file"] = (int*)app->textureLoader->LoadTextureDevIL("./Assets/file2.png");
 	if (icons.find("folder") == icons.end()) {
 		ImGui::Text("Folder icon not loaded!");
 		printf("Folder icon not loaded!\n");
