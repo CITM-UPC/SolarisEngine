@@ -12,11 +12,6 @@ PanelProject::PanelProject() {
 	// Set your project path here
 	projectPath = ASSETS_DIR; // Replace with your actual project path
 	// Load your icons here, for example:
-
-
-
-
-
 }
 
 // Destructor
@@ -30,7 +25,6 @@ void PanelProject::Render() {
 	}
 
 	ImGui::Begin("Project Explorer"); // Begin creating the panel window
-
 
 
 	icons["folder"] = app->textureLoader->LoadTexture("./Assets/file.png");

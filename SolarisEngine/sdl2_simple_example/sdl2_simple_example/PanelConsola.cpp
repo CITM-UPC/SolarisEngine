@@ -20,7 +20,7 @@ void PanelConsola::Render() {
     ImGui::Begin("Console"); // Begin creating the panel window
 
     // Example scrollable area
-    static ImGuiTextBuffer logBuffer; // Text buffer for storing log messages
+    //static ImGuiTextBuffer logBuffer; // Text buffer for storing log messages
     static ImGuiTextFilter filter;    // Filter for searching within log content
 
     // Add search filter
