@@ -46,6 +46,48 @@ void CameraEditor::processInput(unsigned char key, bool isPressed) {
             break;
         }
     }
+    else
+    {
+        switch (key) {
+        case 'w':
+            movingForward = false;  // Activar/desactivar el movimiento hacia adelante
+            break;
+        case 's':
+            movingBackward = false;  // Activar/desactivar el movimiento hacia atrás
+            break;
+        case 'a':
+            movingLeft = false;      // Activar/desactivar el movimiento hacia la izquierda
+            break;
+        case 'd':
+            movingRight = false;     // Activar/desactivar el movimiento hacia la derecha
+            break;
+        case 'q':
+            movingUp = false;        // Activar/desactivar el movimiento hacia arriba
+            break;
+        case 'e':
+            movingDown = false;      // Activar/desactivar el movimiento hacia abajo
+            break;
+        }
+    }
+    if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_F]) {
+        float distance = 5.0f;
+        glm::vec3 objectPosition = app->windowEditor->_windowImGui->inspectorPanel->selectedGameObject->GetComponent<Component_Transform>()->GetPosition();
+
+        // Actualiza la posición de la cámara
+        position = objectPosition + glm::vec3(0.0f, 0.0f, -distance);
+
+        // Calcula el nuevo 'front' para que apunte al objeto
+        
+        front = glm::normalize(objectPosition - position);
+
+        // Actualiza yaw y pitch basados en la nueva dirección front
+        //yaw = atan2(front.z, front.x); // Asegúrate de que el orden es correcto
+        //pitch = asin(front.y);
+        
+
+    }
+
+
 }
 
 void CameraEditor::updateCameraPosition() {
@@ -83,17 +125,18 @@ void CameraEditor::updateCameraPosition() {
     }
 
     if (orbiting) {
-        // Calcular el punto central de la órbita
-        orbitCenter = position + front; // Puedes ajustar esto para definir el centro de la órbita más específicamente
+        //// Calcular el punto central de la órbita
+        //orbitCenter = position + front; // Puedes ajustar esto para definir el centro de la órbita más específicamente
 
-        // Calcular el radio de la órbita como la distancia entre la cámara y el punto central
-        orbitRadius = glm::length(position - orbitCenter);
+        //// Calcular el radio de la órbita como la distancia entre la cámara y el punto central
+        //orbitRadius = glm::length(position - orbitCenter);
 
-        // Calcular la nueva posición de la cámara en órbita
-        position.x = orbitCenter.x + orbitRadius * cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        position.y = orbitCenter.y + orbitRadius * sin(glm::radians(pitch));
-        position.z = orbitCenter.z + orbitRadius * sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        //// Calcular la nueva posición de la cámara en órbita
+        //position.x = orbitCenter.x + orbitRadius * cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        //position.y = orbitCenter.y + orbitRadius * sin(glm::radians(pitch));
+        //position.z = orbitCenter.z + orbitRadius * sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     }
+
 }
 
 void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
@@ -101,21 +144,25 @@ void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
         xoffset *= sensitivity;
         yoffset *= sensitivity;
 
-        yaw += xoffset; // Ajustar rotación alrededor del eje Y
-        pitch -= yoffset; // Ajustar rotación alrededor del eje X
+        // Ajusta solo yaw y pitch si el mouse se mueve
+        if (xoffset != 0 || yoffset != 0) {
+            yaw += xoffset; // Mantén la rotación normal
+            pitch -= yoffset; // Mantén la rotación normal
 
-        // Limitar el pitch para evitar problemas de "gimbal lock"
-        if (pitch > 89.0f) pitch = 89.0f;
-        if (pitch < -89.0f) pitch = -89.0f;
+            // Limitar el pitch para evitar problemas de "gimbal lock"
+            if (pitch > 89.0f) pitch = 89.0f;
+            if (pitch < -89.0f) pitch = -89.0f;
 
-        // Calcular la nueva dirección de la cámara
-        glm::vec3 front;
-        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        front.y = sin(glm::radians(pitch));
-        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        this->front = glm::normalize(front);
+            // Recalcular front basado en yaw y pitch
+            front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+            front.y = sin(glm::radians(pitch));
+            front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+            front = glm::normalize(front);
+        }
     }
 }
+
+
 
 void CameraEditor::processMouseMiddle(float xoffset, float yoffset) {
     // Sensibilidad para el desplazamiento
