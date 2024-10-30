@@ -9,9 +9,11 @@
 namespace fs = std::filesystem;
 // Constructor
 PanelProject::PanelProject() {
-	// Set your project path here
-	projectPath = ASSETS_DIR; // Replace with your actual project path
-	// Load your icons here, for example:
+    projectPath = ASSETS_DIR;
+    icons["folder"] = (int*)app->textureLoader->LoadTextureDevIL("./Assets/file2.png");
+    icons["file"] = (int*)app->textureLoader->LoadTextureDevIL("./Assets/file2.png");
+    currentPath = projectPath; // 当前路径
+    selectedItem = ""; // 选中的项目
 }
 
 // Destructor
@@ -20,100 +22,100 @@ PanelProject::~PanelProject() {
 }
 
 void PanelProject::Render() {
-	if (!app->windowEditor->_windowImGui->projectPanel) {
-		return;
-	}
+    if (!app->windowEditor->_windowImGui->projectPanel) {
+        return;
+    }
 
-	ImGui::Begin("Project Explorer"); // Begin creating the panel window
+    ImGui::Begin("Project Explorer");
+    ShowFileSystemTree(currentPath); // 显示当前路径的文件系统树
 
+    if (!selectedItem.empty()) {
+        if (ImGui::Button("Delete Selected")) {
+            fs::remove(currentPath / selectedItem); // 删除选中的文件或文件夹
+            selectedItem = ""; // 清空选中项
+        }
+    }
 
-	icons["folder"] = (int*)app->textureLoader->LoadTextureDevIL("./Assets/file2.png");
-	icons["file"] = (int*)app->textureLoader->LoadTextureDevIL("./Assets/file2.png");
-	if (icons.find("folder") == icons.end()) {
-		ImGui::Text("Folder icon not loaded!");
-		printf("Folder icon not loaded!\n");
-	}
-	else {
-		printf("Icons loaded: %zu\n", icons.size());
-	}
-	ShowFileSystemTree(projectPath); // Show the file system starting from the project path
-	/* textureID = app->textureLoader->LoadTexture("./Assets/file.png");
-
-	 if (textureID) {
-		 printf("Texture loaded!");
-		 ImGui::Image(textureID, ImVec2(64, 64));
-	 }
-	 else {
-		 printf("Texture not loaded!");
-	 }
-	 if (textureID == nullptr) {
-		 ImGui::Text("Failed to load texture: ./Assets/file.png");
-		 printf("Failed to load texture: ./Assets/file.png\n");
-	 }
-	 else {
-		 ImGui::Image(textureID, ImVec2(64, 64));
-		 printf("True to load texture: ./Assets/file.png\n");
-	 }*/
-
-	ImGui::End(); // End panel window
+    ImGui::End();
 }
 
 void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
-    const float iconSize = 64.0f;       // Tamaño del ícono
-    const float padding = 20.0f;         // Espacio entre íconos
-    const float textMaxWidth = iconSize; // Ancho máximo del texto
-    const float itemTotalWidth = iconSize + padding; // Ancho total que ocupa cada ítem
+    const float iconSize = 64.0f;
+    const float padding = 20.0f;
+    const float textMaxWidth = iconSize;
+    const float itemTotalWidth = iconSize + padding;
 
-    // Obtener el ancho disponible del panel y calcular el máximo de ítems por fila
     float panelWidth = ImGui::GetContentRegionAvail().x;
     int maxItemsPerRow = static_cast<int>(panelWidth / itemTotalWidth);
-    if (maxItemsPerRow < 1) maxItemsPerRow = 1; // Al menos un ítem por fila
+    if (maxItemsPerRow < 1) maxItemsPerRow = 1;
 
-    int itemsInRow = 0;  // Número de ítems en la fila actual
+    int itemsInRow = 0;
 
     for (const auto& entry : fs::directory_iterator(path)) {
         const auto& entryPath = entry.path();
+        std::string fileName = entryPath.filename().string();
 
         ImGui::BeginGroup();
 
-        // Seleccionar el ícono correspondiente según si es un directorio
+        // 检查选中状态和悬停状态
+        bool isHovered = false;
+        bool isSelected = (fileName == selectedItem);
+
+        // 使用透明背景的按钮样式
+        ImGui::PushStyleColor(ImGuiCol_Button, isSelected ? ImVec4(0.0f, 0.0f, 1.0f, 0.5f) : ImVec4(0, 0, 0, 0)); // 默认透明背景
+
         if (entry.is_directory()) {
-            ImGui::Image(icons["folder"], ImVec2(iconSize, iconSize));
+            // 点击文件夹时，进入该文件夹并更新路径栈
+            isHovered = ImGui::ImageButton((ImTextureID)icons["folder"], ImVec2(iconSize, iconSize));
+            if (isHovered) {
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 1.0f, 0.5f)); // 悬停背景
+            }
+
+            if (isHovered || isSelected) {
+                selectedItem = fileName; // 更新选中项
+                pathStack.push(currentPath); // 压入当前路径到栈
+                currentPath = entryPath; // 更新当前路径
+            }
         }
         else {
-            ImGui::Image(icons["file"], ImVec2(iconSize, iconSize));
+            // 点击文件时，更新选中项
+            isHovered = ImGui::ImageButton((ImTextureID)icons["file"], ImVec2(iconSize, iconSize));
+            if (isHovered) {
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 1.0f, 0.5f)); // 悬停背景
+            }
+
+            if (isHovered) {
+                selectedItem = fileName; // 更新选中项
+            }
         }
 
-        // Obtener el nombre del archivo y calcular el desplazamiento para centrar
-        std::string fileName = entryPath.filename().string();
-        ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + textMaxWidth);
+        ImGui::PopStyleColor(); // 恢复按钮样式
 
-        // Si el nombre del archivo es muy largo, truncarlo
+        ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + textMaxWidth);
         float textWidth = ImGui::CalcTextSize(fileName.c_str()).x;
         if (textWidth > textMaxWidth) {
             fileName = fileName.substr(0, 10) + "...";
         }
 
-        // Establecer el desplazamiento horizontal para centrar el texto
         float centeredTextPos = ImGui::GetCursorPosX() + (iconSize - std::min(textWidth, textMaxWidth)) / 2;
         ImGui::SetCursorPosX(centeredTextPos);
         ImGui::Text("%s", fileName.c_str());
-
         ImGui::PopTextWrapPos();
         ImGui::EndGroup();
 
         itemsInRow++;
-
-        // Al llegar al máximo de ítems por fila, hacer salto de línea; en caso contrario, mantener el espacio horizontal
         if (itemsInRow >= maxItemsPerRow) {
             ImGui::NewLine();
             itemsInRow = 0;
         }
         else {
-            ImGui::SameLine(0, padding);  // Añadir el espacio entre ítems
+            ImGui::SameLine(0, padding);
         }
     }
 }
+
+
+
 
 
 
