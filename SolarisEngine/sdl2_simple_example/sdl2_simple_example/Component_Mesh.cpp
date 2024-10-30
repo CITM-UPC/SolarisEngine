@@ -56,7 +56,7 @@ void Component_Mesh::DrawComponent() {
         }
         else {
             glBindTexture(GL_TEXTURE_2D, textureID);
-            glColor3f(1.0f, 1.0f, 1.0f);
+            glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
         }
     }
     else {

@@ -45,11 +45,23 @@ void PanelInspector::DrawComponent(Component* component) {
         switch (component->GetType()) {
         case ComponentType::Material: {
             Component_Material* material = static_cast<Component_Material*>(component);
+
             float color[3] = { material->GetDiffuseColor()[0], material->GetDiffuseColor()[1], material->GetDiffuseColor()[2] };
 
             ImGui::Text("Material Properties");
             ImGui::ColorEdit3("Diffuse Color", color); // Editor de color para el color difuso
             material->SetDiffuseColor(color[0], color[1], color[2]); // Actualiza el color difuso
+
+            // Mostrar la textura en el Inspector
+            if (material->GetTextureID() != 0) { // Verificar que hay una textura cargada
+                ImGui::Text("Texture:");
+
+                // Renderizar la textura. Ajusta el tamaño de acuerdo a tu preferencia.
+                ImGui::Image((void*)material->GetTextureID(), ImVec2(256, 256));
+            }
+            else {
+                ImGui::Text("No texture loaded.");
+            }
             break;
         }
         case ComponentType::Transform: {

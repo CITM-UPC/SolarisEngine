@@ -81,6 +81,9 @@ void Component_Material::DrawComponent() {
     if (enabled) {
         if (textureID != 0) {
             glBindTexture(GL_TEXTURE_2D, textureID); // Activa la textura
+
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
             glColor3f(0.0f, 0.0f, 1.0f);             // Color blanco si hay textura
             //glColor3f(diffuseColor[0], diffuseColor[1], diffuseColor[2]); // Color difuso
         }
