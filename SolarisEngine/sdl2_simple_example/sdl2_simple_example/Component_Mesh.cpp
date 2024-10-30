@@ -1,4 +1,5 @@
 #include "Component_Mesh.h"
+#include "App.h"
 #include <iostream>
 #include "Component_Transform.h"
 #include <SDL2/SDL_stdinc.h>
@@ -81,14 +82,37 @@ void Component_Mesh::DrawComponent() {
         if (!mesh.texCoords.empty() && material && material->GetTextureID() != 0) {
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         }
+
+        if (showNormals) {
+            glColor3f(1.0f, 0.0f, 0.0f); // Rojo para las normales
+            glBegin(GL_LINES);
+            for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
+                glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
+                glm::vec3 n(mesh.normals[i], mesh.normals[i + 1], mesh.normals[i + 2]);
+                glm::vec3 end = v + n * 0.1f; // Escala de la línea
+
+                glVertex3fv(glm::value_ptr(v));
+                glVertex3fv(glm::value_ptr(end));
+            }
+            glEnd();
+        }
+
+
     }
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glPopMatrix(); // Restablecer la matriz después de dibujar
 }
 
+void Component_Mesh::DrawInspectorComponent()
+{
+    ImGui::Text("Mesh Component");
+
+    ImGui::Checkbox("Show Normals", &showNormals); // Activar o desactivar normales
+}
+
 void Component_Mesh::LoadMesh(aiMesh* ai_mesh) {
-    glGenVertexArrays(1, &vao);
+   /* glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
     GLuint vbo;
@@ -99,7 +123,7 @@ void Component_Mesh::LoadMesh(aiMesh* ai_mesh) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    this->vao = vao;
+    this->vao = vao;*/
 }
 
 void Component_Mesh::LoadMesh(const aiScene* ai_scene) {
@@ -111,6 +135,18 @@ void Component_Mesh::LoadMesh(const aiScene* ai_scene) {
             mesh.vertices.push_back(aiMesh->mVertices[j].x);
             mesh.vertices.push_back(aiMesh->mVertices[j].y);
             mesh.vertices.push_back(aiMesh->mVertices[j].z);
+
+
+            if (aiMesh->HasNormals()) { // Copia las normales si existen
+                mesh.normals.push_back(aiMesh->mNormals[j].x);
+                mesh.normals.push_back(aiMesh->mNormals[j].y);
+                mesh.normals.push_back(aiMesh->mNormals[j].z);
+            }
+            else {
+                // Calcula las normales si no están disponibles en el modelo
+                // Código para calcular las normales por triángulo
+            }
+
 
             if (aiMesh->mTextureCoords[0]) {
                 mesh.texCoords.push_back(aiMesh->mTextureCoords[0][j].x);

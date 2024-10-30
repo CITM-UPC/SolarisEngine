@@ -24,6 +24,7 @@ public:
     void Disable() override;
     void Update(double dt) override;
     void DrawComponent() override;
+    void DrawInspectorComponent() override;
 
     ILuint GetTextureID() const;
 

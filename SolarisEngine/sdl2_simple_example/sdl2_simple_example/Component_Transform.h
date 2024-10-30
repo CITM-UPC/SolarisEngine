@@ -19,6 +19,7 @@ public:
     void Disable() override;
     void Update(double dt) override;
     void DrawComponent() override;
+    void DrawInspectorComponent() override;
 
     // Métodos específicos para la transformación
     void SetPosition(float x, float y, float z);

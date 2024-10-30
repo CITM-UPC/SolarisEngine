@@ -25,6 +25,7 @@ public:
     virtual void Disable() = 0; // Hacerlo puro virtual
     virtual void Update(double dt) = 0; // Hacerlo puro virtual
     virtual void DrawComponent() = 0; // Hacerlo puro virtual
+    virtual void DrawInspectorComponent() = 0; // Hacerlo puro virtual
 
     std::string GetName();
     void CreateNameFromType(ComponentType type);

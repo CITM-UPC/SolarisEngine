@@ -14,7 +14,6 @@ public:
 
     void Render() override; // Implementa el método Render
     void SetSelectedGameObject(GameObject* gameObject);
-    void DrawComponent(Component* component);
 
 
 private:
