@@ -65,24 +65,24 @@ void PanelProject::Render() {
 }
 
 void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
-    const float iconSize = 64.0f;       // 图标大小
-    const float padding = 20.0f;         // 图标间距
-    const float textMaxWidth = iconSize; // 文字最大宽度
-    const float itemTotalWidth = iconSize + padding; // 每个项目所占的总宽度
+    const float iconSize = 64.0f;       // Tamaño del ícono
+    const float padding = 20.0f;         // Espacio entre íconos
+    const float textMaxWidth = iconSize; // Ancho máximo del texto
+    const float itemTotalWidth = iconSize + padding; // Ancho total que ocupa cada ítem
 
-    // 获取面板的可用宽度，并计算每行可显示的最大项目数
+    // Obtener el ancho disponible del panel y calcular el máximo de ítems por fila
     float panelWidth = ImGui::GetContentRegionAvail().x;
     int maxItemsPerRow = static_cast<int>(panelWidth / itemTotalWidth);
-    if (maxItemsPerRow < 1) maxItemsPerRow = 1; // 至少显示一个项目
+    if (maxItemsPerRow < 1) maxItemsPerRow = 1; // Al menos un ítem por fila
 
-    int itemsInRow = 0;  // 当前行的项目数
+    int itemsInRow = 0;  // Número de ítems en la fila actual
 
     for (const auto& entry : fs::directory_iterator(path)) {
         const auto& entryPath = entry.path();
 
         ImGui::BeginGroup();
 
-        // 根据是否是目录选择相应的图标
+        // Seleccionar el ícono correspondiente según si es un directorio
         if (entry.is_directory()) {
             ImGui::Image(icons["folder"], ImVec2(iconSize, iconSize));
         }
@@ -90,17 +90,17 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
             ImGui::Image(icons["file"], ImVec2(iconSize, iconSize));
         }
 
-        // 获取文件名，并计算居中偏移量
+        // Obtener el nombre del archivo y calcular el desplazamiento para centrar
         std::string fileName = entryPath.filename().string();
         ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + textMaxWidth);
 
-        // 若文件名过长则截断显示
+        // Si el nombre del archivo es muy largo, truncarlo
         float textWidth = ImGui::CalcTextSize(fileName.c_str()).x;
         if (textWidth > textMaxWidth) {
             fileName = fileName.substr(0, 10) + "...";
         }
 
-        // 设置文字的水平居中偏移量
+        // Establecer el desplazamiento horizontal para centrar el texto
         float centeredTextPos = ImGui::GetCursorPosX() + (iconSize - std::min(textWidth, textMaxWidth)) / 2;
         ImGui::SetCursorPosX(centeredTextPos);
         ImGui::Text("%s", fileName.c_str());
@@ -110,16 +110,17 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
         itemsInRow++;
 
-        // 如果达到每行的最大项目数则换行，否则保持水平间距
+        // Al llegar al máximo de ítems por fila, hacer salto de línea; en caso contrario, mantener el espacio horizontal
         if (itemsInRow >= maxItemsPerRow) {
             ImGui::NewLine();
             itemsInRow = 0;
         }
         else {
-            ImGui::SameLine(0, padding);  // 添加间距
+            ImGui::SameLine(0, padding);  // Añadir el espacio entre ítems
         }
     }
 }
+
 
 
 
