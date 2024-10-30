@@ -7,6 +7,7 @@
 #include <filesystem> // For file system traversal
 #include <string>
 #include <unordered_map>
+#include <stack>
 
 class PanelProject : public Panel {
 public:
@@ -20,6 +21,10 @@ private:
     ImTextureID textureID;
     std::string projectPath; // Path to the project directory
     std::unordered_map<std::string, ImTextureID> icons; // Store icons for folders and files
+
+    std::filesystem::path currentPath;
+    std::string selectedItem ;
+    std::stack<std::filesystem::path> pathStack;
 };
 
 #endif // __PANEL_PROJECT_H__
