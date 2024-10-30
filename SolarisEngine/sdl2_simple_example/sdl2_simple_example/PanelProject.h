@@ -17,7 +17,7 @@ public:
 
 private:
     void ShowFileSystemTree(const std::filesystem::path& path); // Recursive method to display file system
-
+    ImTextureID textureID;
     std::string projectPath; // Path to the project directory
     std::unordered_map<std::string, ImTextureID> icons; // Store icons for folders and files
 };
