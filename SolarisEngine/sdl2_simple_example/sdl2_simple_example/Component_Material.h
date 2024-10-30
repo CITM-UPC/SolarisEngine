@@ -26,9 +26,16 @@ public:
     void DrawComponent() override;
     void DrawInspectorComponent() override;
 
+    void RenderCheckerPattern();
+
     ILuint GetTextureID() const;
 
     glm::vec3 GetDiffuseColor() const;
+
+
+    std::string texturePath;
+    int textureWidth = 0, textureHeight = 0;
+    bool showCheckerTexture = false; // Para habilitar la textura de cuadros
 
 private:
     // Propiedades del material

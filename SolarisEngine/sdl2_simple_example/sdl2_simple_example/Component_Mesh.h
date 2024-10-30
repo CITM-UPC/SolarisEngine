@@ -8,6 +8,15 @@
 #include <GL/glew.h>
 #include <gl/GL.h>
 
+
+struct Mesh {
+    std::vector<float> vertices;
+    std::vector<float> texCoords;
+    std::vector<unsigned int> indices;
+    std::vector<float> normals; // Normales de los vértices
+    std::vector<float> faceNormals;    // Normales por cara
+};
+
 class Component_Mesh : public Component {
 public:
     Component_Mesh(GameObject* containerGO);
@@ -22,9 +31,11 @@ public:
     void LoadMesh(aiMesh* ai_mesh);
     void LoadMesh(const aiScene* ai_scene);
 
+    void CalculateFaceNormals(Mesh& mesh);
+
     void SetMaterial(Component_Material* material);
 
-    void ToggleShowNormals();
+
 
     // Métodos de creación estáticos para cada primitivo
     void GenerateCubeMesh();
@@ -35,17 +46,13 @@ public:
     void GenerateCylinderMesh();
 
 private:
-    struct Mesh {
-        std::vector<float> vertices;
-        std::vector<float> texCoords;
-        std::vector<unsigned int> indices;
-        std::vector<float> normals; // Normales de los vértices
-    };
+ 
 
     std::vector<Mesh> meshes;
     GLuint vao;
     Component_Material* material;
-    bool showNormals = false;;
+    bool showVertexNormals = false;;
+    bool showFaceNormals = false;;
 
     // Métodos auxiliares para definir geometrías de los distintos tipos de mallas
  

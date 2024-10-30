@@ -83,8 +83,8 @@ void Component_Mesh::DrawComponent() {
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         }
 
-        if (showNormals) {
-            glColor3f(1.0f, 0.0f, 0.0f); // Rojo para las normales
+        if (showVertexNormals) {
+            glColor3f(0.0f, 1.0f, 0.0f); // Rojo para las normales
             glBegin(GL_LINES);
             for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
                 glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
@@ -95,6 +95,28 @@ void Component_Mesh::DrawComponent() {
                 glVertex3fv(glm::value_ptr(end));
             }
             glEnd();
+            glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
+        }
+
+        if (showFaceNormals) {
+            glColor3f(1.0f, 0.0f, 0.0f); // Rojo para las normales de caras
+            glBegin(GL_LINES);
+            for (size_t i = 0; i < mesh.indices.size(); i += 3) {
+                // Centro del triángulo
+                glm::vec3 v0(mesh.vertices[mesh.indices[i] * 3], mesh.vertices[mesh.indices[i] * 3 + 1], mesh.vertices[mesh.indices[i] * 3 + 2]);
+                glm::vec3 v1(mesh.vertices[mesh.indices[i + 1] * 3], mesh.vertices[mesh.indices[i + 1] * 3 + 1], mesh.vertices[mesh.indices[i + 1] * 3 + 2]);
+                glm::vec3 v2(mesh.vertices[mesh.indices[i + 2] * 3], mesh.vertices[mesh.indices[i + 2] * 3 + 1], mesh.vertices[mesh.indices[i + 2] * 3 + 2]);
+                glm::vec3 center = (v0 + v1 + v2) / 3.0f;
+
+                // Normal de la cara
+                glm::vec3 n(mesh.faceNormals[i], mesh.faceNormals[i + 1], mesh.faceNormals[i + 2]);
+                glm::vec3 end = center + n * 0.1f;
+
+                glVertex3fv(glm::value_ptr(center));
+                glVertex3fv(glm::value_ptr(end));
+            }
+            glEnd();
+            glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
         }
 
 
@@ -108,7 +130,8 @@ void Component_Mesh::DrawInspectorComponent()
 {
     ImGui::Text("Mesh Component");
 
-    ImGui::Checkbox("Show Normals", &showNormals); // Activar o desactivar normales
+    ImGui::Checkbox("Show Vertex Normals", &showVertexNormals); // Activar o desactivar normales
+    ImGui::Checkbox("Show Face Normals", &showFaceNormals); // Activar o desactivar normales
 }
 
 void Component_Mesh::LoadMesh(aiMesh* ai_mesh) {
@@ -165,9 +188,29 @@ void Component_Mesh::LoadMesh(const aiScene* ai_scene) {
             }
         }
 
+        CalculateFaceNormals(mesh);
+
         meshes.push_back(mesh);
     }
 
+}
+
+void Component_Mesh::CalculateFaceNormals(Mesh& mesh) {
+    mesh.faceNormals.clear();
+    for (size_t i = 0; i < mesh.indices.size(); i += 3) {
+        // Obtén los tres índices del triángulo
+        glm::vec3 v0(mesh.vertices[mesh.indices[i] * 3], mesh.vertices[mesh.indices[i] * 3 + 1], mesh.vertices[mesh.indices[i] * 3 + 2]);
+        glm::vec3 v1(mesh.vertices[mesh.indices[i + 1] * 3], mesh.vertices[mesh.indices[i + 1] * 3 + 1], mesh.vertices[mesh.indices[i + 1] * 3 + 2]);
+        glm::vec3 v2(mesh.vertices[mesh.indices[i + 2] * 3], mesh.vertices[mesh.indices[i + 2] * 3 + 1], mesh.vertices[mesh.indices[i + 2] * 3 + 2]);
+
+        // Calcula el vector normal usando el producto cruzado
+        glm::vec3 normal = glm::normalize(glm::cross(v1 - v0, v2 - v0));
+
+        // Almacena la normal para cada triángulo
+        mesh.faceNormals.push_back(normal.x);
+        mesh.faceNormals.push_back(normal.y);
+        mesh.faceNormals.push_back(normal.z);
+    }
 }
 
 void Component_Mesh::GenerateCubeMesh() {
