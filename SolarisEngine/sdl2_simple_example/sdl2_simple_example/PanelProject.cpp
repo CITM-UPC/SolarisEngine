@@ -29,12 +29,6 @@ void PanelProject::Render() {
     ImGui::Begin("Project Explorer");
     ShowFileSystemTree(currentPath); // 显示当前路径的文件系统树
 
-    if (!selectedItem.empty()) {
-        if (ImGui::Button("Delete Selected")) {
-            fs::remove(currentPath / selectedItem); // 删除选中的文件或文件夹
-            selectedItem = ""; // 清空选中项
-        }
-    }
 
     ImGui::End();
 }
