@@ -67,3 +67,22 @@ void Component_Material::DrawComponent() {
         }
     }
 }
+
+void Component_Material::DrawInspectorComponent()
+{
+    ImGui::Text("Material Properties");
+    ImGui::ColorEdit3("Diffuse Color", diffuseColor); // Editor de color para el color difuso
+    this->SetDiffuseColor(diffuseColor[0], diffuseColor[1], diffuseColor[2]); // Actualiza el color difuso
+
+    // Mostrar la textura en el Inspector
+    if (this->GetTextureID() != 0) { // Verificar que hay una textura cargada
+        ImGui::Text("Texture:");
+
+        // Renderizar la textura. Ajusta el tamaño de acuerdo a tu preferencia.
+        ImGui::Image((void*)this->GetTextureID(), ImVec2(256, 256));
+    }
+    else {
+        ImGui::Text("No texture loaded.");
+    }
+
+}

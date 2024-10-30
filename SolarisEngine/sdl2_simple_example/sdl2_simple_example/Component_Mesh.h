@@ -17,11 +17,14 @@ public:
     void Disable() override;
     void Update(double dt) override;
     void DrawComponent() override;
+    void DrawInspectorComponent() override;
 
     void LoadMesh(aiMesh* ai_mesh);
     void LoadMesh(const aiScene* ai_scene);
 
     void SetMaterial(Component_Material* material);
+
+    void ToggleShowNormals();
 
     // Métodos de creación estáticos para cada primitivo
     void GenerateCubeMesh();
@@ -36,11 +39,13 @@ private:
         std::vector<float> vertices;
         std::vector<float> texCoords;
         std::vector<unsigned int> indices;
+        std::vector<float> normals; // Normales de los vértices
     };
 
     std::vector<Mesh> meshes;
     GLuint vao;
     Component_Material* material;
+    bool showNormals = false;;
 
     // Métodos auxiliares para definir geometrías de los distintos tipos de mallas
  

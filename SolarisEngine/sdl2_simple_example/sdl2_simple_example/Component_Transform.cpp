@@ -1,4 +1,5 @@
 #include "Component_Transform.h"
+#include "App.h"
 
 Component_Transform::Component_Transform(GameObject* containerGO) // Cambiado a puntero crudo
     : Component(containerGO, ComponentType::Transform),
@@ -24,6 +25,22 @@ void Component_Transform::Update(double dt) {
 void Component_Transform::DrawComponent()
 {
     // Implementación de dibujo si es necesario
+}
+
+void Component_Transform::DrawInspectorComponent()
+{
+    ImGui::Text("Transform Properties");
+    glm::vec3 position = this->GetPosition();
+    ImGui::DragFloat3("Position", &position[0]); // Editor de posición
+    this->SetPosition(position); // Actualiza la posición
+
+    glm::vec3 scale = this->GetScale();
+    ImGui::DragFloat3("Scale", &scale[0]); // Editor de escala
+    this->SetScale(scale.x, scale.y, scale.z); // Actualiza la escala
+
+    glm::vec3 rotation = this->GetRotation();
+    ImGui::DragFloat3("Rotation", &rotation[0]); // Editor de rotación
+    this->SetRotation(rotation.x, rotation.y, rotation.z); // Actualiza la rotación
 }
 
 void Component_Transform::SetPosition(float x, float y, float z) {
