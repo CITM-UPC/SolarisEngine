@@ -8,6 +8,7 @@
 #include "PanelInspector.h"
 #include "PanelConsola.h"
 #include "PanelProject.h"
+#include "PanelScene.h"
 
 class WindowImGui {
 public:
@@ -23,6 +24,7 @@ public:
     PanelInspector* inspectorPanel; // Panel del inspector
     PanelConsola* consolaPanel; // Panel del consola
     PanelProject* projectPanel; // Panel del proyecto
+    PanelScene* scenePanel; // Panel del proyecto
     MenuBar* menuBar;
 
     bool showHierarchyPanel = true;

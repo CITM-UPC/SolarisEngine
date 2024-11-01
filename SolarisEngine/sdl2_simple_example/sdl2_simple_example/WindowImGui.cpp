@@ -31,6 +31,9 @@ void WindowImGui::CreatePanels() {
     projectPanel = new PanelProject(); // Crea el panel del inspector
     panels.push_back(projectPanel); // Añade el panel a la lista de panels
 
+    scenePanel = new PanelScene();
+    panels.push_back(scenePanel);
+
     menuBar = new MenuBar();
 }
 

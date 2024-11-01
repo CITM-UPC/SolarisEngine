@@ -22,7 +22,7 @@ void WindowEditor::Create() {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
@@ -51,11 +51,15 @@ void WindowEditor::Create() {
     if (SDL_GL_MakeCurrent(_window, _ctx) != 0) throw std::exception(SDL_GetError());
     if (SDL_GL_SetSwapInterval(1) != 0) throw std::exception(SDL_GetError());
 
+    //frameBuffer = new FrameBuffer(app->WINDOW_SIZE.x, app->WINDOW_SIZE.y);
+
     ImGui_ImplSDL2_InitForOpenGL(_window, _ctx);
     ImGui_ImplOpenGL3_Init("#version 130");
 
     _windowImGui = new WindowImGui(); // Inicializa WindowImGui
     _windowImGui->Create(); // Crea los paneles
+
+   
 }
 
 void WindowEditor::Shutdown() {
@@ -92,9 +96,16 @@ void WindowEditor::Render() {
     BeginRender();
 
     // Renderiza WindowImGui
+    ImGui::Begin("Main Window");
+
+
     if (_windowImGui) {
         _windowImGui->Render(); // Llama al método de renderizado de WindowImGui
     }
+
+    ImGui::End();
+
+
 
     EndRender();
     SDL_GL_SwapWindow(_window);
@@ -132,6 +143,7 @@ WindowImGui* WindowEditor::GetImGuiWindow()
 
 void WindowEditor::resizeViewport(int width, int height) {
     glViewport(0, 0, width, height);
+    //frameBuffer->RescaleFrameBuffer(width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     float aspectRatio = (float)width / (float)height;
@@ -143,3 +155,8 @@ ImGuiIO* WindowEditor::GetImGuiIO()
 {
     return g_io;
 }
+
+//FrameBuffer* WindowEditor::GetFrameBuffer()
+//{
+//    return frameBuffer;
+//}

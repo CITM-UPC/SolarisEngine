@@ -99,6 +99,12 @@
     <ClCompile Include="TextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelScene.cpp">
+      <Filter>Source Files\Panel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyWindow.h">
@@ -169,6 +175,12 @@
     </ClInclude>
     <ClInclude Include="TextureLoader.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelScene.h">
+      <Filter>Header Files\Panels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
