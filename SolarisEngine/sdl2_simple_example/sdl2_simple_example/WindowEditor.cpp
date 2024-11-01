@@ -26,14 +26,10 @@ void WindowEditor::Create() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-
-    /*ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;*/
-    /*DOCKING*/
-
     g_io = &ImGui::GetIO();
     g_io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable keyboard controls
     g_io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;      // Enable docking
-    g_io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;    // Enable multiple viewports
+    //g_io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;    // Enable multiple viewports
     /*Fin DOCKING*/
 
 
@@ -51,13 +47,17 @@ void WindowEditor::Create() {
     if (SDL_GL_MakeCurrent(_window, _ctx) != 0) throw std::exception(SDL_GetError());
     if (SDL_GL_SetSwapInterval(1) != 0) throw std::exception(SDL_GetError());
 
-    //frameBuffer = new FrameBuffer(app->WINDOW_SIZE.x, app->WINDOW_SIZE.y);
+    
 
     ImGui_ImplSDL2_InitForOpenGL(_window, _ctx);
-    ImGui_ImplOpenGL3_Init("#version 130");
+    ImGui_ImplOpenGL3_Init("#version 440");
+
+    //frameBuffer = new FrameBuffer(app->WINDOW_SIZE.x, app->WINDOW_SIZE.y);
+
 
     _windowImGui = new WindowImGui(); // Inicializa WindowImGui
     _windowImGui->Create(); // Crea los paneles
+
 
    
 }
@@ -95,15 +95,12 @@ void WindowEditor::BeginRender() {
 void WindowEditor::Render() {
     BeginRender();
 
-    // Renderiza WindowImGui
-    ImGui::Begin("Main Window");
-
 
     if (_windowImGui) {
         _windowImGui->Render(); // Llama al método de renderizado de WindowImGui
     }
 
-    ImGui::End();
+  
 
 
 
@@ -156,7 +153,7 @@ ImGuiIO* WindowEditor::GetImGuiIO()
     return g_io;
 }
 
-//FrameBuffer* WindowEditor::GetFrameBuffer()
-//{
-//    return frameBuffer;
-//}
+FrameBuffer* WindowEditor::GetFrameBuffer()
+{
+    return frameBuffer;
+}

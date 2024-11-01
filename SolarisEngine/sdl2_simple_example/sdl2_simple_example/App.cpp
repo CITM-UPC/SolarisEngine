@@ -169,6 +169,8 @@ bool App::LoadConfig()
     windowEditor->Create();
     INIT_openGL();
 
+
+
     return true;
 }
 
@@ -263,9 +265,13 @@ bool App::SaveFromFile()
 }
 
 bool App::INIT_openGL() {
+    glewInit();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     glClearColor(0.5, 0.5, 0.5, 1.0);
+
+
+
     return true;
 }
 

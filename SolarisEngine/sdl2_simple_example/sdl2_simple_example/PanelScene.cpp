@@ -21,12 +21,12 @@ void PanelScene::Render()
 
 		//*m_width = width;
 		//*m_height = height;
-		/*ImGui::Image(
-			(ImTextureID) app->windowEditor->GetFrameBuffer()->getFrameTexture(),
-			ImGui::GetContentRegionAvail(),
-			ImVec2(0, 1),
-			ImVec2(1, 0)
-		);*/
+		//ImGui::Image(
+		//	(ImTextureID) app->windowEditor->GetFrameBuffer()->getFrameTexture(),
+		//	ImGui::GetContentRegionAvail(),
+		//	ImVec2(0, 1),
+		//	ImVec2(1, 0)
+		//);
 	}
 	ImGui::EndChild();
 	ImGui::End();

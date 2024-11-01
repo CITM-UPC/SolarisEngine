@@ -8,37 +8,14 @@
 #include <exception>
 
 FrameBuffer::FrameBuffer(float width, float height)
-    : fbo(0), texture(0), rbo(0) // Inicializa a 0 para evitar uso de variables no inicializadas
+    : fbo(0), texture(0), rbo(0) 
 {
-    //// Asegúrate de que el contexto de OpenGL es válido
-    //if (!app->windowEditor || !app->windowEditor->_window || !app->windowEditor->_ctx) {
-    //    std::cerr << "ERROR::FRAMEBUFFER:: Invalid window or context!" << std::endl;
-    //    return;
-    //}
 
-    //// Haz que el contexto de OpenGL sea actual
-    //if (SDL_GL_MakeCurrent(app->windowEditor->_window, app->windowEditor->_ctx) != 0) {
-    //    std::cerr << "ERROR::FRAMEBUFFER:: SDL_GL_MakeCurrent failed! SDL_Error: " << SDL_GetError() << std::endl;
-    //    return;
-    //}
-
+    
     // Genera el framebuffer
     glGenFramebuffers(1, &fbo);
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR) {
-        std::cerr << "ERROR::FRAMEBUFFER:: glGenFramebuffers failed! Error code: " << error << std::endl;
-        return; // Maneja el error
-    }
-
-    std::cout << "Framebuffer ID: " << fbo << std::endl; // Debería ser válido ahora
-
-    // Vincula el framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    error = glGetError();
-    if (error != GL_NO_ERROR) {
-        std::cerr << "ERROR::FRAMEBUFFER:: glBindFramebuffer failed! Error code: " << error << std::endl;
-        return; // Maneja el error
-    }
+
 
     // Genera la textura
     glGenTextures(1, &texture);
@@ -47,6 +24,7 @@ FrameBuffer::FrameBuffer(float width, float height)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+
 
     // Genera el renderbuffer
     glGenRenderbuffers(1, &rbo);

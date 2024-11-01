@@ -8,7 +8,7 @@
 #include "FrameBuffer.h" // Incluir la clase WindowImGui
 
 struct SDL_Window;
-//class FrameBuffer;
+class FrameBuffer;
 
 class WindowEditor {
 public:
@@ -28,7 +28,7 @@ public:
 
 
 
-   //FrameBuffer* GetFrameBuffer();
+   FrameBuffer* GetFrameBuffer();
 
 
 private:
@@ -41,5 +41,5 @@ private:
     bool _shouldClose = false;      // Flag to indicate if the window should close
     WindowImGui* _windowImGui = nullptr;     // Instancia de WindowImGui
     ImGuiIO* g_io = nullptr;   
-    //FrameBuffer* frameBuffer = nullptr;
+    FrameBuffer* frameBuffer = nullptr;
 };
