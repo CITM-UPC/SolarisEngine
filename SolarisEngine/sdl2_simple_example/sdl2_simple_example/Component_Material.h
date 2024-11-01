@@ -8,6 +8,17 @@
 #include <IL/il.h>  // Biblioteca DevIL para cargar texturas
 #include <GL/glew.h>
 #include <gl/GL.h>
+#include "TextureLoader.h"
+
+
+struct Material {
+    ILuint textureID;
+    float diffuseColor[3];
+    int textureWidth = 0;
+    int textureHeight = 0;
+    std::string texturePath;
+};
+
 
 class Component_Material : public Component {
 public:
@@ -19,6 +30,8 @@ public:
     void SetDiffuseColor(float r, float g, float b);
     void SetTexture(const std::string& filePath);
 
+    ILuint GetTextureID();
+
     // Métodos de gestión
     void Enable() override;
     void Disable() override;
@@ -26,21 +39,25 @@ public:
     void DrawComponent() override;
     void DrawInspectorComponent() override;
 
-    void RenderCheckerPattern();
+   
 
-    ILuint GetTextureID() const;
+  
 
     glm::vec3 GetDiffuseColor() const;
 
 
-    std::string texturePath;
-    int textureWidth = 0, textureHeight = 0;
+    
     bool showCheckerTexture = false; // Para habilitar la textura de cuadros
 
 private:
+
+    void CreateCheckerPattern();
+
     // Propiedades del material
-    float diffuseColor[3]; // Color difuso del material (RGB)
-    ILuint textureID;      // ID de la textura de DevIL
+    //float diffuseColor[3]; // Color difuso del material (RGB)
+    //ILuint textureID;      // ID de la textura de DevIL
+    ILuint textureCheckersID;      // ID de la textura de DevIL
+    Material* material;
 };
 
 #endif // !__COMPONENT_MATERIAL_H__

@@ -104,3 +104,40 @@ ILuint TextureLoader::LoadTextureDevIL(const std::string& filePath) {
 
     return textureID;
 }
+
+ILuint TextureLoader::LoadTextureDevIL(const std::string& filePath, int& width, int& height) {
+    ILuint imageID;
+    ilGenImages(1, &imageID);       // Genera un ID de textura en DevIL
+    ilBindImage(imageID);
+
+    // Cargar la imagen
+    if (!ilLoadImage((const wchar_t*)filePath.c_str())) {
+        ilDeleteImages(1, &imageID); // Eliminar imagen si la carga falla
+        return 0;
+    }
+
+    // Obtener las dimensiones de la imagen cargada
+    width = ilGetInteger(IL_IMAGE_WIDTH);
+    height = ilGetInteger(IL_IMAGE_HEIGHT);
+
+    // Convertir la imagen a un formato compatible con OpenGL
+    ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+
+    // Generar una textura en OpenGL
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // Cargar los datos de la imagen en OpenGL
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
+
+    // Configurar opciones de textura
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    ilDeleteImages(1, &imageID); // Liberar la imagen cargada
+
+    return textureID;
+}

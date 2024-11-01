@@ -18,6 +18,7 @@ public:
     void GenerateMipmaps(GLuint textureID, int width, int height);
 
     ILuint LoadTextureDevIL(const std::string& filePath);
+    ILuint LoadTextureDevIL(const std::string& filePath, int& width, int& height);
 
   
 

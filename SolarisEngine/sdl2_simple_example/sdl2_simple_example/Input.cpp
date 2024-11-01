@@ -306,7 +306,14 @@ void InputEditor::handleDroppedFile(const char* filePath)
 		app->actualScene->AddGameObject(gameObject);
 
 	}
-	else if (app->gameObject3 && extension == "png") {
-		app->actualScene->GetGameObjectsList().back()->AddComponent<Component_Material>()->SetTexture(droppedFile);
+	else if (app->actualScene->GetSelectedGameObject() && extension == "png") {
+		Component_Material* cm = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Material>();
+		if (cm == nullptr) {
+			app->actualScene->GetSelectedGameObject()->AddComponent<Component_Material>()->SetTexture(droppedFile);
+		}
+		else {
+			app->actualScene->GetSelectedGameObject()->GetComponent<Component_Material>()->SetTexture(droppedFile);
+		}
+		
 	}
 }

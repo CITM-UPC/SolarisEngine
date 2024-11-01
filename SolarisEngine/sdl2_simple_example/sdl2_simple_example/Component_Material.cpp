@@ -1,47 +1,69 @@
 #include "Component_Material.h"
 #include "App.h"
+#include "TextureLoader.h"
 #include <iostream>
 
 Component_Material::Component_Material(GameObject* containerGO)  // Usar puntero crudo
-    : Component(containerGO, ComponentType::Material), textureID(0) {
-    diffuseColor[0] = 1.0f;  // Inicializa el color difuso a blanco
-    diffuseColor[1] = 1.0f;
-    diffuseColor[2] = 1.0f;
+    : Component(containerGO, ComponentType::Material) {
+
+    material = new Material();
+
+    material->textureID = 0;
+
+    material->diffuseColor[0] = 1.0f;  // Inicializa el color difuso a blanco
+    material->diffuseColor[1] = 1.0f;
+    material->diffuseColor[2] = 1.0f;
+
 }
 
 Component_Material::~Component_Material() {
-    if (textureID != 0) {
-        ilDeleteImages(1, &textureID);  // Libera la textura de DevIL si está cargada
+    if (material->textureID != 0) {
+        ilDeleteImages(1, &material->textureID);  // Libera la textura de DevIL si está cargada
     }
 }
 
 void Component_Material::SetDiffuseColor(float r, float g, float b) {
-    diffuseColor[0] = r;
-    diffuseColor[1] = g;
-    diffuseColor[2] = b;
+   material->diffuseColor[0] = r;
+   material->diffuseColor[1] = g;
+   material->diffuseColor[2] = b;
 }
 
 void Component_Material::SetTexture(const std::string& filePath) {
 
-    textureID = app->textureLoader->LoadTextureDevIL(filePath);
+    if (!material) {
+        material = new Material();
+    }
 
-    if (textureID == 0) {
+
+    material->textureID = app->textureLoader->LoadTextureDevIL(filePath, material->textureWidth, material->textureHeight);
+
+    if (material->textureID == 0) {
         std::cerr << "Error: No se pudo cargar la textura desde " << filePath << std::endl;
     }
     else {
-        texturePath = filePath; // Guarda la ruta de la textura
+        material->texturePath = filePath; // Guarda la ruta de la textura
       /*  textureWidth = app->textureLoader->GetTextureWidth(textureID);
         textureHeight = app->textureLoader->GetTextureHeight(textureID);*/
     }
 }
 
-ILuint Component_Material::GetTextureID() const {
-    return textureID;
+ILuint Component_Material::GetTextureID() {
+    
+
+    if (showCheckerTexture) {
+
+        if (textureCheckersID == 0) {
+            CreateCheckerPattern();
+        }
+
+        return textureCheckersID;
+    }
+    return material->textureID;
 }
 
 glm::vec3 Component_Material::GetDiffuseColor() const
 {
-    return glm::vec3(diffuseColor[0], diffuseColor[1], diffuseColor[2]);
+    return glm::vec3(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
 }
 
 void Component_Material::Enable() {
@@ -59,15 +81,17 @@ void Component_Material::Update(double dt) {
 void Component_Material::DrawComponent() {
     if (!enabled) return;
 
-    if (textureID != 0 && !showCheckerTexture) {
-        glBindTexture(GL_TEXTURE_2D, textureID);  // Usa la textura cargada
+    //Creo k no sirve
+    if (material->textureID != 0 && !showCheckerTexture) {
+        glBindTexture(GL_TEXTURE_2D, material->textureID);  // Usa la textura cargada
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        glColor3f(diffuseColor[0], diffuseColor[1], diffuseColor[2]);
+        glColor3f(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
     }
     else {
-        glBindTexture(GL_TEXTURE_2D, 0);  // Sin textura
+     
+        glBindTexture(GL_TEXTURE_2D, textureCheckersID);
         glColor3f(1.0f, 0.0f, 1.0f); // Color rosa para la textura de cuadros
-        RenderCheckerPattern(); // Llama a una función para renderizar el patrón de cuadros
+       
     }
 }
 
@@ -75,14 +99,16 @@ void Component_Material::DrawInspectorComponent() {
     ImGui::Text("Material Properties");
 
     // Editor de color
-    ImGui::ColorEdit3("Diffuse Color", diffuseColor);
-    SetDiffuseColor(diffuseColor[0], diffuseColor[1], diffuseColor[2]);
+    ImGui::ColorEdit3("Diffuse Color", material->diffuseColor);
+    SetDiffuseColor(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
 
     // Mostrar la textura si está cargada
     if (GetTextureID() != 0) {
         ImGui::Text("Texture:");
-        ImGui::Text("Path: %s", texturePath.c_str());
-        ImGui::Text("Size: %dx%d", textureWidth, textureHeight);
+
+        ImGui::TextWrapped("Path: %s", material->texturePath.c_str());
+        ImGui::Text("Size: %dx%d", material->textureWidth, material->textureHeight);
+        
 
         // Renderizar la textura
         ImGui::Image((void*)(intptr_t)GetTextureID(), ImVec2(256, 256));
@@ -95,7 +121,7 @@ void Component_Material::DrawInspectorComponent() {
     ImGui::Checkbox("Use Checker Texture", &showCheckerTexture);
 }
 
-void Component_Material::RenderCheckerPattern() {
+void Component_Material::CreateCheckerPattern() {
     // Crea un patrón de cuadros en un pequeño buffer
     const int checkerSize = 64;
     GLubyte checkerImage[checkerSize][checkerSize][3];
@@ -109,14 +135,14 @@ void Component_Material::RenderCheckerPattern() {
         }
     }
 
-    GLuint checkerTextureID;
-    glGenTextures(1, &checkerTextureID);
-    glBindTexture(GL_TEXTURE_2D, checkerTextureID);
+    ;
+    glGenTextures(1, &textureCheckersID);
+    glBindTexture(GL_TEXTURE_2D, textureCheckersID);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, checkerSize, checkerSize, 0, GL_RGB, GL_UNSIGNED_BYTE, checkerImage);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Usa la textura de cuadros en el objeto
-    glBindTexture(GL_TEXTURE_2D, checkerTextureID);
+    glBindTexture(GL_TEXTURE_2D, textureCheckersID);
 }
