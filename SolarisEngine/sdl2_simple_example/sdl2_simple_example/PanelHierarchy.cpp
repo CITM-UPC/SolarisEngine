@@ -3,8 +3,7 @@
 #include "App.h"
 #include "PanelInspector.h" // Asegúrate de incluir el header para el PanelInspector
 
-PanelHierarchy::PanelHierarchy()
-    : selectedGameObject(nullptr) { // Inicializa el puntero seleccionado a nullptr
+PanelHierarchy::PanelHierarchy() { // Inicializa el puntero seleccionado a nullptr
 }
 
 PanelHierarchy::~PanelHierarchy() {
@@ -20,7 +19,7 @@ void PanelHierarchy::Render() {
     ImGui::Begin("Hierarchy"); // Nombre del panel
 
     // Renderiza cada GameObject en la lista
-    for (auto gameObject : app->gameObjects) {
+    for (auto gameObject : app->actualScene->GetGameObjectsList()) {
         DrawGameObject(gameObject);
     }
 
@@ -28,11 +27,26 @@ void PanelHierarchy::Render() {
 }
 
 void PanelHierarchy::DrawGameObject(GameObject* gameObject) {
+
+    // Dibuja el nombre del GameObject y aplica color al texto si está seleccionado
+    if (app->actualScene->GetSelectedGameObject() == gameObject) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.5f, 0.0f, 1.0f)); // Color rojo para el texto seleccionado
+    }
+    else {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Color rojo para el texto seleccionado
+    }
+
     ImGui::Text(gameObject->GetName().c_str()); // Dibuja el nombre del GameObject
 
     // Detecta clic en el GameObject
     if (ImGui::IsItemClicked()) {
-        selectedGameObject = gameObject; // Actualiza el GameObject seleccionado
-        app->windowEditor->GetImGuiWindow()->inspectorPanel->SetSelectedGameObject(selectedGameObject); // Notifica al PanelInspector
+        app->actualScene->SelectGameObject(gameObject);
     }
+
+    
+    
+    ImGui::PopStyleColor();
+   
+
+  
 }

@@ -96,37 +96,37 @@ void MenuBar::Render() {
                     auto newGO = GameObject::Create("Plane");
                     auto mesh = newGO->AddComponent<Component_Mesh>();
                     mesh->GeneratePlaneMesh();
-                    app->gameObjects.push_back(newGO);  // Agregar a la lista global de GameObjects
+                    app->actualScene->AddGameObject(newGO);
                 }
                 if (ImGui::MenuItem("Cube")) {
                     auto newGO = GameObject::Create("Cube");
                     auto mesh = newGO->AddComponent<Component_Mesh>();
                     mesh->GenerateCubeMesh();
-                    app->gameObjects.push_back(newGO);
+                    app->actualScene->AddGameObject(newGO);
                 }
                 if (ImGui::MenuItem("Triangle")) {
                     auto newGO = GameObject::Create("Triangle");
                     auto mesh = newGO->AddComponent<Component_Mesh>();
                     mesh->GenerateTriangleMesh();
-                    app->gameObjects.push_back(newGO);
+                    app->actualScene->AddGameObject(newGO);
                 }
                 if (ImGui::MenuItem("Sphere")) {
                     auto newGO = GameObject::Create("Sphere");
                     auto mesh = newGO->AddComponent<Component_Mesh>();
                     mesh->GenerateSphereMesh();
-                    app->gameObjects.push_back(newGO);
+                    app->actualScene->AddGameObject(newGO);
                 }
                 if (ImGui::MenuItem("Capsule")) {
                     auto newGO = GameObject::Create("Capsule");
                     auto mesh = newGO->AddComponent<Component_Mesh>();
                     mesh->GenerateCapsuleMesh();
-                    app->gameObjects.push_back(newGO);
+                    app->actualScene->AddGameObject(newGO);
                 }
                 if (ImGui::MenuItem("Cylinder")) {
                     auto newGO = GameObject::Create("Cylinder");
                     auto mesh = newGO->AddComponent<Component_Mesh>();
                     mesh->GenerateCylinderMesh();
-                    app->gameObjects.push_back(newGO);
+                    app->actualScene->AddGameObject(newGO);
                 }
                 ImGui::EndMenu();
             }

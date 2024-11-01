@@ -17,7 +17,6 @@ public:
 
 private:
     void DrawGameObject(GameObject* gameObject); // Método para dibujar un GameObject
-    GameObject* selectedGameObject;
 };
 
 #endif // __PANEL_HIERARCHY_H__

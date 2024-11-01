@@ -18,7 +18,10 @@ void PanelInspector::Render() {
 
     ImGui::Begin("Inspector"); // Nombre del panel
 
-    if (selectedGameObject) {
+    if (app->actualScene->GetSelectedGameObject()) {
+
+        GameObject* selectedGameObject = app->actualScene->GetSelectedGameObject();
+
         ImGui::Text("Inspector for: %s", selectedGameObject->GetName().c_str()); // Muestra el nombre del GameObject seleccionado
 
         // Renderiza los componentes del GameObject
@@ -34,9 +37,4 @@ void PanelInspector::Render() {
     }
 
     ImGui::End(); // Finaliza el panel
-}
-
-void PanelInspector::SetSelectedGameObject(GameObject* gameObject)
-{
-    selectedGameObject = gameObject; // Guarda el GameObject seleccionado
 }

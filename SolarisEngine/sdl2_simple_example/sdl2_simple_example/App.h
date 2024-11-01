@@ -15,6 +15,8 @@
 #include "WindowEditor.h"
 #include "TextureLoader.h"
 
+#include "Scene.h"
+
 #include "Primitivos.h"
 #include "Component_Material.h"
 #include "Component_Transform.h"
@@ -26,6 +28,7 @@ class CameraEditor;
 class InputEditor;
 class WindowEditor;
 class TextureLoader;
+class Scene;
 
 class App
 {
@@ -92,8 +95,6 @@ private:
 
     bool INIT_openGL();
 
-    void RemoveGameObject(GameObject* gameObject);
-
     bool HandleEvents();
 
 public:
@@ -108,6 +109,9 @@ public:
     InputEditor* inputEditor;
     WindowEditor* windowEditor;
     TextureLoader* textureLoader;
+
+    Scene* actualScene;
+
     static inline const glm::ivec2 WINDOW_SIZE = { 1024, 720 };
     static const unsigned int FPS = 60;
     static inline const auto FRAME_DT = 1.0s / FPS;
@@ -116,7 +120,7 @@ public:
     GameObject* gameObject2; // Cambiado a puntero crudo
     GameObject* gameObject3; // Cambiado a puntero crudo
 
-    std::vector<GameObject*> gameObjects; // Lista de GameObjects en la jerarquía
+
 
 private:
 

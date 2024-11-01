@@ -302,10 +302,11 @@ void InputEditor::handleDroppedFile(const char* filePath)
 	std::string extension = droppedFile.substr(droppedFile.find_last_of('.') + 1);
 	std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 	if (extension == "fbx") {
-		app->gameObject3 = app->importer->Importar(droppedFile);
-		app->gameObjects.push_back(app->gameObject3);
+		GameObject* gameObject = app->importer->Importar(droppedFile);
+		app->actualScene->AddGameObject(gameObject);
+
 	}
 	else if (app->gameObject3 && extension == "png") {
-		app->gameObject3->AddComponent<Component_Material>()->SetTexture(droppedFile);
+		app->actualScene->GetGameObjectsList().back()->AddComponent<Component_Material>()->SetTexture(droppedFile);
 	}
 }

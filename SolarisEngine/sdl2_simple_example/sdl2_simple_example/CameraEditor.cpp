@@ -71,7 +71,8 @@ void CameraEditor::processInput(unsigned char key, bool isPressed) {
     }
     if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_F]) {
         float distance = 5.0f;
-        glm::vec3 objectPosition = app->windowEditor->GetImGuiWindow()->inspectorPanel->selectedGameObject->GetComponent<Component_Transform>()->GetPosition();
+        //glm::vec3 objectPosition = app->windowEditor->GetImGuiWindow()->inspectorPanel->selectedGameObject->GetComponent<Component_Transform>()->GetPosition();
+        glm::vec3 objectPosition = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>()->GetPosition();
 
         // Actualiza la posición de la cámara
         position = objectPosition + glm::vec3(0.0f, 0.0f, -distance);

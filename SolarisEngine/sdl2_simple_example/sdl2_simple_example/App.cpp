@@ -46,8 +46,9 @@ bool App::Start()
     gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
     gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
 
-    app->gameObjects.push_back(gameObject);
-    app->gameObjects.push_back(gameObject2);
+    actualScene->AddGameObject(gameObject);
+    actualScene->AddGameObject(gameObject2);
+
 
 
     return true;
@@ -166,6 +167,9 @@ bool App::LoadConfig()
     inputEditor = new InputEditor();
     windowEditor = new WindowEditor();
     textureLoader = new TextureLoader();
+
+    actualScene = new Scene();
+
     windowEditor->Create();
     INIT_openGL();
 
@@ -189,10 +193,10 @@ bool App::PreUpdate()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-    if (contador >= 0.5f && gameObject2) {
+    if (contador >= 0.1f && gameObject2) {
         
-        RemoveGameObject(gameObject2); //Lo borro de la lista de la escena
-        gameObject2->Delete(); //Borro y libero la memoria de el y de sus componentes
+        actualScene->RemoveGameObject(gameObject2); //Lo borro de la lista de la escena
+        //gameObject2->Delete(); //Borro y libero la memoria de el y de sus componentes
         gameObject2 = nullptr; //Borro el puntero
         std::cout << "Se ha eliminado automaticamente el gameObject 2, lina +-191 en el app.cpp" << std::endl;
     }
@@ -208,7 +212,7 @@ bool App::DoUpdate(double dt)
 {
     cameraEditor->Update();
 
-        
+    actualScene->Update(dt);
 
     //if (gameObject) {
     //   /* Component_Transform* ct = gameObject->GetComponent<Component_Transform>();
@@ -232,12 +236,7 @@ bool App::DoUpdate(double dt)
     //    gameObject3->Draw();
     //}
 
-    for(GameObject* gameObject : gameObjects)
-    {
-        if (gameObject && gameObject->IsEnabled()) {
-            gameObject->Draw();
-        }
-    }
+  
 
 
     return true;
@@ -271,16 +270,10 @@ bool App::INIT_openGL() {
     glClearColor(0.5, 0.5, 0.5, 1.0);
 
 
-
     return true;
 }
 
-void App::RemoveGameObject(GameObject* gameObject) {
-    auto it = std::remove(gameObjects.begin(), gameObjects.end(), gameObject);
-    if (it != gameObjects.end()) {
-        gameObjects.erase(it, gameObjects.end()); // Eliminar de la lista
-    }
-}
+
 
 bool App::HandleEvents() {
     SDL_Event event;
