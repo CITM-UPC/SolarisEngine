@@ -45,10 +45,16 @@ bool App::Start()
     gameObject = importer->Importar("./Assets/BakerHouse.fbx"); // <-- Modelo con 1 textura
     gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
     gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
+    gameObject2->GetComponent<Component_Transform>()->SetRotation(-90,0,0);
+
 
     actualScene->AddGameObject(gameObject);
     actualScene->AddGameObject(gameObject2);
 
+    gameObject = importer->Importar("./Assets/Potato.obj");
+    gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Potato.jpg");
+    gameObject->GetComponent<Component_Transform>()->SetPosition(0, -2, 0);
+    actualScene->AddGameObject(gameObject);
 
 
     return true;
@@ -193,17 +199,6 @@ bool App::PreUpdate()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-    if (contador >= 0.1f && gameObject2) {
-        
-        actualScene->RemoveGameObject(gameObject2); //Lo borro de la lista de la escena
-        //gameObject2->Delete(); //Borro y libero la memoria de el y de sus componentes
-        gameObject2 = nullptr; //Borro el puntero
-        std::cout << "Se ha eliminado automaticamente el gameObject 2, lina +-191 en el app.cpp" << std::endl;
-    }
-    else {
-        contador += dt;
-        
-    }
 
     return true;
 }

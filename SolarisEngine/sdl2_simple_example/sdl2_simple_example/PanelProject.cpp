@@ -23,7 +23,7 @@ PanelProject::~PanelProject() {
 }
 
 void PanelProject::Render() {
-    if (!app->windowEditor->GetImGuiWindow()->projectPanel) {
+    if (!app->windowEditor->GetImGuiWindow()->showprojectPanel) {
         return;
     }
 

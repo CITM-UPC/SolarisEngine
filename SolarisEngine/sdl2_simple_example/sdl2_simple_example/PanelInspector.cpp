@@ -12,7 +12,7 @@ PanelInspector::~PanelInspector() {
 
 void PanelInspector::Render() {
 
-    if (!app->windowEditor->GetImGuiWindow()->inspectorPanel) {
+    if (!app->windowEditor->GetImGuiWindow()->showinspectorPanel) {
         return;
     }
 

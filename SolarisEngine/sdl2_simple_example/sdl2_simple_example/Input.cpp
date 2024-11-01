@@ -301,12 +301,12 @@ void InputEditor::handleDroppedFile(const char* filePath)
 	std::string droppedFile = filePath;
 	std::string extension = droppedFile.substr(droppedFile.find_last_of('.') + 1);
 	std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-	if (extension == "fbx") {
+	if (extension == "fbx" || extension == "obj") {
 		GameObject* gameObject = app->importer->Importar(droppedFile);
 		app->actualScene->AddGameObject(gameObject);
 
 	}
-	else if (app->actualScene->GetSelectedGameObject() && extension == "png") {
+	else if (app->actualScene->GetSelectedGameObject() && (extension == "png" || extension == "jpg" || extension == "dds")) {
 		Component_Material* cm = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Material>();
 		if (cm == nullptr) {
 			app->actualScene->GetSelectedGameObject()->AddComponent<Component_Material>()->SetTexture(droppedFile);
