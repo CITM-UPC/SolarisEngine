@@ -51,7 +51,7 @@ bool App::Start()
     actualScene->AddGameObject(gameObject);
     actualScene->AddGameObject(gameObject2);
 
-    gameObject = importer->Importar("./Assets/Potato.obj");
+    gameObject = importer->Importar("./Assets/Potato.fbx");
     gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Potato.jpg");
     gameObject->GetComponent<Component_Transform>()->SetPosition(0, -2, 0);
     actualScene->AddGameObject(gameObject);
