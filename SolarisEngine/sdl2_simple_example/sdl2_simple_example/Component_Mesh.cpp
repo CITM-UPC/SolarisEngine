@@ -30,7 +30,7 @@ void Component_Mesh::DrawComponent() {
     // Obtener el GameObject contenedor
     //auto containerGOLock = containerGO.lock();
     //if (!containerGOLock) {
-    //    std::cerr << "Error: El GameObject asociado ya no está disponible." << std::endl;
+    //    std::cerr << "Error: El GameObject asociado ya no est?disponible." << std::endl;
     //    return; // El objeto ha sido destruido
     //}
 
@@ -216,18 +216,48 @@ void Component_Mesh::CalculateFaceNormals(Mesh& mesh) {
 void Component_Mesh::GenerateCubeMesh() {
     Mesh cubeMesh;
     cubeMesh.vertices = {
-        // Frente
+        // Ç°Ãæ (Frente)
         -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,
-        // Atrás
+
+        // ºóÃæ (Atr¨¢s)
         -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,
+
+        // ×óÃæ (Izquierda)
+        -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f,
+
+        // ÓÒÃæ (Derecha)
+         0.5f, -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f,
+
+         // ÉÏÃæ (Arriba)
+         -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,
+
+         // ÏÂÃæ (Abajo)
+         -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,
     };
+
     cubeMesh.indices = {
-        0, 1, 2, 2, 3, 0, // Frente
-        4, 5, 6, 6, 7, 4, // Atrás
-        // Otros lados...
+        // Ç°Ãæ (Frente)
+        0, 1, 2, 2, 3, 0,
+
+        // ºóÃæ (Atr¨¢s)
+        4, 5, 6, 6, 7, 4,
+
+        // ×óÃæ (Izquierda)
+        8, 9, 10, 10, 11, 8,
+
+        // ÓÒÃæ (Derecha)
+        12, 13, 14, 14, 15, 12,
+
+        // ÉÏÃæ (Arriba)
+        16, 17, 18, 18, 19, 16,
+
+        // ÏÂÃæ (Abajo)
+        20, 21, 22, 22, 23, 20,
     };
+
     meshes.push_back(cubeMesh);
 }
+
 
 void Component_Mesh::GenerateSphereMesh() {
     Mesh sphereMesh;
@@ -270,18 +300,143 @@ void Component_Mesh::GeneratePlaneMesh() {
 }
 
 void Component_Mesh::GenerateTriangleMesh() {
-    Mesh triangleMesh;
-    triangleMesh.vertices = { 0.0f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f };
-    triangleMesh.indices = { 0, 1, 2 };
-    meshes.push_back(triangleMesh);
+    Mesh tetrahedronMesh;
+
+    // ¸ü¶Ô³ÆµÄËÄÃæÌå¶¥µã×ø±ê
+    const float sqrt2div3 = sqrt(2.0f / 3.0f);
+    const float sqrt6div3 = sqrt(6.0f) / 3.0f;
+    const float sqrt3div3 = sqrt(3.0f) / 3.0f;
+
+    tetrahedronMesh.vertices = {
+        1.0f, 1.0f, 1.0f,                     // ¶¥µã A
+        -1.0f, -1.0f, 1.0f,                   // ¶¥µã B
+        -1.0f, 1.0f, -1.0f,                   // ¶¥µã C
+        1.0f, -1.0f, -1.0f                    // ¶¥µã D
+    };
+
+    // Ã¿¸öÃæÓÉÈý¸ö¶¥µã×é³É
+    tetrahedronMesh.indices = {
+        0, 1, 2,  // Ãæ ABC
+        0, 3, 1,  // Ãæ ABD
+        0, 2, 3,  // Ãæ ACD
+        1, 3, 2   // Ãæ BCD
+    };
+
+    meshes.push_back(tetrahedronMesh);
 }
 
 void Component_Mesh::GenerateCapsuleMesh() {
-    // Implementación simplificada de la geometría de una cápsula
-    GenerateCylinderMesh();
-    GenerateSphereMesh(); // Semiesfera en la parte superior
-    GenerateSphereMesh(); // Semiesfera en la parte inferior
+    Mesh capsuleMesh;
+
+    // Fixed parameters for the capsule size
+    const float height = 2.0f; // Total height of the capsule
+    const float radius = 0.5f;  // Radius of the capsule
+    const int numSegments = 16;  // Number of segments for smoothness
+    const int numStacks = 8;      // Number of stacks for hemispheres
+
+    // Create vertices for the cylindrical part
+    for (int i = 0; i < numSegments; ++i) {
+        float angle = i * (2.0f * M_PI / numSegments);
+        float x = cos(angle) * radius;
+        float z = sin(angle) * radius;
+
+        // Bottom circle vertices
+        capsuleMesh.vertices.push_back(x);
+        capsuleMesh.vertices.push_back(-height / 2); // Bottom
+        capsuleMesh.vertices.push_back(z);
+
+        // Top circle vertices
+        capsuleMesh.vertices.push_back(x);
+        capsuleMesh.vertices.push_back(height / 2); // Top
+        capsuleMesh.vertices.push_back(z);
+    }
+
+    // Create vertices for the top hemisphere
+    for (int i = 0; i <= numSegments; ++i) {
+        for (int j = 0; j <= numStacks; ++j) {
+            float theta = j * (M_PI / numStacks); // Polar angle
+            float phi = i * (2.0f * M_PI / numSegments); // Azimuthal angle
+
+            float x = cos(phi) * sin(theta) * radius;
+            float y = cos(theta) * radius + (height / 2); // Offset by height
+            float z = sin(phi) * sin(theta) * radius;
+
+            capsuleMesh.vertices.push_back(x);
+            capsuleMesh.vertices.push_back(y);
+            capsuleMesh.vertices.push_back(z);
+        }
+    }
+
+    // Create vertices for the bottom hemisphere
+    for (int i = 0; i <= numSegments; ++i) {
+        for (int j = 0; j <= numStacks; ++j) {
+            float theta = j * (M_PI / numStacks); // Polar angle
+            float phi = i * (2.0f * M_PI / numSegments); // Azimuthal angle
+
+            float x = cos(phi) * sin(theta) * radius;
+            float y = -cos(theta) * radius - (height / 2); // Offset by height
+            float z = sin(phi) * sin(theta) * radius;
+
+            capsuleMesh.vertices.push_back(x);
+            capsuleMesh.vertices.push_back(y);
+            capsuleMesh.vertices.push_back(z);
+        }
+    }
+
+    // Create indices for the cylindrical part
+    for (int i = 0; i < numSegments; ++i) {
+        int bottom1 = i * 2;
+        int bottom2 = (i + 1) % numSegments * 2;
+        int top1 = bottom1 + 1;
+        int top2 = bottom2 + 1;
+
+        // First triangle
+        capsuleMesh.indices.push_back(bottom1);
+        capsuleMesh.indices.push_back(bottom2);
+        capsuleMesh.indices.push_back(top1);
+
+        // Second triangle
+        capsuleMesh.indices.push_back(top1);
+        capsuleMesh.indices.push_back(bottom2);
+        capsuleMesh.indices.push_back(top2);
+    }
+
+    // Create indices for the top hemisphere
+    int baseIndex = numSegments * 2; // Start index for hemispheres
+    for (int i = 0; i < numSegments; ++i) {
+        for (int j = 0; j < numStacks; ++j) {
+            int current = baseIndex + i * (numStacks + 1) + j;
+            int next = baseIndex + (i + 1) % numSegments * (numStacks + 1) + j;
+            int top = baseIndex + i * (numStacks + 1) + (j + 1);
+
+            // First triangle
+            capsuleMesh.indices.push_back(current);
+            capsuleMesh.indices.push_back(next);
+            capsuleMesh.indices.push_back(top);
+        }
+    }
+
+    // Create indices for the bottom hemisphere
+    baseIndex += (numSegments * (numStacks + 1));
+    for (int i = 0; i < numSegments; ++i) {
+        for (int j = 0; j < numStacks; ++j) {
+            int current = baseIndex + i * (numStacks + 1) + j;
+            int next = baseIndex + (i + 1) % numSegments * (numStacks + 1) + j;
+            int bottom = baseIndex + i * (numStacks + 1) + (j + 1);
+
+            // First triangle
+            capsuleMesh.indices.push_back(current);
+            capsuleMesh.indices.push_back(bottom);
+            capsuleMesh.indices.push_back(next);
+        }
+    }
+
+    // Store the mesh
+    meshes.push_back(capsuleMesh);
 }
+
+
+
 
 void Component_Mesh::GenerateCylinderMesh() {
     Mesh cylinderMesh;
