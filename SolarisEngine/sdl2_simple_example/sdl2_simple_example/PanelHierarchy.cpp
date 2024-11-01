@@ -13,7 +13,7 @@ PanelHierarchy::~PanelHierarchy() {
 
 void PanelHierarchy::Render() {
 
-    if (!app->windowEditor->_windowImGui->showHierarchyPanel) {
+    if (!app->windowEditor->GetImGuiWindow()->showHierarchyPanel) {
         return;
     }
 
@@ -33,6 +33,6 @@ void PanelHierarchy::DrawGameObject(GameObject* gameObject) {
     // Detecta clic en el GameObject
     if (ImGui::IsItemClicked()) {
         selectedGameObject = gameObject; // Actualiza el GameObject seleccionado
-        app->windowEditor->_windowImGui->inspectorPanel->SetSelectedGameObject(selectedGameObject); // Notifica al PanelInspector
+        app->windowEditor->GetImGuiWindow()->inspectorPanel->SetSelectedGameObject(selectedGameObject); // Notifica al PanelInspector
     }
 }

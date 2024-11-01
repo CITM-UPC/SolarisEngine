@@ -26,7 +26,16 @@ void WindowEditor::Create() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
+
     /*ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;*/
+    /*DOCKING*/
+
+    g_io = &ImGui::GetIO();
+    g_io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable keyboard controls
+    g_io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;      // Enable docking
+    g_io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;    // Enable multiple viewports
+    /*Fin DOCKING*/
+
 
     _window = SDL_CreateWindow("Solari", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, app->WINDOW_SIZE.x, app->WINDOW_SIZE.y, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
     _ctx = SDL_GL_CreateContext(_window);
@@ -75,6 +84,8 @@ void WindowEditor::BeginRender() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
+
+    //ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
 }
 
 void WindowEditor::Render() {
@@ -100,8 +111,23 @@ bool WindowEditor::PumpEvents(SDL_Event& e) {
 }
 
 void WindowEditor::EndRender() {
+
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
+    if (g_io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        SDL_GL_MakeCurrent(_window, _ctx);
+    }
+
+}
+
+WindowImGui* WindowEditor::GetImGuiWindow()
+{
+    return _windowImGui;
 }
 
 void WindowEditor::resizeViewport(int width, int height) {
@@ -112,4 +138,8 @@ void WindowEditor::resizeViewport(int width, int height) {
     glOrtho(-aspectRatio, aspectRatio, -1.0f, 1.0f, -1.0f, 1.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+}
+ImGuiIO* WindowEditor::GetImGuiIO()
+{
+    return g_io;
 }

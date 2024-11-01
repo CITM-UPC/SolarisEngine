@@ -16,6 +16,8 @@ WindowImGui::~WindowImGui() {
     panels.clear();
 }
 
+
+
 void WindowImGui::CreatePanels() {
     hierarchyPanel = new PanelHierarchy(); // Crea el panel de jerarquía
     panels.push_back(hierarchyPanel); // Añade el panel a la lista de panels

@@ -13,7 +13,7 @@ PanelConsola::~PanelConsola() {
 
 void PanelConsola::Render() {
 
-    if (!app->windowEditor->_windowImGui->showconsolaPanel) {
+    if (!app->windowEditor->GetImGuiWindow()->showconsolaPanel) {
         return;
     }
 

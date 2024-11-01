@@ -30,8 +30,12 @@ public:
     bool showconsolaPanel = true;
     bool showprojectPanel = true;
 
+ 
+
+
 private:
     void CreatePanels(); // Método para inicializar los paneles
     std::vector<Panel*> panels; // Lista de paneles
+   
 
 };
