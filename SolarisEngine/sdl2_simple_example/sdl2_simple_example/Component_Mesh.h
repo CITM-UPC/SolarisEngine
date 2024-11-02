@@ -45,6 +45,12 @@ public:
     void GenerateCapsuleMesh();
     void GenerateCylinderMesh();
 
+    glm::vec3 CalculateMeshSize();
+
+    
+
+    
+
 private:
  
 

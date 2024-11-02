@@ -21,8 +21,11 @@ public:
     void Update();
     void MouseWheel(bool zoom);
     void updateCameraSpeed();
+    void focusOnObject();
     void updateCameraPosition();
 
+    float savedYaw = 0.0f;
+    float savedPitch = 0.0f;
 private:
     glm::vec3 position;
     glm::vec3 front;
@@ -47,6 +50,14 @@ private:
     bool movingDown = false;
 
     bool orbiting = false; // Indica si la cámara está en modo de orbitación
+
+    glm::vec3 objectPosition = { 0,0,0 };
+
+    bool firstOrbit = true;
+
+    glm::vec3 initialPosition;    // Guardar la posición inicial al iniciar la órbita
+    glm::vec3 initialFront;       // Guardar la dirección inicial al iniciar la órbita
+    float movementSpeed = 2.5f;
 };
 
 #endif // CAMERA_EDITOR_H

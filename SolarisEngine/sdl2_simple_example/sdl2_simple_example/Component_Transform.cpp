@@ -71,6 +71,25 @@ const glm::vec3& Component_Transform::GetScale() const {
     return scale;
 }
 
+float Component_Transform::GetRelativeSize() const {
+    // Obtener el componente de malla asociado
+    Component_Mesh* mesh = containerGO->GetComponent<Component_Mesh>();
+    if (!mesh) {
+        return 1.0f; // Valor predeterminado si no hay malla
+    }
+
+    // Calcular el tamaño de la malla
+    glm::vec3 meshSize = mesh->CalculateMeshSize();
+
+    // Aplicar la escala del transformador al tamaño de la malla
+    glm::vec3 scaledSize = meshSize * scale;
+
+    // Retornar el mayor valor en los tres ejes como tamaño relativo
+    return glm::max(scaledSize.x, glm::max(scaledSize.y, scaledSize.z));
+}
+
+
+
 glm::vec3 Component_Transform::GetRotation() const {
     glm::vec3 eulerAngles = glm::eulerAngles(rotationQuat);
     return glm::degrees(eulerAngles); // Convertir a grados

@@ -464,3 +464,33 @@ void Component_Mesh::GenerateCylinderMesh() {
     }
     meshes.push_back(cylinderMesh);
 }
+
+glm::vec3 Component_Mesh::CalculateMeshSize() {
+    if (meshes.empty()) {
+        return glm::vec3(0.0f); // Retornar un tamaño cero si no hay mallas
+    }
+
+    glm::vec3 minBounds(FLT_MAX, FLT_MAX, FLT_MAX); // Inicializar con valores máximos
+    glm::vec3 maxBounds(-FLT_MAX, -FLT_MAX, -FLT_MAX); // Inicializar con valores mínimos
+
+    for (const auto& mesh : meshes) {
+        // Asumiendo que 'mesh.vertices' es un vector plano que contiene las coordenadas de los vértices
+        for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
+            glm::vec3 vertex(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
+
+            // Encontrar los límites mínimos y máximos en cada eje
+            minBounds = glm::min(minBounds, vertex);
+            maxBounds = glm::max(maxBounds, vertex);
+        }
+    }
+
+    // Calcular el tamaño de la malla en cada dimensión
+    glm::vec3 meshSize = maxBounds - minBounds;
+    std::cout << "Mesh size: " << meshSize.x << ", " << meshSize.y << ", " << meshSize.z << std::endl;
+
+    return meshSize; // Retornar el tamaño de la malla
+}
+
+
+
+

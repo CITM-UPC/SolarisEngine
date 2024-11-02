@@ -29,6 +29,7 @@ public:
 
     const glm::vec3& GetPosition() const;
     const glm::vec3& GetScale() const;
+    float GetRelativeSize() const;
     glm::vec3 GetRotation() const;
 
     glm::mat4 GetModelMatrix() const;

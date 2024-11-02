@@ -280,6 +280,11 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 			float yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMiddle(xoffset, yoffset);
 		}
+		else if (event.motion.state & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+			float xoffset = event.motion.xrel;
+			float yoffset = event.motion.yrel;
+			app->cameraEditor->processMouseMovement(xoffset, yoffset);
+		}
 		break;
 	case SDL_MOUSEWHEEL:
 		app->cameraEditor->MouseWheel(event.wheel.y > 0);
@@ -291,7 +296,7 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 		ImGui_ImplSDL2_ProcessEvent(&event);
 		break;
 	}
-
+	
 	return true;
 }
 

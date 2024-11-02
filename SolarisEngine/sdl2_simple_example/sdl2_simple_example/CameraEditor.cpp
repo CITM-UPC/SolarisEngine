@@ -50,118 +50,154 @@ void CameraEditor::processInput(unsigned char key, bool isPressed) {
     {
         switch (key) {
         case 'w':
-            movingForward = false;  // Activar/desactivar el movimiento hacia adelante
+            movingForward = false;
             break;
         case 's':
-            movingBackward = false;  // Activar/desactivar el movimiento hacia atrás
+            movingBackward = false;
             break;
         case 'a':
-            movingLeft = false;      // Activar/desactivar el movimiento hacia la izquierda
+            movingLeft = false;
             break;
         case 'd':
-            movingRight = false;     // Activar/desactivar el movimiento hacia la derecha
+            movingRight = false;
             break;
         case 'q':
-            movingUp = false;        // Activar/desactivar el movimiento hacia arriba
+            movingUp = false;
             break;
         case 'e':
-            movingDown = false;      // Activar/desactivar el movimiento hacia abajo
+            movingDown = false;
+            break;
+        case 'f':
+            if (isPressed) { // Se activa solo cuando se presiona F
+                focusOnObject();
+            }
             break;
         }
     }
-    if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_F]) {
-        float distance = 5.0f;
-        //glm::vec3 objectPosition = app->windowEditor->GetImGuiWindow()->inspectorPanel->selectedGameObject->GetComponent<Component_Transform>()->GetPosition();
-        glm::vec3 objectPosition = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>()->GetPosition();
+    //if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_F]) {
+    //    float distance = 5.0f;
+    //    glm::vec3 objectPosition = app->windowEditor->GetImGuiWindow()->inspectorPanel->selectedGameObject->GetComponent<Component_Transform>()->GetPosition();
+    //    glm::vec3 objectPosition = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>()->GetPosition();
 
-        // Actualiza la posición de la cámara
-        position = objectPosition + glm::vec3(0.0f, 0.0f, -distance);
+    //     Actualiza la posición de la cámara
+    //    position = objectPosition + glm::vec3(0.0f, 0.0f, -distance);
 
-        // Calcula el nuevo 'front' para que apunte al objeto
-        
-        front = glm::normalize(objectPosition - position);
+    //     Calcula el nuevo 'front' para que apunte al objeto
+    //    
+    //    front = glm::normalize(objectPosition - position);
 
-        // Actualiza yaw y pitch basados en la nueva dirección front
-        //yaw = atan2(front.z, front.x); // Asegúrate de que el orden es correcto
-        //pitch = asin(front.y);
-        
+    //     Actualiza yaw y pitch basados en la nueva dirección front
+    //    yaw = atan2(front.z, front.x); // Asegúrate de que el orden es correcto
+    //    pitch = asin(front.y);
+    //    
 
-    }
+    //}
 
 
 }
 
+void CameraEditor::focusOnObject() {
+    if (app->actualScene->GetSelectedGameObject() != nullptr)
+    {
+        glm::vec3 objectPosition = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>()->GetPosition();
+        float relativeSize = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>()->GetRelativeSize();
+
+        float baseDistance = 1.0f;
+        float distance = baseDistance * relativeSize;
+
+        glm::vec3 offset(0.0f, 1.0f, -distance);
+        position = objectPosition + offset;
+        front = glm::normalize(objectPosition - position);
+
+        yaw = glm::degrees(atan2(front.z, front.x));
+        pitch = glm::degrees(asin(front.y));
+    }
+    
+}
+
+
+
+
+// Agregar variables para almacenar yaw y pitch al empezar a orbitar
+float savedYaw = 0.0f;
+float savedPitch = 0.0f;
+
 void CameraEditor::updateCameraPosition() {
-    // Determina la velocidad de la cámara con el estado de Shift y scroll
     float cameraSpeed = ((SDL_GetModState() & KMOD_SHIFT) ? boostedSpeed : baseSpeed) * scrollBoost * 10;
 
-    // Solo mueve la cámara si el botón derecho está presionado
+    // Movimiento en modo libre (con el botón derecho)
     if (app->inputEditor->mouseRightIsPressed) {
-        if (movingForward) {
-            position += cameraSpeed * front;
-        }
-        if (movingBackward) {
-            position -= cameraSpeed * front;
-        }
-        if (movingLeft) {
-            position -= glm::normalize(glm::cross(front, up)) * cameraSpeed;
-        }
-        if (movingRight) {
-            position += glm::normalize(glm::cross(front, up)) * cameraSpeed;
-        }
-        if (movingUp) {
-            position += cameraSpeed * up;
-        }
-        if (movingDown) {
-            position -= cameraSpeed * up;
-        }
+        if (movingForward) position += cameraSpeed * front;
+        if (movingBackward) position -= cameraSpeed * front;
+        if (movingLeft) position -= glm::normalize(glm::cross(front, up)) * cameraSpeed;
+        if (movingRight) position += glm::normalize(glm::cross(front, up)) * cameraSpeed;
+        if (movingUp) position += cameraSpeed * up;
+        if (movingDown) position -= cameraSpeed * up;
     }
 
-    // Lógica de orbitación al hacer clic izquierdo y presionar Alt
-    if (app->inputEditor->mouseLefttIsPressed && (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LALT])) {
+    // Iniciar la órbita si Alt + clic izquierdo están presionados
+    if (app->inputEditor->mouseLefttIsPressed && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LALT]) {
+        if (!orbiting) {
+            firstOrbit = true; // Reiniciar la órbita solo al entrar
+        }
         orbiting = true;
     }
     else {
         orbiting = false;
     }
-
-    if (orbiting) {
-        //// Calcular el punto central de la órbita
-        //orbitCenter = position + front; // Puedes ajustar esto para definir el centro de la órbita más específicamente
-
-        //// Calcular el radio de la órbita como la distancia entre la cámara y el punto central
-        //orbitRadius = glm::length(position - orbitCenter);
-
-        //// Calcular la nueva posición de la cámara en órbita
-        //position.x = orbitCenter.x + orbitRadius * cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        //position.y = orbitCenter.y + orbitRadius * sin(glm::radians(pitch));
-        //position.z = orbitCenter.z + orbitRadius * sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    }
-
+    
 }
+
 
 void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
-    if (!app->inputEditor->mouseLefttIsPressed) {
-        xoffset *= sensitivity;
-        yoffset *= sensitivity;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
 
-        // Ajusta solo yaw y pitch si el mouse se mueve
-        if (xoffset != 0 || yoffset != 0) {
-            yaw += xoffset; // Mantén la rotación normal
-            pitch -= yoffset; // Mantén la rotación normal
+    if (orbiting) {
+        if (app->actualScene->GetSelectedGameObject() != nullptr) { // Ajustar yaw y pitch durante la orbitación
+
+            yaw += xoffset;
+            pitch -= yoffset;
 
             // Limitar el pitch para evitar problemas de "gimbal lock"
-            if (pitch > 89.0f) pitch = 89.0f;
-            if (pitch < -89.0f) pitch = -89.0f;
+            pitch = glm::clamp(pitch, -89.0f, 89.0f); // Usar glm::clamp para mayor claridad
 
-            // Recalcular front basado en yaw y pitch
-            front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-            front.y = sin(glm::radians(pitch));
-            front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-            front = glm::normalize(front);
+            // Recalcular la posición de la cámara alrededor del objeto
+            glm::vec3 objectPosition = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>()->GetPosition();
+            float radius = glm::length(position - objectPosition);  // Mantener una distancia constante
+
+            // Calcular la nueva posición de la cámara en función de yaw y pitch
+            position.x = objectPosition.x + radius * cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+            position.y = objectPosition.y + radius * sin(glm::radians(pitch));
+            position.z = objectPosition.z + radius * cos(glm::radians(pitch)) * sin(glm::radians(-yaw));
+
+            // Asegurar que la cámara siempre apunte al objeto
+            front = glm::normalize(objectPosition - position);
         }
     }
+    else if (app->inputEditor->mouseRightIsPressed) {
+        // Movimiento de cámara normal si no está orbitando
+        yaw += xoffset;
+        pitch -= yoffset;
+
+        // Limitar el pitch para evitar problemas de "gimbal lock"
+        pitch = glm::clamp(pitch, -89.0f, 89.0f);
+
+        // Recalcular front basado en yaw y pitch
+        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front.y = sin(glm::radians(pitch));
+        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front = glm::normalize(front);
+    }
+
+    // Debug output
+    printf("Front.z: %f,\n", front.z); // Actualizar esto según sea necesario
+    printf("Position.z: %f,\n", position.z); // Actualizar esto según sea necesario
+    printf("Position.x: %f,\n", position.x); // Actualizar esto según sea necesario
 }
+
+
+
 
 
 
