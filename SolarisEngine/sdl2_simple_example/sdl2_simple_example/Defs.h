@@ -90,8 +90,8 @@ inline double lerp(double A, double B, double t) {
 
 
 
-#define TILES_TO_LOAD 22
-#define TILESTEXTURE_TO_LOAD 4
+#define ICON_MIN 0xE000
+#define ICON_MAX 0xF8FF
 
 
 #define ASSETS_DIR "./Assets"
@@ -99,5 +99,6 @@ inline double lerp(double A, double B, double t) {
 #define MESHES_DIR "Library/Meshes"
 #define MATERIALS_DIR "Library/Materials"
 #define MODELS_DIR "Library/Models"
+#define FONTS_DIR "Library/Fonts"
 
 #endif	// __DEFS_H__

@@ -69,6 +69,8 @@ void GameObject::Enable() { enabled = true; }
 
 void GameObject::Disable() { enabled = false; }
 
+void GameObject::SetEnable(bool enable) { (enable) ? Enable() : Disable(); }
+
 void GameObject::Delete() {
     Disable();
     for (auto component : components) {

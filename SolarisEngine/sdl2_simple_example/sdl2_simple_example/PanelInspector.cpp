@@ -18,11 +18,19 @@ void PanelInspector::Render() {
 
     ImGui::Begin("Inspector"); // Nombre del panel
 
-    if (app->actualScene->GetSelectedGameObject()) {
 
-        GameObject* selectedGameObject = app->actualScene->GetSelectedGameObject();
+    GameObject* selectedGameObject = app->actualScene->GetSelectedGameObject();
+
+    if (selectedGameObject) {
+       
 
         ImGui::Text("Inspector for: %s", selectedGameObject->GetName().c_str()); // Muestra el nombre del GameObject seleccionado
+        // Checkbox para habilitar/deshabilitar el GameObject
+        bool isEnabled = selectedGameObject->IsEnabled(); // Obtén el estado actual
+        if (ImGui::Checkbox("Enabled", &isEnabled)) { // Usa una variable temporal
+            selectedGameObject->SetEnable(isEnabled); // Cambia el estado
+        }
+
 
         // Renderiza los componentes del GameObject
         for (auto component : selectedGameObject->GetComponents()) { // Asume que tienes un método GetComponents()

@@ -30,10 +30,16 @@ void PanelHierarchy::DrawGameObject(GameObject* gameObject) {
 
     // Dibuja el nombre del GameObject y aplica color al texto si está seleccionado
     if (app->actualScene->GetSelectedGameObject() == gameObject) {
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.5f, 0.0f, 1.0f)); // Color rojo para el texto seleccionado
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.5f, 0.0f, 1.0f));
     }
     else {
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); // Color rojo para el texto seleccionado
+        if (gameObject->IsEnabled()) {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); 
+        }
+        else {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+        }
+       
     }
 
     ImGui::Text(gameObject->GetName().c_str()); // Dibuja el nombre del GameObject

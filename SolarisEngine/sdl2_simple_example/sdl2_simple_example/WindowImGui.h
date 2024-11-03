@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "Defs.h"
 #include <string>
 #include <imgui_impl_sdl2.h>
 #include "MenuBar.h" 
@@ -33,9 +34,10 @@ public:
     bool showprojectPanel = true;
 
  
-
+    ImFont* iconFont;
 
 private:
+    void LoadFonts();
     void CreatePanels(); // Método para inicializar los paneles
     std::vector<Panel*> panels; // Lista de paneles
    

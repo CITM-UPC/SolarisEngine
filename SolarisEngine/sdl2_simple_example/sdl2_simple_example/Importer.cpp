@@ -10,7 +10,7 @@ Importer::Importer() {
     std::cout << "Inicializando directorios..." << std::endl;
 
     // Crear directorios si no existen
-    for (const auto& dir : { ASSETS_DIR, LIBRARY_DIR, MESHES_DIR, MATERIALS_DIR, MODELS_DIR }) {
+    for (const auto& dir : { ASSETS_DIR, LIBRARY_DIR, MESHES_DIR, MATERIALS_DIR, MODELS_DIR, FONTS_DIR }) {
         if (!(fs::exists(dir) && fs::is_directory(dir))) {
             fs::create_directory(dir);
             std::cout << "Creado directorio: " << dir << std::endl;

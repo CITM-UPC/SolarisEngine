@@ -2,9 +2,11 @@
 #include "imgui.h"
 
 #include <SDL2/SDL.h>
+#include <iostream>
 
 WindowImGui::WindowImGui()
     : hierarchyPanel(nullptr), inspectorPanel(nullptr) {
+    LoadFonts();
     CreatePanels(); // Crea los paneles al inicializar
 }
 
@@ -16,6 +18,43 @@ WindowImGui::~WindowImGui() {
     panels.clear();
 }
 
+
+
+void WindowImGui::LoadFonts() {
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->AddFontDefault();  // Cargar la fuente predeterminada de ImGui
+
+    // Configuración de la fuente de iconos
+    ImFontConfig config;
+    config.MergeMode = true;   // Combinar con la fuente predeterminada, solo si es necesario
+    config.PixelSnapH = true;  // Alinear píxeles
+
+    float iconFontSize = 16.0f;  // Ajusta el tamaño de icono
+
+    // Usa la ruta absoluta
+    std::string fontPath = "E:\\_GITHUB\\SolarisEngine\\SolarisEngine\\sdl2_simple_example\\sdl2_simple_example\\Library\\Fonts\\OpenFontIcons.ttf";
+
+    // Rango de iconos (Unicode área privada)
+    static const ImWchar icon_ranges[] = { ICON_MIN, ICON_MAX, 0 };
+
+    // Verificar si el archivo existe antes de cargarlo
+    if (!std::filesystem::exists(fontPath)) {
+        std::cout << "Error: La fuente OpenFontIcons.ttf no se encuentra en la ruta especificada: " << fontPath << std::endl;
+    }
+    else {
+        iconFont = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), iconFontSize, &config, icon_ranges);
+        if (iconFont) {
+            printf("OpenFontIcons.ttf cargada correctamente desde %s\n", fontPath.c_str());
+        }
+        else {
+            printf("Error al cargar OpenFontIcons.ttf desde %s\n", fontPath.c_str());
+        }
+    }
+
+
+
+    io.Fonts->Build();  // Reconstruye las fuentes para ImGui
+}
 
 
 void WindowImGui::CreatePanels() {

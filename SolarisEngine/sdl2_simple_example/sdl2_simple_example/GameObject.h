@@ -36,6 +36,7 @@ public:
     bool IsEnabled() const;
     void Enable();
     void Disable();
+    void SetEnable(bool enable);
     void Delete(); // Método para eliminar
 
 
@@ -56,12 +57,13 @@ public:
     GameObject* parent; // Cambiado a puntero crudo
     std::vector<GameObject*> children; // Cambiado a punteros crudos
     bool isStatic;
+    bool enabled;
 
 private:
     std::string name;
     std::vector<Component*> components; // Cambiado a punteros crudos
     uint32_t UID;
-    bool enabled;
+  
 };
 
 #include "GameObject.inl"  // Incluye las implementaciones de funciones en línea de las plantillas
