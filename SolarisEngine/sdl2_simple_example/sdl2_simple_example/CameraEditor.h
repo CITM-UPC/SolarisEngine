@@ -23,6 +23,9 @@ public:
     void focusOnObject();
     void updateCameraPosition();
 
+    void ChangeCameraSensivility(float value);
+    float GetCameraSensivility();
+
 private:
     glm::vec3 position;          // Posición actual de la cámara
     glm::vec3 front;             // Dirección en la que mira la cámara

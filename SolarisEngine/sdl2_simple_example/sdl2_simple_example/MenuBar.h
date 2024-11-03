@@ -21,6 +21,16 @@ private:
     // Método para obtener el consumo de memoria en diferentes plataformas
     size_t GetMemoryUsage();
 
+    float fontSize = 14.0f; // Tamaño de la tipografía
+    ImVec4 textColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // Color del texto
+    ImVec4 backgroundColor = ImVec4(0.1f, 0.1f, 0.1f, 1.0f); // Color de fondo
+
+    bool showPreferencePopup = false;
+
+
+    void PreferencePopup();
+
+
 };
 
 #endif // __MENU_BAR_H__

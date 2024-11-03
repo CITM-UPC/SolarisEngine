@@ -110,6 +110,16 @@ void CameraEditor::updateCameraPosition() {
     }
 }
 
+void CameraEditor::ChangeCameraSensivility(float value)
+{
+    sensitivity = value;
+}
+
+float CameraEditor::GetCameraSensivility()
+{
+    return sensitivity;
+}
+
 void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
     xoffset *= sensitivity;
     yoffset *= sensitivity;

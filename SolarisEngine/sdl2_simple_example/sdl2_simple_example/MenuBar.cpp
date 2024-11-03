@@ -51,6 +51,7 @@ size_t MenuBar::GetMemoryUsage() {
 #endif
 }
 
+
 void MenuBar::Render() {
     // Incrementar el contador de frames
     frameCounter++;
@@ -73,9 +74,7 @@ void MenuBar::Render() {
                 quit_event.type = SDL_QUIT;
                 SDL_PushEvent(&quit_event);
             }
-            if (ImGui::MenuItem("About")) {
-                SDL_OpenURL("https://github.com/Solaris-Group/SolarisEngine");
-            }
+          
             if (ImGui::MenuItem("ShowDemo")) {
                 showDemo = !showDemo;
             }
@@ -83,8 +82,15 @@ void MenuBar::Render() {
         }
 
         if (ImGui::BeginMenu("Edit")) {
+            if (ImGui::MenuItem("Preferencias")) {
+                showPreferencePopup = true;
+            }
+           
+           
             ImGui::EndMenu();
         }
+
+       
 
         if (ImGui::BeginMenu("Assets")) {
             ImGui::EndMenu();
@@ -140,6 +146,15 @@ void MenuBar::Render() {
         }
 
         if (ImGui::BeginMenu("Componentes")) {
+
+            if (ImGui::MenuItem("Material")) {
+                app->actualScene->GetSelectedGameObject()->AddComponent<Component_Material>();
+            }
+            if (ImGui::MenuItem("Mesh")) {
+                app->actualScene->GetSelectedGameObject()->AddComponent<Component_Mesh>();
+            }
+
+
             ImGui::EndMenu();
         }
 
@@ -172,9 +187,21 @@ void MenuBar::Render() {
 
                 ImGui::EndMenu();
             }
+            if (ImGui::MenuItem("About")) {
+                SDL_OpenURL("https://github.com/Solaris-Group/SolarisEngine");
+            }
+
+
+
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
+
+       
+    }
+    if (showPreferencePopup) {
+        ImGui::OpenPopup("PreferencesPopup");
+        PreferencePopup();
     }
 
     // Ventana overlay para mostrar FPS
@@ -189,6 +216,87 @@ void MenuBar::Render() {
 
     if (showDemo) {
         ImGui::ShowDemoWindow();
+
     }
+
+   
 }
+
+
+void MenuBar::PreferencePopup() {
+    //if (ImGui::BeginPopup("PreferencesPopup")) {
+    //    ImGui::Text("Configuraciones de Preferencias");
+    //    ImGui::Separator(); // Separador para mejorar la legibilidad
+
+    //    // Categoría: Apariencia
+    //    ImGui::Text("Apariencia");
+    //    ImGui::SliderFloat("Tamaño de la tipografía", &fontSize, 10.0f, 30.0f, "Font Size: %.1f");
+    //    ImGui::ColorEdit4("Color del Texto", (float*)&textColor);
+    //    ImGui::ColorEdit4("Color de Fondo", (float*)&backgroundColor);
+
+    //    ImGui::GetStyle().Colors[ImGuiCol_Text] = textColor;
+    //    ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = backgroundColor;
+
+    //    ImGui::Separator(); // Otro separador
+
+    //    // Categoría: Controles
+    //    ImGui::Text("Controles");
+    //    float currentSensitivity = app->cameraEditor->GetCameraSensivility();
+
+    //    // Control deslizante para la sensibilidad del ratón
+    //    if (ImGui::SliderFloat("Sensibilidad del Ratón", &currentSensitivity, 0.001f, 1.5f, "Mouse Sensitivity: %.01f", 0.01f)) {
+    //        // Llama a la función para cambiar la sensibilidad de la cámara cuando el valor cambie
+    //        app->cameraEditor->ChangeCameraSensivility(currentSensitivity);
+    //    }
+    //    //ImGui::Checkbox("Invertir Eje Y", &invertYAxis);  // Checkbox para invertir el eje Y
+
+    //    ImGui::Separator(); // Otro separador
+
+
+
+    //    // Botones para aplicar cambios
+    //    ImGui::Separator(); // Separador antes de los botones
+    //    if (ImGui::Button("Cerrar")) {
+    //        showPreferencePopup = false;
+    //        ImGui::CloseCurrentPopup(); // Cierra el popup
+    //    }
+
+    //    ImGui::EndPopup();
+    //}
+
+    ImGui::Begin("Configuraciones de Preferencias", &showPreferencePopup, ImGuiWindowFlags_AlwaysAutoResize);
+
+    // Separador para mejorar la legibilidad
+    ImGui::Separator();
+
+    // Categoría: Apariencia
+    ImGui::Text("Apariencia");
+    ImGui::SliderFloat(u8"Tamaño de la tipografía", &fontSize, 10.0f, 30.0f, "Font Size: %.1f");
+    ImGui::ColorEdit4("Color del Texto", (float*)&textColor);
+    ImGui::ColorEdit4("Color de Fondo", (float*)&backgroundColor);
+
+    ImGui::GetStyle().Colors[ImGuiCol_Text] = textColor;
+    ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = backgroundColor;
+
+    ImGui::Separator(); // Otro separador
+
+    // Categoría: Controles
+    ImGui::Text("Controles");
+    float currentSensitivity = app->cameraEditor->GetCameraSensivility();
+
+    // Control deslizante para la sensibilidad del ratón
+    if (ImGui::SliderFloat(u8"Sensibilidad del Ratón", &currentSensitivity, 0.001f, 1.5f, "Mouse Sensitivity: %.01f", 0.01f)) {
+        app->cameraEditor->ChangeCameraSensivility(currentSensitivity);
+    }
+
+    ImGui::Separator(); // Otro separador
+
+    // Botones para aplicar cambios
+    if (ImGui::Button("Cerrar")) {
+        showPreferencePopup = false; // Cierra el panel
+    }
+
+    ImGui::End(); // Cierra la ventana de preferencias
+}
+
 

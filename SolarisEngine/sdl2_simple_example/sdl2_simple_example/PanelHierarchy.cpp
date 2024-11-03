@@ -70,37 +70,29 @@ void PanelHierarchy::RenderContext()
 }
 
 void PanelHierarchy::DrawGameObject(GameObject* gameObject) {
-
     // Dibuja el nombre del GameObject y aplica color al texto si está seleccionado
     if (app->actualScene->GetSelectedGameObject() == gameObject) {
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.5f, 0.0f, 1.0f));
     }
     else {
-        if (gameObject->IsEnabled()) {
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f)); 
-        }
-        else {
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
-        }
-       
+        ImGui::PushStyleColor(ImGuiCol_Text, gameObject->IsEnabled() ?
+            ImVec4(1.0f, 1.0f, 1.0f, 1.0f) :
+            ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
     }
-
-
 
     std::string gameObjectName = u8"\ue079 " + gameObject->GetName();
     ImGui::Text(gameObjectName.c_str()); // Dibuja el nombre del GameObject
 
-
-
     // Detecta clic en el GameObject
-    if (ImGui::IsItemClicked()) {
+    if (ImGui::IsItemClicked(0)) { // 0 para clic izquierdo
         app->actualScene->SelectGameObject(gameObject);
     }
 
-    
-    
-    ImGui::PopStyleColor();
-   
+    // Detecta clic derecho en el GameObject
+    if (ImGui::IsItemClicked(1)) { // 1 para clic derecho
+        app->actualScene->SelectGameObject(gameObject); // Selecciona el GameObject
+        ImGui::OpenPopup("HierarchyContextMenu"); // Abre el popup
+    }
 
-  
+    ImGui::PopStyleColor();
 }
