@@ -91,6 +91,12 @@ void MenuBar::Render() {
         }
 
         if (ImGui::BeginMenu("GameObject")) {
+            if (ImGui::MenuItem("Duplicar")) {
+                app->actualScene->AddGameObject(app->actualScene->GetSelectedGameObject()->Duplicate());
+            }
+            if (ImGui::MenuItem("Eliminar")) {
+                app->actualScene->RemoveGameObject(app->actualScene->GetSelectedGameObject());
+            }
             if (ImGui::BeginMenu("Primitivos")) {
                 if (ImGui::MenuItem("Plane")) {
                     auto newGO = GameObject::Create("Plane");

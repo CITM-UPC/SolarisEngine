@@ -33,7 +33,7 @@ void PanelHierarchy::RenderContext()
 
     GameObject* gameObjectSelected = app->actualScene->GetSelectedGameObject();
 
-    if (ImGui::BeginPopupContextItem("GameObjectContextMenu")) {
+    if (ImGui::BeginPopupContextWindow("HierarchyContextMenu", 1)) {
         if (ImGui::MenuItem("Create Empty")) {
             auto newGO = GameObject::Create("New GameObject");
             app->actualScene->AddGameObject(newGO);
