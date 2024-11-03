@@ -216,42 +216,42 @@ void Component_Mesh::CalculateFaceNormals(Mesh& mesh) {
 void Component_Mesh::GenerateCubeMesh() {
     Mesh cubeMesh;
     cubeMesh.vertices = {
-        // 前面 (Frente)
+        //  (Frente)
         -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,
 
-        // 后面 (Atrás)
+        //  (Atrás)
         -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,
 
-        // 左面 (Izquierda)
+        //  (Izquierda)
         -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f,
 
-        // 右面 (Derecha)
+        //  (Derecha)
          0.5f, -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f,
 
-         // 上面 (Arriba)
+         //  (Arriba)
          -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,
 
-         // 下面 (Abajo)
+         //  (Abajo)
          -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,
     };
 
     cubeMesh.indices = {
-        // 前面 (Frente)
+        //  (Frente)
         0, 1, 2, 2, 3, 0,
 
-        // 后面 (Atrás)
+        //  (Atrás)
         4, 5, 6, 6, 7, 4,
 
-        // 左面 (Izquierda)
+        //  (Izquierda)
         8, 9, 10, 10, 11, 8,
 
-        // 右面 (Derecha)
+        //  (Derecha)
         12, 13, 14, 14, 15, 12,
 
-        // 上面 (Arriba)
+        //  (Arriba)
         16, 17, 18, 18, 19, 16,
 
-        // 下面 (Abajo)
+        //  (Abajo)
         20, 21, 22, 22, 23, 20,
     };
 
@@ -300,66 +300,55 @@ void Component_Mesh::GeneratePlaneMesh() {
 }
 
 void Component_Mesh::GenerateTriangleMesh() {
-    Mesh tetrahedronMesh;
+    Mesh triangleMesh;
 
-    // 更对称的四面体顶点坐标
-    const float sqrt2div3 = sqrt(2.0f / 3.0f);
-    const float sqrt6div3 = sqrt(6.0f) / 3.0f;
-    const float sqrt3div3 = sqrt(3.0f) / 3.0f;
-
-    tetrahedronMesh.vertices = {
-        1.0f, 1.0f, 1.0f,                     // 顶点 A
-        -1.0f, -1.0f, 1.0f,                   // 顶点 B
-        -1.0f, 1.0f, -1.0f,                   // 顶点 C
-        1.0f, -1.0f, -1.0f                    // 顶点 D
+    // 顶点
+    triangleMesh.vertices = {
+        0.0f, 0.5f, 0.0f,  // 顶点 A
+       -0.5f, -0.5f, 0.5f, // 顶点 B
+        0.5f, -0.5f, 0.5f, // 顶点 C
+       -0.5f, -0.5f, -0.5f,// 顶点 D
+        0.5f, -0.5f, -0.5f // 顶点 E
     };
 
-    // 每个面由三个顶点组成
-    tetrahedronMesh.indices = {
+    // 索引
+    triangleMesh.indices = {
         0, 1, 2,  // 面 ABC
-        0, 3, 1,  // 面 ABD
-        0, 2, 3,  // 面 ACD
-        1, 3, 2   // 面 BCD
+        0, 3, 1,  // 面 ADE
+        0, 4, 3,  // 面 ABE
+        0, 2, 4,  // 面 ACE
+        1, 3, 4,  // 面 BDE
+        1, 4, 2   // 面 BCE
     };
 
-    meshes.push_back(tetrahedronMesh);
+    meshes.push_back(triangleMesh);
 }
+
 
 void Component_Mesh::GenerateCapsuleMesh() {
     Mesh capsuleMesh;
+    const int slices = 36;
+    const int stacks = 18;
+    const float radius = 0.5f;
+    const float height = 1.0f;
+    const float halfHeight = height / 2.0f;
 
-    // Fixed parameters for the capsule size
-    const float height = 2.0f; // Total height of the capsule
-    const float radius = 0.5f;  // Radius of the capsule
-    const int numSegments = 16;  // Number of segments for smoothness
-    const int numStacks = 8;      // Number of stacks for hemispheres
+    // Generate vertices
+    for (int i = 0; i <= stacks; ++i) {
+        float phi = i * M_PI / stacks - M_PI_2; // From -90 to 90 degrees
+        for (int j = 0; j <= slices; ++j) {
+            float theta = j * 2.0f * M_PI / slices; // From 0 to 360 degrees
 
-    // Create vertices for the cylindrical part
-    for (int i = 0; i < numSegments; ++i) {
-        float angle = i * (2.0f * M_PI / numSegments);
-        float x = cos(angle) * radius;
-        float z = sin(angle) * radius;
+            float x = radius * cos(phi) * cos(theta);
+            float y = radius * sin(phi);
+            float z = radius * cos(phi) * sin(theta);
 
-        // Bottom circle vertices
-        capsuleMesh.vertices.push_back(x);
-        capsuleMesh.vertices.push_back(-height / 2); // Bottom
-        capsuleMesh.vertices.push_back(z);
-
-        // Top circle vertices
-        capsuleMesh.vertices.push_back(x);
-        capsuleMesh.vertices.push_back(height / 2); // Top
-        capsuleMesh.vertices.push_back(z);
-    }
-
-    // Create vertices for the top hemisphere
-    for (int i = 0; i <= numSegments; ++i) {
-        for (int j = 0; j <= numStacks; ++j) {
-            float theta = j * (M_PI / numStacks); // Polar angle
-            float phi = i * (2.0f * M_PI / numSegments); // Azimuthal angle
-
-            float x = cos(phi) * sin(theta) * radius;
-            float y = cos(theta) * radius + (height / 2); // Offset by height
-            float z = sin(phi) * sin(theta) * radius;
+            if (phi >= 0) {
+                y += halfHeight; // Top hemisphere
+            }
+            else {
+                y -= halfHeight; // Bottom hemisphere
+            }
 
             capsuleMesh.vertices.push_back(x);
             capsuleMesh.vertices.push_back(y);
@@ -367,103 +356,90 @@ void Component_Mesh::GenerateCapsuleMesh() {
         }
     }
 
-    // Create vertices for the bottom hemisphere
-    for (int i = 0; i <= numSegments; ++i) {
-        for (int j = 0; j <= numStacks; ++j) {
-            float theta = j * (M_PI / numStacks); // Polar angle
-            float phi = i * (2.0f * M_PI / numSegments); // Azimuthal angle
+    // Generate indices
+    for (int i = 0; i < stacks; ++i) {
+        for (int j = 0; j < slices; ++j) {
+            int first = (i * (slices + 1)) + j;
+            int second = first + slices + 1;
 
-            float x = cos(phi) * sin(theta) * radius;
-            float y = -cos(theta) * radius - (height / 2); // Offset by height
-            float z = sin(phi) * sin(theta) * radius;
+            capsuleMesh.indices.push_back(first);
+            capsuleMesh.indices.push_back(second);
+            capsuleMesh.indices.push_back(first + 1);
 
-            capsuleMesh.vertices.push_back(x);
-            capsuleMesh.vertices.push_back(y);
-            capsuleMesh.vertices.push_back(z);
+            capsuleMesh.indices.push_back(second);
+            capsuleMesh.indices.push_back(second + 1);
+            capsuleMesh.indices.push_back(first + 1);
         }
     }
 
-    // Create indices for the cylindrical part
-    for (int i = 0; i < numSegments; ++i) {
-        int bottom1 = i * 2;
-        int bottom2 = (i + 1) % numSegments * 2;
-        int top1 = bottom1 + 1;
-        int top2 = bottom2 + 1;
-
-        // First triangle
-        capsuleMesh.indices.push_back(bottom1);
-        capsuleMesh.indices.push_back(bottom2);
-        capsuleMesh.indices.push_back(top1);
-
-        // Second triangle
-        capsuleMesh.indices.push_back(top1);
-        capsuleMesh.indices.push_back(bottom2);
-        capsuleMesh.indices.push_back(top2);
-    }
-
-    // Create indices for the top hemisphere
-    int baseIndex = numSegments * 2; // Start index for hemispheres
-    for (int i = 0; i < numSegments; ++i) {
-        for (int j = 0; j < numStacks; ++j) {
-            int current = baseIndex + i * (numStacks + 1) + j;
-            int next = baseIndex + (i + 1) % numSegments * (numStacks + 1) + j;
-            int top = baseIndex + i * (numStacks + 1) + (j + 1);
-
-            // First triangle
-            capsuleMesh.indices.push_back(current);
-            capsuleMesh.indices.push_back(next);
-            capsuleMesh.indices.push_back(top);
-        }
-    }
-
-    // Create indices for the bottom hemisphere
-    baseIndex += (numSegments * (numStacks + 1));
-    for (int i = 0; i < numSegments; ++i) {
-        for (int j = 0; j < numStacks; ++j) {
-            int current = baseIndex + i * (numStacks + 1) + j;
-            int next = baseIndex + (i + 1) % numSegments * (numStacks + 1) + j;
-            int bottom = baseIndex + i * (numStacks + 1) + (j + 1);
-
-            // First triangle
-            capsuleMesh.indices.push_back(current);
-            capsuleMesh.indices.push_back(bottom);
-            capsuleMesh.indices.push_back(next);
-        }
-    }
-
-    // Store the mesh
     meshes.push_back(capsuleMesh);
 }
 
 
 
 
+
 void Component_Mesh::GenerateCylinderMesh() {
     Mesh cylinderMesh;
-    const int sectorCount = 36;
+    const int slices = 36;
     const float radius = 0.5f;
     const float height = 1.0f;
-    for (int i = 0; i < sectorCount; ++i) {
-        float angle = i * 2 * M_PI / sectorCount;
+
+    // 生成顶点
+    for (int i = 0; i <= slices; ++i) {
+        float angle = i * 2.0f * M_PI / slices;
         float x = radius * cos(angle);
-        float y = radius * sin(angle);
+        float z = radius * sin(angle);
+
+        // 底部圆
         cylinderMesh.vertices.push_back(x);
-        cylinderMesh.vertices.push_back(y);
-        cylinderMesh.vertices.push_back(-height / 2);
+        cylinderMesh.vertices.push_back(-0.5f * height);
+        cylinderMesh.vertices.push_back(z);
+
+        // 顶部圆
         cylinderMesh.vertices.push_back(x);
-        cylinderMesh.vertices.push_back(y);
-        cylinderMesh.vertices.push_back(height / 2);
+        cylinderMesh.vertices.push_back(0.5f * height);
+        cylinderMesh.vertices.push_back(z);
     }
-    for (int i = 0; i < sectorCount - 1; ++i) {
-        cylinderMesh.indices.push_back(i * 2);
-        cylinderMesh.indices.push_back(i * 2 + 1);
-        cylinderMesh.indices.push_back(i * 2 + 2);
-        cylinderMesh.indices.push_back(i * 2 + 1);
-        cylinderMesh.indices.push_back(i * 2 + 3);
-        cylinderMesh.indices.push_back(i * 2 + 2);
+
+    // 添加中心顶点
+    cylinderMesh.vertices.push_back(0.0f);
+    cylinderMesh.vertices.push_back(-0.5f * height);
+    cylinderMesh.vertices.push_back(0.0f);
+    cylinderMesh.vertices.push_back(0.0f);
+    cylinderMesh.vertices.push_back(0.5f * height);
+    cylinderMesh.vertices.push_back(0.0f);
+
+    // 生成索引
+    for (int i = 0; i < slices; ++i) {
+        int bottom1 = 2 * i;
+        int bottom2 = 2 * ((i + 1) % slices);
+        int top1 = bottom1 + 1;
+        int top2 = bottom2 + 1;
+
+        // 侧面
+        cylinderMesh.indices.push_back(bottom1);
+        cylinderMesh.indices.push_back(bottom2);
+        cylinderMesh.indices.push_back(top1);
+
+        cylinderMesh.indices.push_back(top1);
+        cylinderMesh.indices.push_back(bottom2);
+        cylinderMesh.indices.push_back(top2);
+
+        // 底部圆
+        cylinderMesh.indices.push_back(bottom1);
+        cylinderMesh.indices.push_back(bottom2);
+        cylinderMesh.indices.push_back(2 * slices);
+
+        // 顶部圆
+        cylinderMesh.indices.push_back(top1);
+        cylinderMesh.indices.push_back(2 * slices + 1);
+        cylinderMesh.indices.push_back(top2);
     }
+
     meshes.push_back(cylinderMesh);
 }
+
 
 glm::vec3 Component_Mesh::CalculateMeshSize() {
     if (meshes.empty()) {
