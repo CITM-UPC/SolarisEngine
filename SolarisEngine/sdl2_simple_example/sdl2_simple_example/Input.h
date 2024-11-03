@@ -90,7 +90,7 @@ public:
 	// An array to fill in all detected gamepads
 	GamePad pads[MAX_PADS];
 
-	bool mouseLefttIsPressed = false;
+	bool mouseLeftIsPressed = false;
 	bool mouseRightIsPressed = false;
 	bool mouseMiddleIsPressed = false;
 };

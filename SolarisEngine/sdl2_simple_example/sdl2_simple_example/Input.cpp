@@ -237,68 +237,76 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 	switch (event.type) {
 	case SDL_QUIT:
 		return false;
+
 	case SDL_KEYDOWN:
 		app->cameraEditor->processInput(event.key.keysym.sym, true);
 		break;
+
 	case SDL_KEYUP:
 		app->cameraEditor->processInput(event.key.keysym.sym, false);
 		break;
+
 	case SDL_MOUSEBUTTONDOWN:
 		if (event.button.button == SDL_BUTTON_LEFT) {
-			mouseLefttIsPressed = true;
+			mouseLeftIsPressed = true;
 		}
 		if (event.button.button == SDL_BUTTON_RIGHT) {
-			mouseRightIsPressed = true;  
+			mouseRightIsPressed = true;
 		}
-		if (event.button.button == SDL_BUTTON_MIDDLE)
-		{
+		if (event.button.button == SDL_BUTTON_MIDDLE) {
 			mouseMiddleIsPressed = true;
 		}
-
 		break;
+
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == SDL_BUTTON_LEFT) {
-			mouseLefttIsPressed = false;
+			mouseLeftIsPressed = false;
 		}
 		if (event.button.button == SDL_BUTTON_RIGHT) {
-			mouseRightIsPressed = false;  
+			mouseRightIsPressed = false;
 		}
-		if (event.button.button == SDL_BUTTON_MIDDLE)
-		{
+		if (event.button.button == SDL_BUTTON_MIDDLE) {
 			mouseMiddleIsPressed = false;
 		}
 		break;
+
 	case SDL_MOUSEMOTION:
-		if (event.motion.state & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
-			mouseRightIsPressed;
+		// Procesar órbita solo si Alt + clic izquierdo están activos
+		if (mouseLeftIsPressed && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LALT]) {
 			float xoffset = event.motion.xrel;
 			float yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMovement(xoffset, yoffset);
 		}
+		// Procesar movimiento de cámara libre si clic derecho está activo
+		else if (mouseRightIsPressed) {
+			float xoffset = event.motion.xrel;
+			float yoffset = event.motion.yrel;
+			app->cameraEditor->processMouseMovement(xoffset, yoffset);
+		}
+		// Procesar desplazamiento si el clic del medio está activo
 		else if (mouseMiddleIsPressed) {
 			float xoffset = event.motion.xrel;
 			float yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMiddle(xoffset, yoffset);
 		}
-		else if (event.motion.state & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-			float xoffset = event.motion.xrel;
-			float yoffset = event.motion.yrel;
-			app->cameraEditor->processMouseMovement(xoffset, yoffset);
-		}
 		break;
+
 	case SDL_MOUSEWHEEL:
 		app->cameraEditor->MouseWheel(event.wheel.y > 0);
 		break;
+
 	case SDL_DROPFILE:
 		handleDroppedFile(event.drop.file);
 		break;
+
 	default:
 		ImGui_ImplSDL2_ProcessEvent(&event);
 		break;
 	}
-	
+
 	return true;
 }
+
 
 
 void InputEditor::handleDroppedFile(const char* filePath)
