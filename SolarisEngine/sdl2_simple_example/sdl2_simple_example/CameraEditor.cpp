@@ -49,17 +49,22 @@ void CameraEditor::focusOnObject() {
         glm::vec3 objectPosition = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>()->GetPosition();
         float relativeSize = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>()->GetRelativeSize();
 
-        float baseDistance = 1.0f;
+        // Calcular la distancia requerida para ver el objeto en función de su tamaño
+        float baseDistance = 1.5f;
         float distance = baseDistance * relativeSize;
 
-        glm::vec3 offset(0.0f, 1.0f, -distance);
-        position = objectPosition + offset;
+        // Calcular la dirección desde la posición actual hacia el objeto
         front = glm::normalize(objectPosition - position);
 
+        // Ajustar la posición de la cámara para estar a la distancia deseada desde el objeto en la dirección actual
+        position = objectPosition - front * distance;
+
+        // Calcular yaw y pitch para que la cámara apunte al objeto correctamente
         yaw = glm::degrees(atan2(front.z, front.x));
         pitch = glm::degrees(asin(front.y));
     }
 }
+
 
 void CameraEditor::updateCameraPosition() {
     float speedMultiplier = (SDL_GetModState() & KMOD_SHIFT) ? boostedSpeedMultiplier : 1.0f;
