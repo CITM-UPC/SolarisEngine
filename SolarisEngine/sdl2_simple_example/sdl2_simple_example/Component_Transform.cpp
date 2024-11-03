@@ -29,18 +29,24 @@ void Component_Transform::DrawComponent()
 
 void Component_Transform::DrawInspectorComponent()
 {
-    ImGui::Text("Transform Properties");
-    glm::vec3 position = this->GetPosition();
-    ImGui::DragFloat3("Position", &position[0]); // Editor de posición
-    this->SetPosition(position); // Actualiza la posición
 
-    glm::vec3 scale = this->GetScale();
-    ImGui::DragFloat3("Scale", &scale[0]); // Editor de escala
-    this->SetScale(scale.x, scale.y, scale.z); // Actualiza la escala
 
-    glm::vec3 rotation = this->GetRotation();
-    ImGui::DragFloat3("Rotation", &rotation[0]); // Editor de rotación
-    this->SetRotation(rotation.x, rotation.y, rotation.z); // Actualiza la rotación
+
+    if (ImGui::CollapsingHeader(u8"\ue096 Transform")) {
+
+        glm::vec3 position = this->GetPosition();
+        ImGui::DragFloat3("Position", &position[0]); // Editor de posición
+        this->SetPosition(position); // Actualiza la posición
+
+        glm::vec3 scale = this->GetScale();
+        ImGui::DragFloat3("Scale", &scale[0]); // Editor de escala
+        this->SetScale(scale.x, scale.y, scale.z); // Actualiza la escala
+
+        glm::vec3 rotation = this->GetRotation();
+        ImGui::DragFloat3("Rotation", &rotation[0]); // Editor de rotación
+        this->SetRotation(rotation.x, rotation.y, rotation.z); // Actualiza la rotación
+    }
+   
 }
 
 void Component_Transform::SetPosition(float x, float y, float z) {

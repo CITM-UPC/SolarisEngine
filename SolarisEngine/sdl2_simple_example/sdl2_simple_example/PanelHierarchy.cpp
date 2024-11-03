@@ -42,7 +42,12 @@ void PanelHierarchy::DrawGameObject(GameObject* gameObject) {
        
     }
 
-    ImGui::Text(gameObject->GetName().c_str()); // Dibuja el nombre del GameObject
+
+
+    std::string gameObjectName = u8"\ue079 " + gameObject->GetName();
+    ImGui::Text(gameObjectName.c_str()); // Dibuja el nombre del GameObject
+
+
 
     // Detecta clic en el GameObject
     if (ImGui::IsItemClicked()) {

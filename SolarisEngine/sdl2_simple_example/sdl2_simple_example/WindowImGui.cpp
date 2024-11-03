@@ -28,11 +28,12 @@ void WindowImGui::LoadFonts() {
     ImFontConfig config;
     config.MergeMode = true;   // Combinar con la fuente predeterminada, solo si es necesario
     config.PixelSnapH = true;  // Alinear píxeles
+    config.GlyphOffset = ImVec2(3.0f, 3.0f);
 
-    float iconFontSize = 16.0f;  // Ajusta el tamaño de icono
+    float iconFontSize = 13.0f;  // Ajusta el tamaño de icono
 
     // Usa la ruta absoluta
-    std::string fontPath = "E:\\_GITHUB\\SolarisEngine\\SolarisEngine\\sdl2_simple_example\\sdl2_simple_example\\Library\\Fonts\\OpenFontIcons.ttf";
+    std::string fontPath = std::string(FONTS_DIR) + "/OpenFontIcons.ttf";
 
     // Rango de iconos (Unicode área privada)
     static const ImWchar icon_ranges[] = { ICON_MIN, ICON_MAX, 0 };

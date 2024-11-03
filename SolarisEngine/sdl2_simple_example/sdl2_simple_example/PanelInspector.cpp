@@ -35,9 +35,10 @@ void PanelInspector::Render() {
         // Renderiza los componentes del GameObject
         for (auto component : selectedGameObject->GetComponents()) { // Asume que tienes un método GetComponents()
             //DrawComponent(component);
-            if (ImGui::CollapsingHeader(component->GetName().c_str())) {
+            /*if (ImGui::CollapsingHeader(component->GetName().c_str())) {
                 component->DrawInspectorComponent();
-            }
+            }*/
+            component->DrawInspectorComponent();
         }
     }
     else {

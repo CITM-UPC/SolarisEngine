@@ -96,29 +96,34 @@ void Component_Material::DrawComponent() {
 }
 
 void Component_Material::DrawInspectorComponent() {
-    ImGui::Text("Material Properties");
 
-    // Editor de color
-    ImGui::ColorEdit3("Diffuse Color", material->diffuseColor);
-    SetDiffuseColor(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
 
-    // Mostrar la textura si está cargada
-    if (GetTextureID() != 0) {
-        ImGui::Text("Texture:");
+    if (ImGui::CollapsingHeader(u8"\ue08F Material")) {
+        // Editor de color
+        ImGui::ColorEdit3("Diffuse Color", material->diffuseColor);
+        SetDiffuseColor(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
 
-        ImGui::TextWrapped("Path: %s", material->texturePath.c_str());
-        ImGui::Text("Size: %dx%d", material->textureWidth, material->textureHeight);
+        // Mostrar la textura si está cargada
+        if (GetTextureID() != 0) {
+            ImGui::Text("Texture:");
+
+            ImGui::TextWrapped("Path: %s", material->texturePath.c_str());
+            ImGui::Text("Size: %dx%d", material->textureWidth, material->textureHeight);
         
 
-        // Renderizar la textura
-        ImGui::Image((void*)(intptr_t)GetTextureID(), ImVec2(256, 256));
-    }
-    else {
-        ImGui::Text("No texture loaded.");
+            // Renderizar la textura
+            ImGui::Image((void*)(intptr_t)GetTextureID(), ImVec2(256, 256));
+        }
+        else {
+            ImGui::Text("No texture loaded.");
+        }
+
+        // Checkbox para activar la textura de cuadros
+        ImGui::Checkbox("Use Checker Texture", &showCheckerTexture);
+    
     }
 
-    // Checkbox para activar la textura de cuadros
-    ImGui::Checkbox("Use Checker Texture", &showCheckerTexture);
+    
 }
 
 void Component_Material::CreateCheckerPattern() {

@@ -128,10 +128,14 @@ void Component_Mesh::DrawComponent() {
 
 void Component_Mesh::DrawInspectorComponent()
 {
-    ImGui::Text("Mesh Component");
+    if (ImGui::CollapsingHeader(u8"\ue025 Mesh")) {
+        ImGui::Text("Mesh Component");
 
-    ImGui::Checkbox("Show Vertex Normals", &showVertexNormals); // Activar o desactivar normales
-    ImGui::Checkbox("Show Face Normals", &showFaceNormals); // Activar o desactivar normales
+        ImGui::Checkbox("Show Vertex Normals", &showVertexNormals); // Activar o desactivar normales
+        ImGui::Checkbox("Show Face Normals", &showFaceNormals); // Activar o desactivar normales
+    
+    }
+    
 }
 
 void Component_Mesh::LoadMesh(aiMesh* ai_mesh) {
