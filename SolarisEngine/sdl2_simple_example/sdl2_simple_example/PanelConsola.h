@@ -15,6 +15,7 @@ public:
     ~PanelConsola();
 
     void Render() override; // Implementa el método Render
+    void RenderContext() override; // Implementa el método Render
     void AddLog(const std::string& message);
 
 

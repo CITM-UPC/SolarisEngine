@@ -35,7 +35,7 @@ public:
 
     void SetMaterial(Component_Material* material);
 
-
+    Component* Clone() const override;
 
     // Métodos de creación estáticos para cada primitivo
     void GenerateCubeMesh();

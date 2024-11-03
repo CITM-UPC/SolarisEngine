@@ -471,6 +471,10 @@ glm::vec3 Component_Mesh::CalculateMeshSize() {
     return meshSize; // Retornar el tamaño de la malla
 }
 
+Component* Component_Mesh::Clone() const {
+    return new Component_Mesh(*this); // Crea una copia usando el constructor de copia
+}
+
 
 
 

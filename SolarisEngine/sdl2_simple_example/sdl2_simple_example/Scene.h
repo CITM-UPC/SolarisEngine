@@ -26,10 +26,15 @@ public:
 
     std::vector<GameObject*> GetGameObjectsList();
 
+    void SetCopiedGameObject(GameObject* gameObject);
+    GameObject* GetCopiedGameObject();
+
 
 private:
     std::vector<GameObject*> gameObjects; // Lista de GameObjects en la jerarquía
     GameObject* selectedGameObject; // Lista de GameObjects en la jerarquía
+
+    GameObject* copiedGameObject;
 };
 
 #endif // SCENE_H

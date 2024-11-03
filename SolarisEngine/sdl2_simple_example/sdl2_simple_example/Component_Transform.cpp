@@ -30,21 +30,21 @@ void Component_Transform::DrawComponent()
 void Component_Transform::DrawInspectorComponent()
 {
 
-
-
     if (ImGui::CollapsingHeader(u8"\ue096 Transform")) {
 
         glm::vec3 position = this->GetPosition();
-        ImGui::DragFloat3("Position", &position[0]); // Editor de posición
+        ImGui::DragFloat3("Position", &position[0], 0.1f); // Editor de posición
         this->SetPosition(position); // Actualiza la posición
+
+        glm::vec3 rotation = this->GetRotation();
+        ImGui::DragFloat3("Rotation", &rotation[0]); // Editor de rotación
+        this->SetRotation(rotation.x, rotation.y, rotation.z); // Actualiza la rotación
 
         glm::vec3 scale = this->GetScale();
         ImGui::DragFloat3("Scale", &scale[0]); // Editor de escala
         this->SetScale(scale.x, scale.y, scale.z); // Actualiza la escala
 
-        glm::vec3 rotation = this->GetRotation();
-        ImGui::DragFloat3("Rotation", &rotation[0]); // Editor de rotación
-        this->SetRotation(rotation.x, rotation.y, rotation.z); // Actualiza la rotación
+      
     }
    
 }
@@ -108,4 +108,8 @@ glm::mat4 Component_Transform::GetModelMatrix() const {
     glm::mat4 rotationMatrix = glm::mat4_cast(rotationQuat);
 
     return translationMatrix * rotationMatrix * scaleMatrix;
+}
+
+Component* Component_Transform::Clone() const{
+    return new Component_Transform(*this); // Crea una copia usando el constructor de copia
 }

@@ -55,3 +55,13 @@ std::vector<GameObject*> Scene::GetGameObjectsList()
 {
     return gameObjects;
 }
+
+void Scene::SetCopiedGameObject(GameObject* gameObject)
+{
+    this->copiedGameObject = gameObject;
+}
+
+GameObject* Scene::GetCopiedGameObject()
+{
+    return this->copiedGameObject;
+}

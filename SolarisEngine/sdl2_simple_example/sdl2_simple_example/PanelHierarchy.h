@@ -14,6 +14,7 @@ public:
     ~PanelHierarchy();
 
     void Render() override; // Implementa el método Render
+    void RenderContext() override; // Implementa el método Render
 
 private:
     void DrawGameObject(GameObject* gameObject); // Método para dibujar un GameObject

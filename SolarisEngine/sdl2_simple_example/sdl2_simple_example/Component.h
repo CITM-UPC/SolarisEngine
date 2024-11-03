@@ -26,6 +26,7 @@ public:
     virtual void Update(double dt) = 0; // Hacerlo puro virtual
     virtual void DrawComponent() = 0; // Hacerlo puro virtual
     virtual void DrawInspectorComponent() = 0; // Hacerlo puro virtual
+    virtual Component* Clone() const = 0;
 
     std::string GetName();
     void CreateNameFromType(ComponentType type);
@@ -35,6 +36,9 @@ public:
 
     void CreateUID() { UID = UIDGen::GenerateRandomUint32(); }
     uint32_t GetUID() { return UID; }
+
+    void SetContainer(GameObject* containerGO);
+
 
 protected:
     GameObject* containerGO; // Cambiado a puntero crudo

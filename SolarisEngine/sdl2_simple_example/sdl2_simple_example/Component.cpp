@@ -44,3 +44,8 @@ GameObject* Component::GetContainerGO() const {
 bool Component::IsEnabled() const {
     return enabled;
 }
+
+void Component::SetContainer(GameObject* containerGO)
+{
+    this->containerGO = containerGO;
+}

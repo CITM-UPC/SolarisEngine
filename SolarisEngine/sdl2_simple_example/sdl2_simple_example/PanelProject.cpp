@@ -164,6 +164,10 @@ void PanelProject::ShowBreadcrumbNavigation() {
     }
 }
 
+void PanelProject::RenderContext()
+{
+}
+
 
 
 

@@ -40,7 +40,7 @@ public:
     void DrawInspectorComponent() override;
 
    
-
+    Component* Clone() const override;
   
 
     glm::vec3 GetDiffuseColor() const;

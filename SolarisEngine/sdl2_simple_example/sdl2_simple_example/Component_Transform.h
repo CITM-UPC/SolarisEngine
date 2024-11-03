@@ -34,6 +34,8 @@ public:
 
     glm::mat4 GetModelMatrix() const;
 
+    Component* Clone() const override;
+
 private:
     glm::vec3 position;  // Posición
     glm::vec3 scale;     // Escala

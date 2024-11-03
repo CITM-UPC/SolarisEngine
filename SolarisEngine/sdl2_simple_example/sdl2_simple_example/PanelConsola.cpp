@@ -55,6 +55,10 @@ void PanelConsola::Render() {
     ImGui::End(); // End panel window
 }
 
+void PanelConsola::RenderContext()
+{
+}
+
 void PanelConsola::AddLog(const std::string& message) {
     // Append log message to the buffer
     logBuffer.appendf("%s\n", message.c_str());

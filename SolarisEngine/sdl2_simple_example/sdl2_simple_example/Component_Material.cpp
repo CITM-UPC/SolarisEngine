@@ -126,6 +126,11 @@ void Component_Material::DrawInspectorComponent() {
     
 }
 
+Component* Component_Material::Clone() const
+{
+    return new Component_Material(*this);
+}
+
 void Component_Material::CreateCheckerPattern() {
     // Crea un patrón de cuadros en un pequeño buffer
     const int checkerSize = 64;

@@ -28,6 +28,9 @@ public:
     template <typename TComponent>
     TComponent* AddComponent();
 
+    template <typename TComponent>
+    TComponent* AddComponent(TComponent* component);
+
     void RemoveComponent(ComponentType type);
 
     std::vector<Component*> GetComponents();
@@ -47,6 +50,9 @@ public:
     void SetStatic(bool isStatic);
 
     void CreateUID();
+    GameObject* Duplicate() const;
+    void AddChild(GameObject* child);
+    void SetParent(GameObject* parent);
     uint32_t GetUID() { return UID; }
 
 private:

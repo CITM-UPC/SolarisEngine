@@ -15,6 +15,7 @@ public:
     ~PanelProject();
 
     void Render() override; // Implements the Render method
+    void RenderContext() override; // Implements the Render method
 
 private:
     void ShowFileSystemTree(const std::filesystem::path& path); // Recursive method to display file system

@@ -47,3 +47,7 @@ void PanelInspector::Render() {
 
     ImGui::End(); // Finaliza el panel
 }
+
+void PanelInspector::RenderContext()
+{
+}

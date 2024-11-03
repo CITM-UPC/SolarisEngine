@@ -93,3 +93,38 @@ void GameObject::SetStatic(bool isStatic) { this->isStatic = isStatic; }
 void GameObject::CreateUID() {
     UID = UIDGen::GenerateRandomUint32();
 }
+
+GameObject* GameObject::Duplicate() const {
+    GameObject* newGameObject = new GameObject(name); // Crea un nuevo GameObject con el mismo nombre
+
+    // Clona todos los componentes
+    for (auto component : components) {
+        if (component) {
+            Component* newComponent = component->Clone(); // Suponiendo que cada componente tiene un método Clone()
+            newGameObject->AddComponent(newComponent); // Añade el componente clonado al nuevo GameObject
+        }
+    }
+
+    // Opcional: Clonar hijos (si es necesario)
+    for (auto child : children) {
+        if (child) {
+            GameObject* newChild = child->Duplicate(); // Duplicar el hijo
+            newGameObject->AddChild(newChild); // Añadir el hijo clonado al nuevo GameObject
+        }
+    }
+
+    return newGameObject; // Retorna el nuevo GameObject
+}
+
+// Método para añadir un hijo (implementación simple)
+void GameObject::AddChild(GameObject* child) {
+    if (child) {
+        child->SetParent(this); // Establece el padre
+        children.push_back(child); // Añade a la lista de hijos
+    }
+}
+
+// Método para establecer el padre (implementación simple)
+void GameObject::SetParent(GameObject* parent) {
+    this->parent = parent; // Establece el padre
+}

@@ -23,7 +23,50 @@ void PanelHierarchy::Render() {
         DrawGameObject(gameObject);
     }
 
+    RenderContext();
+
     ImGui::End(); // Finaliza el panel
+}
+
+void PanelHierarchy::RenderContext()
+{
+
+    GameObject* gameObjectSelected = app->actualScene->GetSelectedGameObject();
+
+    if (ImGui::BeginPopupContextItem("GameObjectContextMenu")) {
+        if (ImGui::MenuItem("Create Empty")) {
+            auto newGO = GameObject::Create("New GameObject");
+            app->actualScene->AddGameObject(newGO);
+        }
+
+        if (ImGui::MenuItem("Duplicate")) {
+            if (gameObjectSelected) {
+                auto duplicateGO = gameObjectSelected->Duplicate();
+                app->actualScene->AddGameObject(duplicateGO);
+            }
+        }
+
+        if (ImGui::MenuItem("Delete")) {
+            if (gameObjectSelected) {
+                app->actualScene->RemoveGameObject(gameObjectSelected);
+            }
+        }
+
+        if (ImGui::MenuItem("Copy")) {
+            // Lógica para copiar el GameObject
+            // Guardar en una variable estática o similar
+            app->actualScene->SetCopiedGameObject(gameObjectSelected);
+        }
+
+        if (ImGui::MenuItem("Paste")) {
+            if (app->actualScene->GetCopiedGameObject()) {
+                auto newGO = app->actualScene->GetCopiedGameObject()->Duplicate(); // Duplica el GameObject copiado
+                app->actualScene->AddGameObject(newGO);
+            }
+        }
+
+        ImGui::EndPopup();
+    }
 }
 
 void PanelHierarchy::DrawGameObject(GameObject* gameObject) {

@@ -14,6 +14,7 @@ public:
     ~PanelScene();
 
     void Render() override; // Implementa el método Render
+    void RenderContext() override; // Implementa el método Render
 
 private:
    

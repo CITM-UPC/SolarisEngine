@@ -31,3 +31,7 @@ void PanelScene::Render()
 	ImGui::EndChild();
 	ImGui::End();
 }
+
+void PanelScene::RenderContext()
+{
+}

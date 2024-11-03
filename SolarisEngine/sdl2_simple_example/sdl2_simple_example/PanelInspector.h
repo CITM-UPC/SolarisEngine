@@ -13,7 +13,8 @@ public:
     ~PanelInspector();
 
     void Render() override; // Implementa el método Render
-    void SetSelectedGameObject(GameObject* gameObject);
+    void RenderContext() override; // Implementa el método Render
+  
 private:
     
 
