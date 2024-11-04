@@ -224,45 +224,7 @@ void MenuBar::Render() {
 
 
 void MenuBar::PreferencePopup() {
-    //if (ImGui::BeginPopup("PreferencesPopup")) {
-    //    ImGui::Text("Configuraciones de Preferencias");
-    //    ImGui::Separator(); // Separador para mejorar la legibilidad
 
-    //    // Categoría: Apariencia
-    //    ImGui::Text("Apariencia");
-    //    ImGui::SliderFloat("Tamaño de la tipografía", &fontSize, 10.0f, 30.0f, "Font Size: %.1f");
-    //    ImGui::ColorEdit4("Color del Texto", (float*)&textColor);
-    //    ImGui::ColorEdit4("Color de Fondo", (float*)&backgroundColor);
-
-    //    ImGui::GetStyle().Colors[ImGuiCol_Text] = textColor;
-    //    ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = backgroundColor;
-
-    //    ImGui::Separator(); // Otro separador
-
-    //    // Categoría: Controles
-    //    ImGui::Text("Controles");
-    //    float currentSensitivity = app->cameraEditor->GetCameraSensivility();
-
-    //    // Control deslizante para la sensibilidad del ratón
-    //    if (ImGui::SliderFloat("Sensibilidad del Ratón", &currentSensitivity, 0.001f, 1.5f, "Mouse Sensitivity: %.01f", 0.01f)) {
-    //        // Llama a la función para cambiar la sensibilidad de la cámara cuando el valor cambie
-    //        app->cameraEditor->ChangeCameraSensivility(currentSensitivity);
-    //    }
-    //    //ImGui::Checkbox("Invertir Eje Y", &invertYAxis);  // Checkbox para invertir el eje Y
-
-    //    ImGui::Separator(); // Otro separador
-
-
-
-    //    // Botones para aplicar cambios
-    //    ImGui::Separator(); // Separador antes de los botones
-    //    if (ImGui::Button("Cerrar")) {
-    //        showPreferencePopup = false;
-    //        ImGui::CloseCurrentPopup(); // Cierra el popup
-    //    }
-
-    //    ImGui::EndPopup();
-    //}
 
     ImGui::Begin("Configuraciones de Preferencias", &showPreferencePopup, ImGuiWindowFlags_AlwaysAutoResize);
 
@@ -271,7 +233,7 @@ void MenuBar::PreferencePopup() {
 
     // Categoría: Apariencia
     ImGui::Text("Apariencia");
-    ImGui::SliderFloat(u8"Tamaño de la tipografía", &fontSize, 10.0f, 30.0f, "Font Size: %.1f");
+    //ImGui::SliderFloat(u8"Tamaño de la tipografía", &fontSize, 10.0f, 30.0f, "Font Size: %.1f");
     ImGui::ColorEdit4("Color del Texto", (float*)&textColor);
     ImGui::ColorEdit4("Color de Fondo", (float*)&backgroundColor);
 

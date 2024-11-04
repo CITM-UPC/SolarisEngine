@@ -63,7 +63,11 @@ ILuint Component_Material::GetTextureID() {
 
 glm::vec3 Component_Material::GetDiffuseColor() const
 {
-    return glm::vec3(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
+    if (material) {
+        return glm::vec3(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
+    }
+    return glm::vec3(0,0,0);
+   
 }
 
 void Component_Material::Enable() {
