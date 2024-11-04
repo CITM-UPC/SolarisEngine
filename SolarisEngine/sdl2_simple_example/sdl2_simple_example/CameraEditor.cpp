@@ -126,7 +126,7 @@ void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
 
     if (orbiting && app->actualScene->GetSelectedGameObject() != nullptr) {
         yaw += xoffset;
-        pitch = glm::clamp(pitch - yoffset, -89.0f, 89.0f);
+        pitch = glm::clamp(pitch + yoffset, -89.0f, 89.0f); // Invierte el signo de yoffset
 
         glm::vec3 objectPosition = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>()->GetPosition();
         float radius = glm::length(position - objectPosition);
@@ -139,7 +139,7 @@ void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
     }
     else if (app->inputEditor->mouseRightIsPressed) {
         yaw += xoffset;
-        pitch = glm::clamp(pitch - yoffset, -89.0f, 89.0f);
+        pitch = glm::clamp(pitch + yoffset, -89.0f, 89.0f); // Invierte el signo de yoffset
 
         front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
         front.y = sin(glm::radians(pitch));
@@ -154,6 +154,7 @@ void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
     printf("Yaw: %f,\n", yaw);
     printf("Pitch: %f,\n", pitch);
 }
+
 
 
 
