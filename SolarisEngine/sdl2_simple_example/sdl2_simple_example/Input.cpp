@@ -331,5 +331,5 @@ void InputEditor::handleDroppedFile(const char* filePath)
 		}
 		
 	}
-	Debug::Log("Import file : ", filePath);
+	Debug::Log("Import file: ", filePath);
 }
