@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Component_Transform.h"
 #include <SDL2/SDL_stdinc.h>
-#include <sstream>
+#include "Debug.h"
 
 
 Component_Mesh::Component_Mesh(GameObject* containerGO)  // Cambiado a puntero crudo
@@ -310,21 +310,21 @@ void Component_Mesh::GenerateTriangleMesh() {
 
 	// 顶点
 	triangleMesh.vertices = {
-		0.0f, 0.5f, 0.0f,  // 顶点 A
-	   -0.5f, -0.5f, 0.5f, // 顶点 B
-		0.5f, -0.5f, 0.5f, // 顶点 C
-	   -0.5f, -0.5f, -0.5f,// 顶点 D
-		0.5f, -0.5f, -0.5f // 顶点 E
+		0.0f, 0.5f, 0.0f,  // A
+	   -0.5f, -0.5f, 0.5f, // B
+		0.5f, -0.5f, 0.5f, // C
+	   -0.5f, -0.5f, -0.5f,// D
+		0.5f, -0.5f, -0.5f // E
 	};
 
 	// 索引
 	triangleMesh.indices = {
-		0, 1, 2,  // 面 ABC
-		0, 3, 1,  // 面 ADE
-		0, 4, 3,  // 面 ABE
-		0, 2, 4,  // 面 ACE
-		1, 3, 4,  // 面 BDE
-		1, 4, 2   // 面 BCE
+		0, 1, 2,  // ABC
+		0, 3, 1,  // ADE
+		0, 4, 3,  // ABE
+		0, 2, 4,  // ACE
+		1, 3, 4,  // BDE
+		1, 4, 2   // BCE
 	};
 
 	meshes.push_back(triangleMesh);
@@ -391,24 +391,24 @@ void Component_Mesh::GenerateCylinderMesh() {
 	const float radius = 0.5f;
 	const float height = 1.0f;
 
-	// 生成顶点
+	
 	for (int i = 0; i <= slices; ++i) {
 		float angle = i * 2.0f * M_PI / slices;
 		float x = radius * cos(angle);
 		float z = radius * sin(angle);
 
-		// 底部圆
+		
 		cylinderMesh.vertices.push_back(x);
 		cylinderMesh.vertices.push_back(-0.5f * height);
 		cylinderMesh.vertices.push_back(z);
 
-		// 顶部圆
+		
 		cylinderMesh.vertices.push_back(x);
 		cylinderMesh.vertices.push_back(0.5f * height);
 		cylinderMesh.vertices.push_back(z);
 	}
 
-	// 添加中心顶点
+
 	cylinderMesh.vertices.push_back(0.0f);
 	cylinderMesh.vertices.push_back(-0.5f * height);
 	cylinderMesh.vertices.push_back(0.0f);
@@ -416,14 +416,14 @@ void Component_Mesh::GenerateCylinderMesh() {
 	cylinderMesh.vertices.push_back(0.5f * height);
 	cylinderMesh.vertices.push_back(0.0f);
 
-	// 生成索引
+	
 	for (int i = 0; i < slices; ++i) {
 		int bottom1 = 2 * i;
 		int bottom2 = 2 * ((i + 1) % slices);
 		int top1 = bottom1 + 1;
 		int top2 = bottom2 + 1;
 
-		// 侧面
+		
 		cylinderMesh.indices.push_back(bottom1);
 		cylinderMesh.indices.push_back(bottom2);
 		cylinderMesh.indices.push_back(top1);
@@ -432,12 +432,12 @@ void Component_Mesh::GenerateCylinderMesh() {
 		cylinderMesh.indices.push_back(bottom2);
 		cylinderMesh.indices.push_back(top2);
 
-		// 底部圆
+		
 		cylinderMesh.indices.push_back(bottom1);
 		cylinderMesh.indices.push_back(bottom2);
 		cylinderMesh.indices.push_back(2 * slices);
 
-		// 顶部圆
+		
 		cylinderMesh.indices.push_back(top1);
 		cylinderMesh.indices.push_back(2 * slices + 1);
 		cylinderMesh.indices.push_back(top2);
@@ -469,9 +469,8 @@ glm::vec3 Component_Mesh::CalculateMeshSize() {
 	// Calcular el tama駉 de la malla en cada dimensi髇
 	glm::vec3 meshSize = maxBounds - minBounds;
 	std::cout << "Mesh size: " << meshSize.x << ", " << meshSize.y << ", " << meshSize.z << std::endl;
-	std::stringstream ss;
-	ss << "Mesh size: " << meshSize.x << ", " << meshSize.y << ", " << meshSize.z;
-	app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog(ss.str());
+
+	Debug::Log("Mesh size: ", meshSize.x, ", ", meshSize.y, ", ", meshSize.z);
 
 	return meshSize; // Retornar el tama駉 de la malla
 }
