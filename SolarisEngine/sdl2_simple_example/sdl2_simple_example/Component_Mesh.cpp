@@ -176,7 +176,7 @@ void Component_Mesh::DrawInspectorComponent()
 		ImGui::Checkbox("Show Vertex Normals", &showVertexNormals); // Activar o desactivar normales
 		ImGui::Checkbox("Show Face Normals", &showFaceNormals); // Activar o desactivar normales
 
-	}
+	
 
         ImGui::Checkbox("Show Vertex Normals", &showVertexNormals); // Activar o desactivar normales
         ImGui::Checkbox("Show Face Normals", &showFaceNormals); // Activar o desactivar normales
