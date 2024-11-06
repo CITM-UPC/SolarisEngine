@@ -210,7 +210,7 @@ void MenuBar::Render() {
         
         ImGui::Begin("FPS Overlay", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
         ImGui::SetWindowPos(ImVec2(2, 20));  // Posición en la esquina superior izquierda
-        ImGui::Text("Current FPS: %.1f", currentFPS);
+        ImGui::Text("FPS: %.1f", currentFPS);
         ImGui::End();
     }
 

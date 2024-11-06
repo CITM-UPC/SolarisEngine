@@ -27,6 +27,22 @@ private:
     std::filesystem::path currentPath;
     std::string selectedItem ;
     std::stack<std::filesystem::path> pathStack;
+
+
+    std::unordered_map<std::string, std::string> iconTypes = {
+        {".png", "png"},
+        {".jpg", "jpg"},
+        {".jpeg", "jpg"},
+        {".fbx", "fbx"},
+        {".mp3", "audio"},
+        {".wav", "audio"},
+        {".txt", "text"},
+        {".md", "text"},
+        {".mat", "material"},
+        {".go", "gameObject"}
+    };
+
+
 };
 
 #endif // __PANEL_PROJECT_H__
