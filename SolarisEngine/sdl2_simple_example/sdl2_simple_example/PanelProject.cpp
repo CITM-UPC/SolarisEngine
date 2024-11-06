@@ -10,12 +10,21 @@ namespace fs = std::filesystem;
 // Constructor
 PanelProject::PanelProject() {
     projectPath = ASSETS_DIR;
-    icons["folder"] = (int*)app->textureLoader->LoadTextureDevIL("./Assets/file2.png");
-    icons["file"] = (int*)app->textureLoader->LoadTextureDevIL("./Assets/file2.png");
-    icons["image"] = (int*)app->textureLoader->LoadTextureDevIL("./Assets/file2.png");
+    icons["unknow"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/desconocido.png");
+    icons["folder"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/folder.png");
+    icons["file"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/file.png");
+    icons["text"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/txt.png");
+    icons["png"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/png.png");
+    icons["jpg"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/jpg.png");
+    icons["fbx"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/fbx.png");
+    icons["image"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/image.png");
+    icons["material"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/material.png");
+    icons["gameObject"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/gameObject.png");
     currentPath = projectPath; // ruta actual
     selectedItem = ""; // item selecionado
     pathStack.push(currentPath);
+
+
 }
 
 // Destructor
@@ -72,17 +81,12 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
         }
         else {
             std::string extension = entryPath.extension().string();
-            if (extension == ".png" || extension == ".jpg" || extension == ".jpeg") {
-                icon = icons["image"]; // foto
-            }
-            else if (extension == ".mp3" || extension == ".wav") {
-                icon = icons["audio"]; // audio
-            }
-            else if (extension == ".txt" || extension == ".md") {
-                icon = icons["text"]; // texto
+
+            if (iconTypes.find(extension) != iconTypes.end()) {
+                icon = icons[iconTypes[extension]]; // Icono según tipo
             }
             else {
-                icon = icons["file"]; // otros
+                icon = icons["unknow"]; // Otros
             }
         }
 
