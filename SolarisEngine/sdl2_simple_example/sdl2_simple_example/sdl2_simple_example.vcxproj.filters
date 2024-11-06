@@ -114,8 +114,8 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Component_BoundingBox.cpp">
-      <Filter>Source Files\Componentes</Filter>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -197,8 +197,8 @@
     <ClInclude Include="Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Component_BoundingBox.h">
-      <Filter>Header Files\Componentes</Filter>
+    <ClInclude Include="Debug.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,8 @@
 
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <sstream>
+#include "App.h"
 
 WindowImGui::WindowImGui()
     : hierarchyPanel(nullptr), inspectorPanel(nullptr) {
@@ -41,6 +43,9 @@ void WindowImGui::LoadFonts() {
     // Verificar si el archivo existe antes de cargarlo
     if (!std::filesystem::exists(fontPath)) {
         std::cout << "Error: La fuente OpenFontIcons.ttf no se encuentra en la ruta especificada: " << fontPath << std::endl;
+        std::stringstream ss;
+        ss << "Error: La fuente OpenFontIcons.ttf no se encuentra en la ruta especificada: " << fontPath << std::endl;
+        app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog(ss.str());
     }
     else {
         iconFont = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), iconFontSize, &config, icon_ranges);

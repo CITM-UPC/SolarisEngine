@@ -3,21 +3,27 @@
 #include "Component_Mesh.h" // Asegúrate de que tienes esta clase definida
 #include <memory> // Para std::shared_ptr
 #include <filesystem>
+#include "App.h"
+#include "sstream"
 
 namespace fs = std::filesystem;
 
 Importer::Importer() {
     std::cout << "Inicializando directorios..." << std::endl;
+    app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog("Inicializando directorios");
 
     // Crear directorios si no existen
     for (const auto& dir : { ASSETS_DIR, LIBRARY_DIR, MESHES_DIR, MATERIALS_DIR, MODELS_DIR, FONTS_DIR }) {
         if (!(fs::exists(dir) && fs::is_directory(dir))) {
             fs::create_directory(dir);
             std::cout << "Creado directorio: " << dir << std::endl;
+            std::stringstream ss;
+            ss << "Creado directorio: " << dir << std::endl;
+            app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog(ss.str());
         }
     }
 
-    ilInit(); // Inicializa DevIL
+    
 }
 
 GameObject* Importer::Importar(const std::string& modelPath) {
@@ -80,6 +86,9 @@ void Importer::LoadMaterials(const aiScene* scene) {
         aiString name;
         ai_material->Get(AI_MATKEY_NAME, name);
         std::cout << "Name: " << name.C_Str() << std::endl;
+        std::stringstream ss;
+        ss << "Name: " << name.C_Str() << std::endl;
+        app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog(ss.str());
         materials.push_back(name.C_Str());
 
         // Cargar textura difusa si existe
@@ -100,6 +109,9 @@ void Importer::LoadMaterials(const aiScene* scene) {
 
                     textureIds[name.C_Str()] = textureId; // Guardar ID de textura
                     std::cout << "Textura cargada: " << fullPath << std::endl;
+                    std::stringstream ss;
+                    ss << "Textura cargada: " << fullPath << std::endl;
+                    app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog(ss.str());
                 }
                 else {
                     std::cerr << "Error al cargar la textura: " << fullPath << std::endl;
@@ -134,4 +146,7 @@ void Importer::Draw(const std::string& modelName) {
     // glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
 
     std::cout << "Dibujando modelo: " << modelName << std::endl;
+    std::stringstream ss;
+    ss << "Dibujando modelo: " << modelName << std::endl;
+    app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog(ss.str());
 }

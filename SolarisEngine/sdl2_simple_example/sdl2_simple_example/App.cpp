@@ -1,4 +1,5 @@
-﻿#include <GL/glew.h> // Asegúrate de incluir GLEW antes de OpenGL
+﻿#include "Debug.h"
+#include <GL/glew.h> // Asegúrate de incluir GLEW antes de OpenGL
 #include <GL/gl.h>
 
 #include "App.h"
@@ -7,6 +8,8 @@
 #include <exception>
 #include <imgui_impl_sdl2.h>
 #include <SDL2/SDL_events.h>
+
+
 
 App* app = NULL;
 
@@ -30,16 +33,21 @@ App::~App()
 // Called before render is available
 bool App::Awake()
 {
+
+    bool ret = LoadConfig();
+
     std::cout << "App::Awake called" << std::endl;
+    Debug::Log("App::Awake called");
     // Aquí podrías cargar la configuración del juego
 
-    return LoadConfig();
+    return ret;
 }
 
 // Called before the first frame
 bool App::Start()
 {
     std::cout << "App::Start called" << std::endl;
+    Debug::Log("App::Start called");
 
     // Crear los objetos con new
     gameObject = importer->Importar("./Assets/BakerHouse.fbx"); // <-- Modelo con 1 textura
@@ -64,7 +72,7 @@ bool App::Start()
 bool App::Update()
 {
     std::cout << "App::Update called" << std::endl;
-
+    Debug::Log("App::Update called");
     PrepareUpdate();
 
     while (HandleEvents()) {
@@ -97,7 +105,9 @@ bool App::Update()
 bool App::CleanUp()
 {
     std::cout << "App::CleanUp called" << std::endl;
+    Debug::Log("App::CleanUp called");
 
+   
     // Eliminar los objetos con delete
     if (gameObject) {
         gameObject->Delete();
@@ -164,6 +174,13 @@ bool App::IsSaving()
 
 bool App::LoadConfig()
 {
+
+    textureLoader = new TextureLoader();
+
+    windowEditor = new WindowEditor();
+    windowEditor->Create();
+
+
     importer = &Importer::getInstance();
     cameraEditor = new CameraEditor(
         glm::vec3(0.0f, 0.3f, 0.2f),    // Posición inicial
@@ -171,12 +188,11 @@ bool App::LoadConfig()
         glm::vec3(0.0f, 1.0f, 0.0f));   // Vector up
 
     inputEditor = new InputEditor();
-    windowEditor = new WindowEditor();
-    textureLoader = new TextureLoader();
-
+   
+    
     actualScene = new Scene();
 
-    windowEditor->Create();
+   
     INIT_openGL();
 
 

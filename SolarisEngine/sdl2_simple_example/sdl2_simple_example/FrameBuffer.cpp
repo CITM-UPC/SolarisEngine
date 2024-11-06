@@ -35,6 +35,7 @@ FrameBuffer::FrameBuffer(float width, float height)
     // Comprobación del estado del framebuffer
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+        app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
     }
 
     // Desvincula el framebuffer

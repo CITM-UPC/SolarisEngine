@@ -6,6 +6,9 @@
 
 
 TextureLoader::TextureLoader() {
+
+    ilInit(); // Inicializa DevIL
+
 }
 
 TextureLoader::~TextureLoader() {
@@ -32,16 +35,16 @@ ImTextureID TextureLoader::LoadTexture(const std::string& filePath) {
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 
 
-    // 设置纹理参数
+    // Set Texture Parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 
-    // 生成 Mipmaps
+    // genera Mipmaps
     //glGenerateMipmap(GL_TEXTURE_2D);
-    // 如果不工作，可以使用手动生成 Mipmaps 的函数
+    // If it doesn’t work, you can use a function to manually generate Mipmaps.
     GenerateMipmaps(textureID, width, height);
 
     stbi_image_free(data);
@@ -64,7 +67,7 @@ void TextureLoader::Cleanup() {
 
 void TextureLoader::GenerateMipmaps(GLuint textureID, int width, int height) {
     glBindTexture(GL_TEXTURE_2D, textureID);
-    for (int level = 1; level < 5; level++) { // 假设最大 Mipmap 层级为 5
+    for (int level = 1; level < 5; level++) { // Assuming the maximum Mipmap level is 5.
         width /= 2;
         height /= 2;
         if (width <= 0 || height <= 0) break;

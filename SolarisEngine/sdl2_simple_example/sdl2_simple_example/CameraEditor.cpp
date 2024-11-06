@@ -153,6 +153,7 @@ void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
     printf("Position.x: %f,\n", position.x);
     printf("Yaw: %f,\n", yaw);
     printf("Pitch: %f,\n", pitch);
+
 }
 
 

@@ -136,6 +136,7 @@
     <ClCompile Include="Component_Material.cpp" />
     <ClCompile Include="Component_Mesh.cpp" />
     <ClCompile Include="Component_Transform.cpp" />
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="PanelConsola.cpp" />
     <ClCompile Include="Cube.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Component_Material.h" />
     <ClInclude Include="Component_Mesh.h" />
     <ClInclude Include="Component_Transform.h" />
+    <ClInclude Include="Debug.h" />
     <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="PanelConsola.h" />
     <ClInclude Include="Cube.h" />
