@@ -1,4 +1,5 @@
-﻿#include <GL/glew.h> // Asegúrate de incluir GLEW antes de OpenGL
+﻿#include "Debug.h"
+#include <GL/glew.h> // Asegúrate de incluir GLEW antes de OpenGL
 #include <GL/gl.h>
 
 #include "App.h"
@@ -7,6 +8,8 @@
 #include <exception>
 #include <imgui_impl_sdl2.h>
 #include <SDL2/SDL_events.h>
+
+
 
 App* app = NULL;
 
@@ -34,7 +37,7 @@ bool App::Awake()
     bool ret = LoadConfig();
 
     std::cout << "App::Awake called" << std::endl;
-    windowEditor->GetImGuiWindow()->consolaPanel->AddLog("App::Awake called");
+    Debug::Log("App::Awake called");
     // Aquí podrías cargar la configuración del juego
 
     return ret;
@@ -44,7 +47,7 @@ bool App::Awake()
 bool App::Start()
 {
     std::cout << "App::Start called" << std::endl;
-    windowEditor->GetImGuiWindow()->consolaPanel->AddLog("App::Start called");
+    Debug::Log("App::Start called");
 
     // Crear los objetos con new
     gameObject = importer->Importar("./Assets/BakerHouse.fbx"); // <-- Modelo con 1 textura
@@ -69,7 +72,13 @@ bool App::Start()
 bool App::Update()
 {
     std::cout << "App::Update called" << std::endl;
-    windowEditor->GetImGuiWindow()->consolaPanel->AddLog("App::Update called");
+    Debug::Log("App::Update called");
+
+    vec3 SS;
+    SS.x = 2;
+    SS.y = 5;
+    SS.z = 8;
+    Debug::Log("Mesh size: ", SS.x, ", ", SS.y, ", ", SS.z);
     PrepareUpdate();
 
     while (HandleEvents()) {
@@ -102,7 +111,9 @@ bool App::Update()
 bool App::CleanUp()
 {
     std::cout << "App::CleanUp called" << std::endl;
-    windowEditor->GetImGuiWindow()->consolaPanel->AddLog("App::CleanUp called");
+    Debug::Log("App::CleanUp called");
+
+   
     // Eliminar los objetos con delete
     if (gameObject) {
         gameObject->Delete();

@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Component_Transform.h"
 #include <SDL2/SDL_stdinc.h>
-#include <sstream>
+#include "Debug.h"
 
 
 Component_Mesh::Component_Mesh(GameObject* containerGO)  // Cambiado a puntero crudo
@@ -469,9 +469,8 @@ glm::vec3 Component_Mesh::CalculateMeshSize() {
 	// Calcular el tamaño de la malla en cada dimensión
 	glm::vec3 meshSize = maxBounds - minBounds;
 	std::cout << "Mesh size: " << meshSize.x << ", " << meshSize.y << ", " << meshSize.z << std::endl;
-	std::stringstream ss;
-	ss << "Mesh size: " << meshSize.x << ", " << meshSize.y << ", " << meshSize.z;
-	app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog(ss.str());
+
+	Debug::Log("Mesh size: ", meshSize.x, ", ", meshSize.y, ", ", meshSize.z);
 
 	return meshSize; // Retornar el tamaño de la malla
 }
