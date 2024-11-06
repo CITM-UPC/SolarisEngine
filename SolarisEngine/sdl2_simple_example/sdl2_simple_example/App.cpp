@@ -73,12 +73,6 @@ bool App::Update()
 {
     std::cout << "App::Update called" << std::endl;
     Debug::Log("App::Update called");
-
-    vec3 SS;
-    SS.x = 2;
-    SS.y = 5;
-    SS.z = 8;
-    Debug::Log("Mesh size: ", SS.x, ", ", SS.y, ", ", SS.z);
     PrepareUpdate();
 
     while (HandleEvents()) {
