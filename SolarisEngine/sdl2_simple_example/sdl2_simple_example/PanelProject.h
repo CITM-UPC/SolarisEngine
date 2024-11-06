@@ -30,6 +30,12 @@ private:
     std::string selectedItem ;
     std::stack<std::filesystem::path> pathStack;
 
+    std::string itemToDelete;           // Guarda el nombre del archivo o carpeta a eliminar
+    std::filesystem::path deletePath;    // Guarda la ruta completa del archivo o carpeta a eliminar
+    bool showDeletePopup = false;        // Estado para mostrar el popup de confirmación
+
+    std::filesystem::path pathToDelete;    // Guarda la ruta del archivo/carpeta para eliminar después del bucle
+    bool pendingDelete = false;            // Indica si hay una eliminación pendiente
 
     std::unordered_map<std::string, std::string> iconTypes = {
         {".png", "png"},

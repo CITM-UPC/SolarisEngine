@@ -23,50 +23,43 @@ void Component_Mesh::Disable() {
 }
 
 void Component_Mesh::Update(double dt) {
-	// Lógica de actualización si es necesario
+	// Lï¿½gica de actualizaciï¿½n si es necesario
 }
 
 void Component_Mesh::DrawComponent() {
 	if (!enabled) return;
 
-	// Obtener el GameObject contenedor
-	//auto containerGOLock = containerGO.lock();
-	//if (!containerGOLock) {
-	//    std::cerr << "Error: El GameObject asociado ya no est?disponible." << std::endl;
-	//    return; // El objeto ha sido destruido
-	//}
+    // Obtener el GameObject contenedor
+    auto transform = containerGO->GetComponent<Component_Transform>();
+    if (!transform) {
+        std::cerr << "Error: No se pudo obtener el componente de transformaciï¿½n." << std::endl;
+        return;
+    }
+    glm::mat4 modelMatrix = transform->GetModelMatrix();
 
-	// Obtener la matriz de transformación desde Component_Transform
-	auto transform = containerGO->GetComponent<Component_Transform>();
-	if (!transform) {
-		std::cerr << "Error: No se pudo obtener el componente de transformación." << std::endl;
-		return;
-	}
-	glm::mat4 modelMatrix = transform->GetModelMatrix();
-
-	// Aplicar la matriz de transformación en el modelo
+	// Aplicar la matriz de transformaciï¿½n en el modelo
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glMultMatrixf(glm::value_ptr(modelMatrix));
 
-	// Configurar el material y textura (similar a lo que ya tienes)
-	if (material) {
-		GLuint textureID = material->GetTextureID();
-		if (textureID == 0) {
-			std::cerr << "Advertencia: Textura no válida en material. Usando color rosa de error." << std::endl;
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glColor3f(1.0f, 0.0f, 1.0f); // Color rosa de error
-		}
-		else {
-			glBindTexture(GL_TEXTURE_2D, textureID);
-			glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
-		}
-	}
-	else {
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glColor3f(1.0f, 0.0f, 1.0f); // Color rosa si no hay material
-		material = containerGO->GetComponent<Component_Material>(); // No usar shared_ptr
-	}
+    // Configurar el material y textura
+    if (material) {
+        GLuint textureID = material->GetTextureID();
+        if (textureID == 0) {
+            std::cerr << "Advertencia: Textura no vï¿½lida en material. Usando color rosa de error." << std::endl;
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glColor3f(1.0f, 0.0f, 1.0f); // Color rosa de error
+        }
+        else {
+            glBindTexture(GL_TEXTURE_2D, textureID);
+            glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
+        }
+    }
+    else {
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glColor3f(1.0f, 0.0f, 1.0f); // Color rosa si no hay material
+        material = containerGO->GetComponent<Component_Material>(); // No usar shared_ptr
+    }
 
 	// Dibujo de la malla usando OpenGL
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -85,48 +78,95 @@ void Component_Mesh::DrawComponent() {
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
 
-		if (showVertexNormals) {
-			glColor3f(0.0f, 1.0f, 0.0f); // Rojo para las normales
-			glBegin(GL_LINES);
-			for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
-				glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
-				glm::vec3 n(mesh.normals[i], mesh.normals[i + 1], mesh.normals[i + 2]);
-				glm::vec3 end = v + n * 0.1f; // Escala de la línea
+        // Mostrar normales de vï¿½rtices
+        if (showVertexNormals) {
+            glColor3f(0.0f, 1.0f, 0.0f); // Verde para las normales
+            glBegin(GL_LINES);
+            for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
+                glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
+                glm::vec3 n(mesh.normals[i], mesh.normals[i + 1], mesh.normals[i + 2]);
+                glm::vec3 end = v + n * 0.1f; // Escala de la lï¿½nea
+                glVertex3fv(glm::value_ptr(v));
+                glVertex3fv(glm::value_ptr(end));
+            }
+            glEnd();
+            glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
+        }
 
-				glVertex3fv(glm::value_ptr(v));
-				glVertex3fv(glm::value_ptr(end));
-			}
-			glEnd();
-			glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
-		}
+        // Mostrar normales de caras
+        if (showFaceNormals) {
+            glColor3f(1.0f, 0.0f, 0.0f); // Rojo para las normales de caras
+            glBegin(GL_LINES);
+            for (size_t i = 0; i < mesh.indices.size(); i += 3) {
+                glm::vec3 v0(mesh.vertices[mesh.indices[i] * 3], mesh.vertices[mesh.indices[i] * 3 + 1], mesh.vertices[mesh.indices[i] * 3 + 2]);
+                glm::vec3 v1(mesh.vertices[mesh.indices[i + 1] * 3], mesh.vertices[mesh.indices[i + 1] * 3 + 1], mesh.vertices[mesh.indices[i + 1] * 3 + 2]);
+                glm::vec3 v2(mesh.vertices[mesh.indices[i + 2] * 3], mesh.vertices[mesh.indices[i + 2] * 3 + 1], mesh.vertices[mesh.indices[i + 2] * 3 + 2]);
+                glm::vec3 center = (v0 + v1 + v2) / 3.0f;
+                glm::vec3 n(mesh.faceNormals[i], mesh.faceNormals[i + 1], mesh.faceNormals[i + 2]);
+                glm::vec3 end = center + n * 0.1f;
+                glVertex3fv(glm::value_ptr(center));
+                glVertex3fv(glm::value_ptr(end));
+            }
+            glEnd();
+            glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
+        }
 
-		if (showFaceNormals) {
-			glColor3f(1.0f, 0.0f, 0.0f); // Rojo para las normales de caras
-			glBegin(GL_LINES);
-			for (size_t i = 0; i < mesh.indices.size(); i += 3) {
-				// Centro del triángulo
-				glm::vec3 v0(mesh.vertices[mesh.indices[i] * 3], mesh.vertices[mesh.indices[i] * 3 + 1], mesh.vertices[mesh.indices[i] * 3 + 2]);
-				glm::vec3 v1(mesh.vertices[mesh.indices[i + 1] * 3], mesh.vertices[mesh.indices[i + 1] * 3 + 1], mesh.vertices[mesh.indices[i + 1] * 3 + 2]);
-				glm::vec3 v2(mesh.vertices[mesh.indices[i + 2] * 3], mesh.vertices[mesh.indices[i + 2] * 3 + 1], mesh.vertices[mesh.indices[i + 2] * 3 + 2]);
-				glm::vec3 center = (v0 + v1 + v2) / 3.0f;
+        // Mostrar la Bounding Box si estï¿½ activado
+        if (showBoundingBox) {
+            glm::vec3 min, max;
+            for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
+                glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
+                if (i == 0) {
+                    min = max = v;
+                }
+                else {
+                    min = glm::min(min, v);
+                    max = glm::max(max, v);
+                }
+            }
 
-				// Normal de la cara
-				glm::vec3 n(mesh.faceNormals[i], mesh.faceNormals[i + 1], mesh.faceNormals[i + 2]);
-				glm::vec3 end = center + n * 0.1f;
+            // Dibujar la caja delimitadora
+            glColor3f(1.0f, 0.0f, 0.0f); // Rojo para la Bounding Box
+            glBegin(GL_LINES);
+            // Dibujar las aristas de la caja delimitadora
+            glVertex3f(min.x, min.y, min.z);
+            glVertex3f(max.x, min.y, min.z);
 
-				glVertex3fv(glm::value_ptr(center));
-				glVertex3fv(glm::value_ptr(end));
-			}
-			glEnd();
-			glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
-		}
+            glVertex3f(min.x, min.y, min.z);
+            glVertex3f(min.x, max.y, min.z);
 
+            glVertex3f(min.x, min.y, min.z);
+            glVertex3f(min.x, min.y, max.z);
 
-	}
+            glVertex3f(max.x, max.y, max.z);
+            glVertex3f(min.x, max.y, max.z);
+
+            glVertex3f(max.x, max.y, max.z);
+            glVertex3f(max.x, min.y, max.z);
+
+            glVertex3f(max.x, max.y, max.z);
+            glVertex3f(max.x, max.y, min.z);
+
+            glVertex3f(min.x, max.y, min.z);
+            glVertex3f(max.x, max.y, min.z);
+
+            glVertex3f(min.x, min.y, max.z);
+            glVertex3f(max.x, min.y, max.z);
+
+            glVertex3f(min.x, max.y, max.z);
+            glVertex3f(min.x, max.y, min.z);
+
+            glVertex3f(max.x, min.y, max.z);
+            glVertex3f(max.x, min.y, min.z);
+
+            glEnd();
+        }
+    }
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glPopMatrix(); // Restablecer la matriz después de dibujar
+	glPopMatrix(); // Restablecer la matriz despuï¿½s de dibujar
 }
+
 
 void Component_Mesh::DrawInspectorComponent()
 {
@@ -138,6 +178,13 @@ void Component_Mesh::DrawInspectorComponent()
 
 	}
 
+        ImGui::Checkbox("Show Vertex Normals", &showVertexNormals); // Activar o desactivar normales
+        ImGui::Checkbox("Show Face Normals", &showFaceNormals); // Activar o desactivar normales
+        ImGui::Checkbox("Show Bounding Box", &showBoundingBox); // Activar o desactivar la visualizaciï¿½n de la bounding box
+    }
+    
+    
+    
 }
 
 void Component_Mesh::LoadMesh(aiMesh* ai_mesh) {
@@ -172,8 +219,8 @@ void Component_Mesh::LoadMesh(const aiScene* ai_scene) {
 				mesh.normals.push_back(aiMesh->mNormals[j].z);
 			}
 			else {
-				// Calcula las normales si no están disponibles en el modelo
-				// Código para calcular las normales por triángulo
+				// Calcula las normales si no estï¿½n disponibles en el modelo
+				// Cï¿½digo para calcular las normales por triï¿½ngulo
 			}
 
 
@@ -204,7 +251,7 @@ void Component_Mesh::LoadMesh(const aiScene* ai_scene) {
 void Component_Mesh::CalculateFaceNormals(Mesh& mesh) {
 	mesh.faceNormals.clear();
 	for (size_t i = 0; i < mesh.indices.size(); i += 3) {
-		// Obtén los tres índices del triángulo
+		// Obtï¿½n los tres ï¿½ndices del triï¿½ngulo
 		glm::vec3 v0(mesh.vertices[mesh.indices[i] * 3], mesh.vertices[mesh.indices[i] * 3 + 1], mesh.vertices[mesh.indices[i] * 3 + 2]);
 		glm::vec3 v1(mesh.vertices[mesh.indices[i + 1] * 3], mesh.vertices[mesh.indices[i + 1] * 3 + 1], mesh.vertices[mesh.indices[i + 1] * 3 + 2]);
 		glm::vec3 v2(mesh.vertices[mesh.indices[i + 2] * 3], mesh.vertices[mesh.indices[i + 2] * 3 + 1], mesh.vertices[mesh.indices[i + 2] * 3 + 2]);
@@ -212,7 +259,7 @@ void Component_Mesh::CalculateFaceNormals(Mesh& mesh) {
 		// Calcula el vector normal usando el producto cruzado
 		glm::vec3 normal = glm::normalize(glm::cross(v1 - v0, v2 - v0));
 
-		// Almacena la normal para cada triángulo
+		// Almacena la normal para cada triï¿½ngulo
 		mesh.faceNormals.push_back(normal.x);
 		mesh.faceNormals.push_back(normal.y);
 		mesh.faceNormals.push_back(normal.z);
@@ -225,7 +272,7 @@ void Component_Mesh::GenerateCubeMesh() {
 		//  (Frente)
 		-0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,
 
-		//  (Atr¨¢s)
+		//  (Atrï¿½ï¿½s)
 		-0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,
 
 		//  (Izquierda)
@@ -245,7 +292,7 @@ void Component_Mesh::GenerateCubeMesh() {
 		//  (Frente)
 		0, 1, 2, 2, 3, 0,
 
-		//  (Atr¨¢s)
+		//  (Atrï¿½ï¿½s)
 		4, 5, 6, 6, 7, 4,
 
 		//  (Izquierda)
@@ -308,7 +355,7 @@ void Component_Mesh::GeneratePlaneMesh() {
 void Component_Mesh::GenerateTriangleMesh() {
 	Mesh triangleMesh;
 
-	// ¶¥µã
+	// ï¿½ï¿½ï¿½ï¿½
 	triangleMesh.vertices = {
 		0.0f, 0.5f, 0.0f,  // A
 	   -0.5f, -0.5f, 0.5f, // B
@@ -317,7 +364,7 @@ void Component_Mesh::GenerateTriangleMesh() {
 		0.5f, -0.5f, -0.5f // E
 	};
 
-	// Ë÷Òý
+	// ï¿½ï¿½ï¿½ï¿½
 	triangleMesh.indices = {
 		0, 1, 2,  // ABC
 		0, 3, 1,  // ADE
@@ -449,30 +496,30 @@ void Component_Mesh::GenerateCylinderMesh() {
 
 glm::vec3 Component_Mesh::CalculateMeshSize() {
 	if (meshes.empty()) {
-		return glm::vec3(0.0f); // Retornar un tamaño cero si no hay mallas
+		return glm::vec3(0.0f); // Retornar un tamaï¿½o cero si no hay mallas
 	}
 
-	glm::vec3 minBounds(FLT_MAX, FLT_MAX, FLT_MAX); // Inicializar con valores máximos
-	glm::vec3 maxBounds(-FLT_MAX, -FLT_MAX, -FLT_MAX); // Inicializar con valores mínimos
+	glm::vec3 minBounds(FLT_MAX, FLT_MAX, FLT_MAX); // Inicializar con valores mï¿½ximos
+	glm::vec3 maxBounds(-FLT_MAX, -FLT_MAX, -FLT_MAX); // Inicializar con valores mï¿½nimos
 
 	for (const auto& mesh : meshes) {
-		// Asumiendo que 'mesh.vertices' es un vector plano que contiene las coordenadas de los vértices
+		// Asumiendo que 'mesh.vertices' es un vector plano que contiene las coordenadas de los vï¿½rtices
 		for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
 			glm::vec3 vertex(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
 
-			// Encontrar los límites mínimos y máximos en cada eje
+			// Encontrar los lï¿½mites mï¿½nimos y mï¿½ximos en cada eje
 			minBounds = glm::min(minBounds, vertex);
 			maxBounds = glm::max(maxBounds, vertex);
 		}
 	}
 
-	// Calcular el tamaño de la malla en cada dimensión
+	// Calcular el tamaï¿½o de la malla en cada dimensiï¿½n
 	glm::vec3 meshSize = maxBounds - minBounds;
 	std::cout << "Mesh size: " << meshSize.x << ", " << meshSize.y << ", " << meshSize.z << std::endl;
 
 	Debug::Log("Mesh size: ", meshSize.x, ", ", meshSize.y, ", ", meshSize.z);
 
-	return meshSize; // Retornar el tamaño de la malla
+	return meshSize; // Retornar el tamaï¿½o de la malla
 }
 
 Component* Component_Mesh::Clone() const {

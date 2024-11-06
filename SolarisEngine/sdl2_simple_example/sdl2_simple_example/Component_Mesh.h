@@ -57,9 +57,9 @@ private:
     std::vector<Mesh> meshes;
     GLuint vao;
     Component_Material* material;
-    bool showVertexNormals = false;;
-    bool showFaceNormals = false;;
-
+    bool showVertexNormals = false;
+    bool showFaceNormals = false;
+    bool showBoundingBox = false;
     // Métodos auxiliares para definir geometrías de los distintos tipos de mallas
  
 };
