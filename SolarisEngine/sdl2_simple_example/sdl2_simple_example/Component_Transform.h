@@ -36,7 +36,7 @@ public:
     glm::vec3 GetRotation() const; // Devuelve los ángulos de Euler en grados
 
     glm::mat4 GetModelMatrix() const;
-
+   /* Debug::Log("",ddhhd,"ss")*/
     Component* Clone() const override;
 
 private:

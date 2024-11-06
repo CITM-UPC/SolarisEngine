@@ -13,6 +13,7 @@ enum class ComponentType {
     Mesh,
     Texture,
     Material,
+    BoundingBox,
     Unknown
 };
 
