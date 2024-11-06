@@ -2,7 +2,7 @@
 #include "Input.h"
 #include "MyWindow.h"
 #include <SDL2/SDL.h>
-
+#include "Debug.h"
 
 
 InputEditor::InputEditor() 
@@ -319,7 +319,7 @@ void InputEditor::handleDroppedFile(const char* filePath)
 	if (extension == "fbx" || extension == "obj") {
 		GameObject* gameObject = app->importer->Importar(droppedFile);
 		app->actualScene->AddGameObject(gameObject);
-
+		
 	}
 	else if (app->actualScene->GetSelectedGameObject() && (extension == "png" || extension == "jpg" || extension == "dds")) {
 		Component_Material* cm = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Material>();
@@ -331,4 +331,5 @@ void InputEditor::handleDroppedFile(const char* filePath)
 		}
 		
 	}
+	Debug::Log("Import file : ", filePath);
 }
