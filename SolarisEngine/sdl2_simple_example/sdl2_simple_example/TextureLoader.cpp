@@ -6,6 +6,9 @@
 
 
 TextureLoader::TextureLoader() {
+
+    ilInit(); // Inicializa DevIL
+
 }
 
 TextureLoader::~TextureLoader() {
