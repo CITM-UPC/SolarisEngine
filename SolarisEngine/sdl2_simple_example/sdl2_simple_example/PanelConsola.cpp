@@ -36,7 +36,8 @@ void PanelConsola::Render() {
         for (int line_no = 0; line != nullptr; line_no++) {
             const char* line_end = strchr(line, '\n');
             if (filter.PassFilter(line, line_end)) {
-                ImGui::TextUnformatted(line, line_end); // Display log messages matching filter criteria
+                ImGui::TextWrapped(line, line_end);
+                //ImGui::TextUnformatted(line, line_end); // Display log messages matching filter criteria
             }
             line = line_end && line_end[1] ? line_end + 1 : nullptr;
         }

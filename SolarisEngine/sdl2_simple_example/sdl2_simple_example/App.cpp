@@ -73,6 +73,7 @@ bool App::Update()
 {
     std::cout << "App::Update called" << std::endl;
     Debug::Log("App::Update called");
+    
     PrepareUpdate();
 
     while (HandleEvents()) {
