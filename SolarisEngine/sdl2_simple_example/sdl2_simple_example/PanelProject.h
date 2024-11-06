@@ -17,6 +17,8 @@ public:
     void Render() override; // Implements the Render method
     void RenderContext() override; // Implements the Render method
 
+    void CreateFolder(const std::filesystem::path& parentPath);
+
 private:
     void ShowFileSystemTree(const std::filesystem::path& path); // Recursive method to display file system
     void ShowBreadcrumbNavigation();
