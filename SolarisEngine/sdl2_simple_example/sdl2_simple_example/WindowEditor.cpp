@@ -74,7 +74,7 @@ void WindowEditor::Shutdown() {
 }
 
 void WindowEditor::HandleSDLEvent(SDL_Event& e) {
-    ImGui_ImplSDL2_ProcessEvent(&e);
+    //ImGui_ImplSDL2_ProcessEvent(&e);
     if (_windowImGui) {
         _windowImGui->HandleSDLEvent(e); // Pasa el evento a WindowImGui
     }
