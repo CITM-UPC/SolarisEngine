@@ -50,6 +50,8 @@ void PanelProject::Render() {
     // ruta y arbol
     ShowFileSystemTree(currentPath);
 
+    RenderContext();
+
     ImGui::End();
 }
 
@@ -65,7 +67,12 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
     int itemsInRow = 0;
 
+    int i = 0;
+
     for (const auto& entry : fs::directory_iterator(path)) {
+
+        i++;
+
         const auto& entryPath = entry.path();
         std::string fileName = entryPath.filename().string();
         bool isDirectory = entry.is_directory();
@@ -93,8 +100,8 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
         // fondo trasparente
         ImGui::PushStyleColor(ImGuiCol_Button, isSelected ? ImVec4(0.0f, 0.0f, 1.0f, 0.5f) : ImVec4(0, 0, 0, 0));
 
-        
-        isHovered = ImGui::ImageButton((ImTextureID)icon, ImVec2(iconSize, iconSize));
+        std::string uniqueId = "##" + fileName + "_" + std::to_string(i);
+        isHovered = ImGui::ImageButton(uniqueId.c_str(), (ImTextureID)icon, ImVec2(iconSize, iconSize));
 
         if (isHovered && isDirectory) {
             selectedItem = fileName; 
@@ -170,6 +177,52 @@ void PanelProject::ShowBreadcrumbNavigation() {
 
 void PanelProject::RenderContext()
 {
+
+    if (ImGui::BeginPopupContextWindow("ProjectContextMenu", 1)) {
+        if (ImGui::MenuItem("New Folder")) {
+            CreateFolder(currentPath);
+        }
+
+        if (ImGui::MenuItem("Load GameObject")) {
+            
+        }
+
+        if (ImGui::MenuItem("Delete")) {
+            
+        }
+
+        if (ImGui::MenuItem("Copy")) {
+
+           
+        }
+
+        if (ImGui::MenuItem("Paste")) {
+            
+        }
+
+        ImGui::EndPopup();
+    }
+
+
+}
+
+
+void PanelProject::CreateFolder(const std::filesystem::path& parentPath) {
+    std::string folderName = "Nueva carpeta";
+    std::filesystem::path newFolderPath = parentPath / folderName;
+
+    int i = 1;
+    while (fs::exists(newFolderPath)) {
+        newFolderPath = parentPath / (folderName + " (" + std::to_string(i) + ")");
+        ++i;
+    }
+
+    try {
+        fs::create_directory(newFolderPath);
+    }
+    catch (const fs::filesystem_error& e) {
+        // Manejar el error si ocurre
+    }
 }
 
 
