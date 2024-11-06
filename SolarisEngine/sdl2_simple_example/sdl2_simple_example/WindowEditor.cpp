@@ -97,7 +97,7 @@ void WindowEditor::Render() {
 
 
 	if (_windowImGui) {
-		_windowImGui->Render(); // Llama al método de renderizado de WindowImGui
+		_windowImGui->Render(); // Llama al mï¿½todo de renderizado de WindowImGui
 	}
 
 

@@ -300,9 +300,11 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 		break;
 
 	default:
-		ImGui_ImplSDL2_ProcessEvent(&event);
+		//ImGui_ImplSDL2_ProcessEvent(&event);
 		break;
 	}
+
+	ImGui_ImplSDL2_ProcessEvent(&event);
 
 	return true;
 }

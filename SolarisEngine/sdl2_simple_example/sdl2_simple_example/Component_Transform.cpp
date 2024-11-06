@@ -10,7 +10,9 @@ Component_Transform::Component_Transform(GameObject* containerGO)
     : Component(containerGO, ComponentType::Transform),
     position(0.0f, 0.0f, 0.0f),
     scale(1.0f, 1.0f, 1.0f),
-    rotationQuat(glm::quat()) {}
+    rotationQuat(glm::quat()) {
+    eulerRotation = glm::degrees(glm::eulerAngles(rotationQuat));
+}
 
 Component_Transform::~Component_Transform() {}
 
@@ -37,12 +39,10 @@ void Component_Transform::DrawInspectorComponent() {
         ImGui::DragFloat3("Position", &position[0], 0.1f);
         this->SetPosition(position);
 
-        // Manipulación de rotación en cuaterniones directamente para evitar gimbal lock
-        glm::vec3 eulerRotation = glm::degrees(glm::eulerAngles(rotationQuat));
-
+        // Usa eulerRotation directamente y actualiza el cuaternión solo si cambia
         if (ImGui::DragFloat3("Rotation", &eulerRotation[0])) {
-            glm::vec3 deltaRotation = glm::radians(eulerRotation) - glm::eulerAngles(rotationQuat);
-            rotationQuat = glm::normalize(rotationQuat * glm::quat(deltaRotation));
+            glm::vec3 radiansEuler = glm::radians(eulerRotation);
+            rotationQuat = glm::quat(radiansEuler);
         }
 
         glm::vec3 scale = this->GetScale();
@@ -50,6 +50,7 @@ void Component_Transform::DrawInspectorComponent() {
         this->SetScale(scale.x, scale.y, scale.z);
     }
 }
+
 
 void Component_Transform::SetPosition(float x, float y, float z) {
     position = glm::vec3(x, y, z);
