@@ -1,4 +1,4 @@
-#include "PanelConsola.h"
+﻿#include "PanelConsola.h"
 #include "imgui.h"
 #include "App.h"
 
@@ -12,49 +12,60 @@ PanelConsola::~PanelConsola() {
 }
 
 void PanelConsola::Render() {
-
     if (!app->windowEditor->GetImGuiWindow()->showconsolaPanel) {
         return;
     }
 
-    ImGui::Begin("Console"); // Begin creating the panel window
+    ImGui::Begin("Console"); // Start drawing the panel
 
-    // Example scrollable area
-    //static ImGuiTextBuffer logBuffer; // Text buffer for storing log messages
-    static ImGuiTextFilter filter;    // Filter for searching within log content
+    // Filter: for searching log content
+    static ImGuiTextFilter filter;
 
-    // Add search filter
+    // Draw the search box
     ImGui::Text("Console Output:");
-    filter.Draw("Filter", 180); // Create filter input box
+    filter.Draw("Filter", 180); // Create a filter box
 
-    // Begin scrollable region
-    ImGui::BeginChild("ScrollRegion", ImVec2(0, 400), true, ImGuiWindowFlags_HorizontalScrollbar);
+    // Get the current available width and height of the panel each frame
+    ImVec2 panelSize = ImGui::GetContentRegionAvail();
+
+    // Manually set the available area width to ensure text wrapping
+    ImGui::SetNextItemWidth(panelSize.x);
+
+    // Create a scrollable region with dynamic width and height
+    // Here, set the height of the child window to the panel's available height minus 50 (leaving space for the search box and other controls)
+    ImGui::BeginChild("ScrollRegion", ImVec2(panelSize.x, panelSize.y - 50), true);
+
+    // Check if the filter is active
     if (filter.IsActive()) {
-        // Display filtered log messages
+        // Show filtered log information
         const char* buf = logBuffer.begin();
         const char* line = buf;
         for (int line_no = 0; line != nullptr; line_no++) {
             const char* line_end = strchr(line, '\n');
             if (filter.PassFilter(line, line_end)) {
-                ImGui::TextWrapped(line, line_end);
-                //ImGui::TextUnformatted(line, line_end); // Display log messages matching filter criteria
+                // Use TextWrapped to ensure text wrapping
+                ImGui::TextWrapped("%.*s", (line_end ? line_end - line : (int)strlen(line)), line);
             }
             line = line_end && line_end[1] ? line_end + 1 : nullptr;
         }
     }
     else {
-        // Display all log messages
-        ImGui::TextUnformatted(logBuffer.begin());
-    }
-    ImGui::EndChild();
-
-    // Example: Add a test log button
-    if (ImGui::Button("Add Test Log")) {
-        logBuffer.append("This is a test log message.\n");
+        // Show all log information
+        ImGui::TextWrapped("%s", logBuffer.begin());
     }
 
-    ImGui::End(); // End panel window
+    ImGui::EndChild(); // End the scrollable region
+
+    ImGui::End(); // End the panel window
 }
+
+
+
+
+
+
+
+
 
 void PanelConsola::RenderContext()
 {
