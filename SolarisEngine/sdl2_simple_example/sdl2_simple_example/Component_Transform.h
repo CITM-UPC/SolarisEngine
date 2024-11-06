@@ -43,6 +43,8 @@ private:
     glm::vec3 position;
     glm::vec3 scale;
     glm::quat rotationQuat;
+
+    glm::vec3 eulerRotation;
 };
 
 #endif // !__COMPONENT_TRANSFORM_H__
