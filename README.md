@@ -1,6 +1,6 @@
 # SolarisEngine
 
-Solaris Engine, es un motor de videojuegos de la asignatura “Motors De Videojocs” en la universidad UPC-CITM : Diseño y Desarrollo de Videojuegos, realizado durante el 3.º año por: Martí Sabater Miranda([@msabate00](https://github.com/msabate00).), Jiajie Lin([@Linjiajie2002](https://github.com/Linjiajie2002)), Aleix Botella Llobet([@Aleix3](https://github.com/Aleix3)).
+Solaris Engine, es un motor de videojuegos de la asignatura “Motors De Videojocs” en la universidad UPC-CITM : Diseño y Desarrollo de Videojuegos, realizado durante el 3.º año por: Martí Sabaté Miranda([@msabate00](https://github.com/msabate00).), Jiajie Lin([@Linjiajie2002](https://github.com/Linjiajie2002)), Aleix Botella Llobet([@Aleix3](https://github.com/Aleix3)).
 
 ## Nuestro Motor
 Solaris Engine es un motor en 3D realizado con SDL2, OpenGL, glew, DevIL, GLM, Assimp e ImGui. Programado en c y c++17.
