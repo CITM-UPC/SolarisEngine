@@ -5,12 +5,13 @@
 #include <filesystem>
 #include "App.h"
 #include "sstream"
+#include "Debug.h"
 
 namespace fs = std::filesystem;
 
 Importer::Importer() {
     std::cout << "Inicializando directorios..." << std::endl;
-    app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog("Inicializando directorios");
+    Debug::Log("Inicializando directorios");
 
     // Crear directorios si no existen
     for (const auto& dir : { ASSETS_DIR, LIBRARY_DIR, MESHES_DIR, MATERIALS_DIR, MODELS_DIR, FONTS_DIR }) {
@@ -39,6 +40,7 @@ GameObject* Importer::Importar(const std::string& modelPath) {
     newGameObject->AddComponent<Component_Mesh>();
     Component_Mesh* meshComponent = newGameObject->GetComponent<Component_Mesh>();
     if (meshComponent) {
+        Debug::Log("Cargando mesh:", scene->GetShortFilename(modelPath.c_str()));
         meshComponent->LoadMesh(scene);
     }
 

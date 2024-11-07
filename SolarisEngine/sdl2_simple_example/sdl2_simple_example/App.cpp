@@ -176,6 +176,7 @@ bool App::IsSaving()
 bool App::LoadConfig()
 {
 
+    
     textureLoader = new TextureLoader();
 
     windowEditor = new WindowEditor();
@@ -276,6 +277,9 @@ bool App::SaveFromFile()
 }
 
 bool App::INIT_openGL() {
+
+    Debug::Log("Inicializando OpenGL");
+
     glewInit();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);

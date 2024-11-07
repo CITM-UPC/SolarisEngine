@@ -1,12 +1,12 @@
 ﻿#define STB_IMAGE_IMPLEMENTATION
 #include "TextureLoader.h"
-#include "stb_image.h"
-#include "imgui.h"
+
 
 
 
 TextureLoader::TextureLoader() {
 
+    
     ilInit(); // Inicializa DevIL
 
 }

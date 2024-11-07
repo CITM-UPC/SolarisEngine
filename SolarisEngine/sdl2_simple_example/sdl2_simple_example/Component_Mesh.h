@@ -55,6 +55,7 @@ private:
  
 
     std::vector<Mesh> meshes;
+    int totalVertex = 0;
     GLuint vao;
     Component_Material* material;
     bool showVertexNormals = false;

@@ -4,6 +4,8 @@
 #include <string>
 #include <map>
 #include <IL/il.h>
+#include "stb_image.h"
+
 
 #include <SDL2/SDL_opengl.h>
 

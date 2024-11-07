@@ -109,12 +109,12 @@ void Component_Material::DrawInspectorComponent() {
 
         // Mostrar la textura si está cargada
         if (GetTextureID() != 0) {
-            ImGui::Text("Texture:");
 
             ImGui::TextWrapped("Path: %s", material->texturePath.c_str());
             ImGui::Text("Size: %dx%d", material->textureWidth, material->textureHeight);
         
 
+            ImGui::Text("Texture:");
             // Renderizar la textura
             ImGui::Image((void*)(intptr_t)GetTextureID(), ImVec2(256, 256));
         }
@@ -137,7 +137,7 @@ Component* Component_Material::Clone() const
 
 void Component_Material::CreateCheckerPattern() {
     // Crea un patrón de cuadros en un pequeño buffer
-    const int checkerSize = 64;
+    const int checkerSize = 128;
     GLubyte checkerImage[checkerSize][checkerSize][3];
 
     for (int i = 0; i < checkerSize; ++i) {

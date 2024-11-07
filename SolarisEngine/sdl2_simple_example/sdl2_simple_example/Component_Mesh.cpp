@@ -171,15 +171,19 @@ void Component_Mesh::DrawComponent() {
 void Component_Mesh::DrawInspectorComponent()
 {
 	if (ImGui::CollapsingHeader(u8"\ue025 Mesh")) {
-		ImGui::Text("Mesh Component");
+		//ImGui::Text("Mesh Component");
+
+		ImGui::Text("Total Vertex: %d", totalVertex);
+
+
 
 		ImGui::Checkbox("Show Vertex Normals", &showVertexNormals); // Activar o desactivar normales
 		ImGui::Checkbox("Show Face Normals", &showFaceNormals); // Activar o desactivar normales
 
 	
 
-        ImGui::Checkbox("Show Vertex Normals", &showVertexNormals); // Activar o desactivar normales
-        ImGui::Checkbox("Show Face Normals", &showFaceNormals); // Activar o desactivar normales
+        //ImGui::Checkbox("Show Vertex Normals", &showVertexNormals); // Activar o desactivar normales
+        //ImGui::Checkbox("Show Face Normals", &showFaceNormals); // Activar o desactivar normales
         ImGui::Checkbox("Show Bounding Box", &showBoundingBox); // Activar o desactivar la visualizaci�n de la bounding box
     }
     
@@ -243,8 +247,13 @@ void Component_Mesh::LoadMesh(const aiScene* ai_scene) {
 
 		CalculateFaceNormals(mesh);
 
+		Debug::Log("	Mesh ", i, "cargado con : ", mesh.indices.size(), " indices, ", mesh.vertices.size(), " vertices.");
+		totalVertex += mesh.vertices.size();
+
 		meshes.push_back(mesh);
 	}
+
+	Debug::Log("	Meshes del objecto cargado. Total de meshes: ", meshes.size());
 
 }
 
@@ -515,9 +524,9 @@ glm::vec3 Component_Mesh::CalculateMeshSize() {
 
 	// Calcular el tama�o de la malla en cada dimensi�n
 	glm::vec3 meshSize = maxBounds - minBounds;
-	std::cout << "Mesh size: " << meshSize.x << ", " << meshSize.y << ", " << meshSize.z << std::endl;
+	//std::cout << "Mesh size: " << meshSize.x << ", " << meshSize.y << ", " << meshSize.z << std::endl;
 
-	Debug::Log("Mesh size: ", meshSize.x, ", ", meshSize.y, ", ", meshSize.z);
+	//Debug::Log("Mesh size: ", meshSize.x, ", ", meshSize.y, ", ", meshSize.z);
 
 	return meshSize; // Retornar el tama�o de la malla
 }
