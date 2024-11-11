@@ -3,12 +3,6 @@
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_keyboard.h>
 
-float fov = glm::radians(90.0f);
-float nearPlane = 0.01f;
-float farPlane = 100.0f;
-
-float aspectRatio = (float)app->WINDOW_SIZE.x / (float)app->WINDOW_SIZE.y;
-glm::mat4 projection = glm::perspective(fov, aspectRatio, nearPlane, farPlane);
 
 CameraEditor::CameraEditor(glm::vec3 position, glm::vec3 front, glm::vec3 up)
     : position(position), front(front), up(up), orbiting(false) {
@@ -18,6 +12,15 @@ CameraEditor::CameraEditor(glm::vec3 position, glm::vec3 front, glm::vec3 up)
 // Devuelve la matriz de vista de la cámara
 glm::mat4 CameraEditor::getViewMatrix() const {
     return glm::lookAt(position, position + front, up);
+}
+
+glm::mat4 CameraEditor::getProjectionMatrix() const
+{
+    float fov = glm::radians(90.0f);
+    float nearPlane = 0.01f;
+    float farPlane = 100.0f;
+    float aspectRatio = (float)app->WINDOW_SIZE.x / (float)app->WINDOW_SIZE.y;
+    return glm::perspective(fov, aspectRatio, nearPlane, farPlane);
 }
 
 void CameraEditor::processInput(unsigned char key, bool isPressed) {
@@ -170,8 +173,9 @@ void CameraEditor::processMouseMiddle(float xoffset, float yoffset) {
 }
 
 void CameraEditor::Update() {
+    drawnObjectsCount = 0;
     glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(glm::value_ptr(projection));
+    glLoadMatrixf(glm::value_ptr(getProjectionMatrix()));
 
     updateCameraPosition();
 
@@ -203,3 +207,53 @@ void CameraEditor::MouseWheel(bool zoom) {
 
     printf("Velocidad de la cámara: %f\n", baseSpeed); // Para depuración
 }
+
+void CameraEditor::GetCameraFrustum()
+{
+    glm::mat4 viewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
+
+    leftPlane = viewProjectionMatrix[3] + viewProjectionMatrix[0];
+    rightPlane = viewProjectionMatrix[3] - viewProjectionMatrix[0];
+    topPlane = viewProjectionMatrix[3] - viewProjectionMatrix[1];
+    bottomPlane = viewProjectionMatrix[3] + viewProjectionMatrix[1];
+    nearPlane = viewProjectionMatrix[3] + viewProjectionMatrix[2];
+    farPlane = viewProjectionMatrix[3] - viewProjectionMatrix[2];
+
+    leftPlane /= glm::length(glm::vec3(leftPlane));
+    rightPlane /= glm::length(glm::vec3(rightPlane));
+    topPlane /= glm::length(glm::vec3(topPlane));
+    bottomPlane /= glm::length(glm::vec3(bottomPlane));
+    nearPlane /= glm::length(glm::vec3(nearPlane));
+    farPlane /= glm::length(glm::vec3(farPlane));
+
+}
+
+bool CameraEditor::IsInFrustum(const glm::vec3& objectPosition) {
+    // Verificar todos los vértices de la Bounding Box de manera optimizada
+    // Definir las coordenadas mínimas y máximas de la caja
+    glm::vec3 min = objectPosition - glm::vec3(0.5f, 0.5f, 0.5f);  // Vértice inferior izquierdo
+    glm::vec3 max = objectPosition + glm::vec3(0.5f, 0.5f, 0.5f);  // Vértice superior derecho
+
+    // Comprobar los vértices contra el frustum
+    // Definir los 8 vértices de la caja (Bounding Box)
+    glm::vec3 boundingBoxVertices[8] = {
+        glm::vec3(min.x, min.y, min.z),
+        glm::vec3(max.x, min.y, min.z),
+        glm::vec3(min.x, max.y, min.z),
+        glm::vec3(max.x, max.y, min.z),
+        glm::vec3(min.x, min.y, max.z),
+        glm::vec3(max.x, min.y, max.z),
+        glm::vec3(min.x, max.y, max.z),
+        glm::vec3(max.x, max.y, max.z)
+    };
+
+    // Comprobar si alguno de los vértices está dentro del frustum
+    for (const auto& vertex : boundingBoxVertices) {
+        if (IsInFrustum(vertex)) {
+            return true;  // Si algún vértice está dentro, el objeto está en el frustum
+        }
+    }
+
+    return false;  // Ningún vértice está dentro del frustum
+}
+

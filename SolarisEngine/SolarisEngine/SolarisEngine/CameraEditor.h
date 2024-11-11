@@ -13,12 +13,15 @@ public:
     CameraEditor(glm::vec3 position, glm::vec3 front, glm::vec3 up);
 
     glm::mat4 getViewMatrix() const;
+    glm::mat4 getProjectionMatrix() const;
     void processInput(unsigned char key, bool isPressed);
     void processMouseMovement(float xoffset, float yoffset);
     void processMouseMiddle(float xoffset, float yoffset);
     void updatePosition(glm::vec3 delta);
     void Update();
     void MouseWheel(bool zoom);
+    void GetCameraFrustum();
+    bool IsInFrustum(const glm::vec3& objectPosition);
     void updateCameraSpeed();
     void focusOnObject();
     void updateCameraPosition();
@@ -26,7 +29,10 @@ public:
     void ChangeCameraSensivility(float value);
     float GetCameraSensivility();
 
+    int drawnObjectsCount; // Contador de objetos dibujados en cada frame
+
 private:
+
     glm::vec3 position;          // Posición actual de la cámara
     glm::vec3 front;             // Dirección en la que mira la cámara
     glm::vec3 up;                // Vector 'up' de la cámara
@@ -61,6 +67,10 @@ private:
     float savedPitch;
 
     float movementSpeed = 2.5f;
+
+    glm::vec4 leftPlane, rightPlane, topPlane, bottomPlane, nearPlane, farPlane;
+
+    
 };
 
 #endif // CAMERA_EDITOR_H
