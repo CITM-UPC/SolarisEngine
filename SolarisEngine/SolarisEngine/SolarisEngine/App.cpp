@@ -1,5 +1,5 @@
 ﻿#include "Debug.h"
-#include <GL/glew.h> // Asegúrate de incluir GLEW antes de OpenGL
+#include <GL/glew.h>
 #include <GL/gl.h>
 
 #include "App.h"
@@ -79,6 +79,8 @@ bool App::Update()
     while (HandleEvents()) {
         const auto t0 = hrclock::now();
 
+        
+
         if (!PreUpdate()) return false;
         if (!DoUpdate(dt)) return false;
         if (!PostUpdate(dt)) return false;
@@ -93,8 +95,6 @@ bool App::Update()
         if (dt < FRAME_DT.count()) {
             std::this_thread::sleep_for(FRAME_DT - std::chrono::duration<double>(dt));
         }
-
-        windowEditor->Render(); // Renderiza ImGui aquí
     }
 
     FinishUpdate();
@@ -212,11 +212,13 @@ void App::FinishUpdate()
     // Finalizar la lógica después de actualizar cada módulo
 }
 
-bool App::PreUpdate()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
+bool App::PreUpdate() {
+    // Vincula el framebuffer para renderizar en él
+    if (windowEditor->GetFrameBuffer()) {
+        windowEditor->GetFrameBuffer()->Bind();
+        // Limpia los buffers de color y profundidad
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
 
     return true;
 }
@@ -227,27 +229,6 @@ bool App::DoUpdate(double dt)
 
     actualScene->Update(dt);
 
-    //if (gameObject) {
-    //   /* Component_Transform* ct = gameObject->GetComponent<Component_Transform>();
-    //    ct->SetPosition(ct->GetPosition().x + 0.01f, ct->GetPosition().y, ct->GetPosition().z);
-    //    ct->SetScale(ct->GetScale().x, ct->GetScale().y + 0.01f, ct->GetScale().z);*/
-    //    gameObject->Draw();
-    //}
-
-
-
-
-    //if (gameObject2) {
-    //    Component_Transform* ct = gameObject2->GetComponent<Component_Transform>();
-    //    ct->SetRotation(ct->GetRotation().x + 1, 0, 0);
-    //    gameObject2->Draw();
-    //}
-
-   
-
-    //if (gameObject3) {
-    //    gameObject3->Draw();
-    //}
 
   
 
@@ -255,8 +236,18 @@ bool App::DoUpdate(double dt)
     return true;
 }
 
-bool App::PostUpdate(double dt)
-{
+bool App::PostUpdate(double dt) {
+    if (windowEditor->GetFrameBuffer()) {
+        windowEditor->GetFrameBuffer()->Unbind();
+        GLint currentFbo = 0;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &currentFbo);
+        if (currentFbo != 0) {
+            std::cerr << "Error: Framebuffer no desvinculado correctamente." << std::endl;
+        }
+    }
+
+    windowEditor->Render();
+
     return true;
 }
 
@@ -278,7 +269,7 @@ bool App::SaveFromFile()
 
 bool App::INIT_openGL() {
 
-    Debug::Log("Inicializando OpenGL");
+    //Debug::Log("Inicializando OpenGL");
 
     glewInit();
     glEnable(GL_DEPTH_TEST);

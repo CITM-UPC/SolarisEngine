@@ -50,9 +50,9 @@ void WindowEditor::Create() {
 
 
 	ImGui_ImplSDL2_InitForOpenGL(_window, _ctx);
-	ImGui_ImplOpenGL3_Init("#version 440");
+	ImGui_ImplOpenGL3_Init("#version 130");
 
-	//frameBuffer = new FrameBuffer(app->WINDOW_SIZE.x, app->WINDOW_SIZE.y);
+	frameBuffer = new FrameBuffer(app->WINDOW_SIZE.x, app->WINDOW_SIZE.y);
 
 
 	_windowImGui = new WindowImGui(); // Inicializa WindowImGui
@@ -89,7 +89,8 @@ void WindowEditor::BeginRender() {
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	//ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
+	
+	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport()->ID);
 }
 
 void WindowEditor::Render() {
@@ -131,6 +132,7 @@ void WindowEditor::EndRender() {
 		SDL_GL_MakeCurrent(_window, _ctx);
 	}
 
+
 }
 
 WindowImGui* WindowEditor::GetImGuiWindow()
@@ -141,7 +143,7 @@ WindowImGui* WindowEditor::GetImGuiWindow()
 
 void WindowEditor::resizeViewport(int width, int height) {
 	glViewport(0, 0, width, height);
-	//frameBuffer->RescaleFrameBuffer(width, height);
+	//if(frameBuffer) frameBuffer->RescaleFrameBuffer(width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	float aspectRatio = (float)width / (float)height;
