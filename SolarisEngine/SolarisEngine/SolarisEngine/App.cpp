@@ -63,7 +63,8 @@ bool App::Start()
     gameObject = importer->Importar("./Assets/Potato.fbx");
     gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Potato.jpg");
     gameObject->GetComponent<Component_Transform>()->SetPosition(0, -2, 0);
-    /*gameObject->AddComponent<Component_BoundingBox>();*/
+    gameObject->AddComponent<Component_BoundingBox>();
+    gameObject->GetComponent<Component_BoundingBox>()->Disable();
     actualScene->AddGameObject(gameObject);
 
 

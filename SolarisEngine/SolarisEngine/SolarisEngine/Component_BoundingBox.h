@@ -17,6 +17,8 @@ public:
     void Update(double dt) override;
     void DrawComponent() override;
 
+    void DrawInspectorComponent() override;
+    Component* Clone() const override;
     // Actualiza la bounding box en espacio mundial
     void UpdateBoundingBox(const glm::vec3& minLocal, const glm::vec3& maxLocal, const Component_Transform& transform);
 

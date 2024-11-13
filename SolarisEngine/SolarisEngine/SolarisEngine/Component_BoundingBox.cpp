@@ -35,6 +35,13 @@ void Component_BoundingBox::DrawComponent() {
     }
     glm::mat4 modelMatrix = transform->GetModelMatrix();
 
+    // Activar el test de profundidad
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);  // Asegurarse de que las aristas no sean cubiertas
+
+    // Establecer el grosor de la línea para una mejor visibilidad
+    glLineWidth(2.0f);
+
     // Aplicar la matriz de transformación en el modelo
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -52,11 +59,12 @@ void Component_BoundingBox::DrawComponent() {
         glm::vec3(maxWorld.x, maxWorld.y, maxWorld.z)   // V7
     };
 
-    // Establecer el color de la bounding box
-    glColor3f(1.0f, 1.0f, 0.0f);  // Color amarillo
+    // Establecer el color de la bounding box (amarillo)
+    glColor3f(1.0f, 1.0f, 0.0f);
 
     // Dibujar las 12 aristas de la bounding box usando líneas
     glBegin(GL_LINES);
+
     // Parte inferior (aristas del plano `minWorld.z`)
     glVertex3fv(glm::value_ptr(corners[0])); glVertex3fv(glm::value_ptr(corners[1])); // V0 ↔ V1
     glVertex3fv(glm::value_ptr(corners[1])); glVertex3fv(glm::value_ptr(corners[3])); // V1 ↔ V3
@@ -74,10 +82,27 @@ void Component_BoundingBox::DrawComponent() {
     glVertex3fv(glm::value_ptr(corners[1])); glVertex3fv(glm::value_ptr(corners[5])); // V1 ↔ V5
     glVertex3fv(glm::value_ptr(corners[2])); glVertex3fv(glm::value_ptr(corners[6])); // V2 ↔ V6
     glVertex3fv(glm::value_ptr(corners[3])); glVertex3fv(glm::value_ptr(corners[7])); // V3 ↔ V7
-    glEnd();
 
-    glPopMatrix(); // Restablecer la matriz después de dibujar
+    glEnd(); // Terminar de dibujar las líneas
+
+    // Restaurar la matriz después de dibujar
+    glPopMatrix();
+
+    // Desactivar el test de profundidad para otros elementos si es necesario
+    glDisable(GL_DEPTH_TEST);
 }
+
+
+
+void Component_BoundingBox::DrawInspectorComponent()
+{
+}
+
+Component* Component_BoundingBox::Clone() const
+{
+    return nullptr;
+}
+
 
 
 

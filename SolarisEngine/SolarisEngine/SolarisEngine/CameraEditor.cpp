@@ -262,22 +262,29 @@ bool CameraEditor::IsInFrustum(const glm::vec3& objectPosition) {
     return false;  // Ningún vértice está dentro del frustum
 }
 
-//GameObject* Scene::GetGameObjectAtRayIntersection(const Ray& ray) {
-//    GameObject* closestObject = nullptr;
-//    float closestDistance = std::numeric_limits<float>::max();
-//
-//    for (auto& gameObject : gameObjects) {
-//        // Asegúrate de que el objeto tenga un colisionador o AABB
-//        if (!gameObject->HasCollider()) continue;
-//
-//        float distance;
-//        if (gameObject->GetCollider()->Intersects(ray, distance)) {
-//            if (distance < closestDistance) {
-//                closestDistance = distance;
-//                closestObject = gameObject;
-//            }
-//        }
-//    }
-//    return closestObject;
-//}
+Ray GetMouseRay(int mouseX, int mouseY, int windowWidth, int windowHeight, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::vec3& cameraPosition) {
+    // Paso 1: Normalizar las coordenadas del mouse de [0, windowWidth] y [0, windowHeight] a [-1, 1]
+    float x = (2.0f * mouseX) / windowWidth - 1.0f;
+    float y = 1.0f - (2.0f * mouseY) / windowHeight; // La coordenada Y se invierte debido a la convención de OpenGL
+
+    // Paso 2: Invertir la proyección y vista para convertir las coordenadas de pantalla en coordenadas del mundo
+    glm::mat4 invProjection = glm::inverse(projectionMatrix);
+    glm::mat4 invView = glm::inverse(viewMatrix);
+
+    // Paso 3: Crear un vector en NDC (Normal Device Coordinates) para el punto del mouse
+    glm::vec4 screenPos(x, y, -1.0f, 1.0f);  // -1.0f porque estamos transformando de coordenadas de cámara
+
+    // Paso 4: Transformar las coordenadas del mouse desde NDC a espacio de cámara
+    glm::vec4 worldPos = invProjection * screenPos;
+    worldPos /= worldPos.w;  // Homogeneizar (convertir de coordenadas homogéneas a cartesiana)
+
+    // Paso 5: Transformar las coordenadas del mouse desde espacio de cámara a espacio de mundo
+    glm::vec3 rayDir = glm::vec3(invView * worldPos);  // Dirección del rayo en el espacio de mundo
+
+    // Paso 6: Crear el rayo desde la cámara
+    Ray ray(cameraPosition, rayDir);
+
+    return ray;
+}
+
 
