@@ -18,6 +18,7 @@ public:
 
 private:
     void DrawGameObject(GameObject* gameObject); // Método para dibujar un GameObject
+    std::string selectedItem;
 };
 
 #endif // __PANEL_HIERARCHY_H__

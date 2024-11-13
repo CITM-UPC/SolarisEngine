@@ -1,9 +1,10 @@
-#include "PanelHierarchy.h"
+﻿#include "PanelHierarchy.h"
 #include "imgui.h"
 #include "App.h"
-#include "PanelInspector.h" // Aseg�rate de incluir el header para el PanelInspector
+#include "PanelInspector.h" // Asegúrate de incluir el header para el PanelInspector
 
 PanelHierarchy::PanelHierarchy() { // Inicializa el puntero seleccionado a nullptr
+    selectedItem = ""; // item selecionado
 }
 
 PanelHierarchy::~PanelHierarchy() {
@@ -53,8 +54,8 @@ void PanelHierarchy::RenderContext()
         }
 
         if (ImGui::MenuItem("Copy")) {
-            // L�gica para copiar el GameObject
-            // Guardar en una variable est�tica o similar
+            // Lógica para copiar el GameObject
+            // Guardar en una variable estática o similar
             app->actualScene->SetCopiedGameObject(gameObjectSelected);
         }
 
@@ -70,8 +71,18 @@ void PanelHierarchy::RenderContext()
 }
 
 void PanelHierarchy::DrawGameObject(GameObject* gameObject) {
-    // Dibuja el nombre del GameObject y aplica color al texto si est� seleccionado
-    if (app->actualScene->GetSelectedGameObject() == gameObject) {
+    // 获取 ImGui 的 IO
+    ImGuiIO& io = ImGui::GetIO();
+
+    // 确定图标和名称
+    std::string gameObjectName = u8"\ue079 " + gameObject->GetName();
+    bool isSelected = (app->actualScene->GetSelectedGameObject() == gameObject);
+    bool isHovered = false;
+
+    ImGui::BeginGroup();
+
+    // 设置文本颜色
+    if (isSelected) {
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.5f, 0.0f, 1.0f));
     }
     else {
@@ -80,19 +91,51 @@ void PanelHierarchy::DrawGameObject(GameObject* gameObject) {
             ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
     }
 
-    std::string gameObjectName = u8"\ue079 " + gameObject->GetName();
-    ImGui::Text(gameObjectName.c_str()); // Dibuja el nombre del GameObject
+    // 如果选中，背景颜色变为深蓝色
+    if (isSelected) {
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 1.0f, 0.5f));
+    }
+    else {
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+    }
 
-    // Detecta clic en el GameObject
-    if (ImGui::IsItemClicked(0)) { // 0 para clic izquierdo
+    if (ImGui::Button(gameObjectName.c_str())) {
         app->actualScene->SelectGameObject(gameObject);
     }
 
-    // Detecta clic derecho en el GameObject
-    if (ImGui::IsItemClicked(1)) { // 1 para clic derecho
-        app->actualScene->SelectGameObject(gameObject); // Selecciona el GameObject
-        ImGui::OpenPopup("HierarchyContextMenu"); // Abre el popup
+    // 悬停时变色
+    if (ImGui::IsItemHovered()) {
+        isHovered = true;
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.0f, 0.0f, 1.0f, 0.5f));
     }
 
-    ImGui::PopStyleColor();
+    // 检测左键点击
+    if (ImGui::IsItemClicked(0)) { // 左键点击
+        app->actualScene->SelectGameObject(gameObject);
+    }
+
+    // 检测右键点击
+    if (ImGui::IsItemClicked(1)) { // 右键点击
+        app->actualScene->SelectGameObject(gameObject); // 选择GameObject
+        ImGui::OpenPopup("HierarchyContextMenu"); // 打开弹出菜单
+    }
+
+    // 检测点击其他地方
+    if (ImGui::IsMouseClicked(0) && !ImGui::IsItemHovered() && !ImGui::IsAnyItemHovered()) {
+        app->actualScene->SelectGameObject(nullptr); // 取消选择
+    }
+
+    // 悬停时变色恢复
+    if (isHovered) {
+        ImGui::PopStyleColor();
+    }
+
+    ImGui::PopStyleColor(); // 恢复按钮颜色
+    ImGui::PopStyleColor(); // 恢复文本颜色
+    ImGui::EndGroup();
 }
+
+
+/* bool isHovered = false; bool isSelected = (gameObjectName == selectedItem); 
+ImGui::PushStyleColor(ImGuiCol_Button, isSelected ? ImVec4(0.0f, 0.0f, 1.0f, 0.5f) : ImVec4(0, 0, 0, 0));*/
+
