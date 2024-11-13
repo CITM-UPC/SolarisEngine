@@ -19,6 +19,8 @@ public:
 
     void CreateFolder(const std::filesystem::path& parentPath);
 
+    bool DeleteFolder(const std::filesystem::path& folderPath);
+
 private:
     void ShowFileSystemTree(const std::filesystem::path& path); // Recursive method to display file system
     void ShowBreadcrumbNavigation();
