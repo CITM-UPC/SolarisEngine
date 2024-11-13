@@ -2,7 +2,7 @@
 #include "App.h"
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_keyboard.h>
-
+#include "Ray.h"
 
 CameraEditor::CameraEditor(glm::vec3 position, glm::vec3 front, glm::vec3 up)
     : position(position), front(front), up(up), orbiting(false) {
@@ -261,4 +261,23 @@ bool CameraEditor::IsInFrustum(const glm::vec3& objectPosition) {
 
     return false;  // Ningún vértice está dentro del frustum
 }
+
+//GameObject* Scene::GetGameObjectAtRayIntersection(const Ray& ray) {
+//    GameObject* closestObject = nullptr;
+//    float closestDistance = std::numeric_limits<float>::max();
+//
+//    for (auto& gameObject : gameObjects) {
+//        // Asegúrate de que el objeto tenga un colisionador o AABB
+//        if (!gameObject->HasCollider()) continue;
+//
+//        float distance;
+//        if (gameObject->GetCollider()->Intersects(ray, distance)) {
+//            if (distance < closestDistance) {
+//                closestDistance = distance;
+//                closestObject = gameObject;
+//            }
+//        }
+//    }
+//    return closestObject;
+//}
 

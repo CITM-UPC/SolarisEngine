@@ -38,6 +38,7 @@ private:
     GameObject* selectedGameObject; // Lista de GameObjects en la jerarquía
 
     GameObject* copiedGameObject;
+    /*GameObject* GetGameObjectAtRayIntersection(const Ray& ray);*/
 };
 
 #endif // SCENE_H
