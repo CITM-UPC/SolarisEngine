@@ -21,7 +21,7 @@
 #include "Primitivos.h"
 #include "Component_Material.h"
 #include "Component_Transform.h"
-
+#include "Component_BoundingBox.h"
 
 // Classes "globales"
 class MyWindow;

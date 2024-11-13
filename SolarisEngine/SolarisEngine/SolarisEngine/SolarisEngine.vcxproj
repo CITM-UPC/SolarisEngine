@@ -182,6 +182,7 @@
     <ClInclude Include="PanelProject.h" />
     <ClInclude Include="PanelScene.h" />
     <ClInclude Include="Primitivos.h" />
+    <ClInclude Include="Ray.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="UIDGen.h" />

@@ -54,6 +54,7 @@ bool App::Start()
     gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
     gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
     gameObject2->GetComponent<Component_Transform>()->SetRotation(-90,0,0);
+    
 
 
     actualScene->AddGameObject(gameObject);
@@ -62,6 +63,7 @@ bool App::Start()
     gameObject = importer->Importar("./Assets/Potato.fbx");
     gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Potato.jpg");
     gameObject->GetComponent<Component_Transform>()->SetPosition(0, -2, 0);
+    /*gameObject->AddComponent<Component_BoundingBox>();*/
     actualScene->AddGameObject(gameObject);
 
 
