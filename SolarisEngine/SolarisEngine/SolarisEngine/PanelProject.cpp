@@ -92,9 +92,11 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
     int i = 0;
 
+    static std::string lastClickedItem;
+    static float lastClickTime = 0.0f;
+    const float doubleClickTime = 0.3f; // 双击时间间隔
+
     for (const auto& entry : fs::directory_iterator(path)) {
-
-
         i++;
 
         const auto& entryPath = entry.path();
@@ -105,41 +107,58 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
         ImGui::BeginGroup();
 
-        // que icono
+        // 确定图标
         void* icon;
         if (isDirectory) {
-            icon = icons["folder"]; // carpeta
+            icon = icons["folder"]; // 文件夹
         }
         else {
             std::string extension = entryPath.extension().string();
-
             if (iconTypes.find(extension) != iconTypes.end()) {
-                icon = icons[iconTypes[extension]]; // Icono según tipo
+                icon = icons[iconTypes[extension]]; // 根据类型选择图标
             }
             else {
-                icon = icons["unknow"]; // Otros
+                icon = icons["unknown"]; // 其他
             }
         }
 
-        // fondo trasparente
+        // 透明背景
         ImGui::PushStyleColor(ImGuiCol_Button, isSelected ? ImVec4(0.0f, 0.0f, 1.0f, 0.5f) : ImVec4(0, 0, 0, 0));
 
         std::string uniqueId = "##" + fileName + "_" + std::to_string(i);
         isHovered = ImGui::ImageButton(uniqueId.c_str(), (ImTextureID)icon, ImVec2(iconSize, iconSize));
 
-        if (isHovered && isDirectory) {
-            selectedItem = fileName; 
-            pathStack.push(currentPath); 
-            currentPath = entryPath;
-        }
-        else if (isHovered && !isDirectory) {
-            selectedItem = fileName; 
-           
+        if (ImGui::IsItemHovered()) {
+            isHovered = true;
         }
 
-        ImGui::PopStyleColor(); 
+        if (isHovered) {
+            float currentTime = ImGui::GetTime();
+            if (ImGui::IsMouseClicked(0)) {
+                if (fileName == lastClickedItem && (currentTime - lastClickTime) < doubleClickTime) {
+                    // 双击时打开文件或进入文件夹
+                    if (isDirectory) {
+                        selectedItem = fileName;
+                        pathStack.push(currentPath);
+                        currentPath = entryPath;
+                    }
+                    else {
+                        selectedItem = fileName;
+                        // 打开文件的逻辑
+                    }
+                }
+                else {
+                    // 单击时选中项目并更改颜色
+                    selectedItem = fileName;
+                    lastClickedItem = fileName;
+                    lastClickTime = currentTime;
+                }
+            }
+        }
 
-        // nombre de fitxe
+        ImGui::PopStyleColor();
+
+        // 文件名
         ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + textMaxWidth);
         float textWidth = ImGui::CalcTextSize(fileName.c_str()).x;
         if (textWidth > textMaxWidth) {
@@ -161,15 +180,24 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
             ImGui::SameLine(0, padding);
         }
     }
+
+    // 检测点击其他地方取消选择
+    if (ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
+        selectedItem = "";
+    }
 }
+
+
+
 
 
 void PanelProject::ShowBreadcrumbNavigation() {
     std::filesystem::path pathPart;
     bool showBreadcrumb = false;
 
-  
+    int i = 0;
     for (const auto& part : currentPath) {
+        i++;
         if (part == "Assets") {
             showBreadcrumb = true; 
         }
@@ -177,8 +205,10 @@ void PanelProject::ShowBreadcrumbNavigation() {
         if (showBreadcrumb) {
             pathPart /= part;
 
-            
-            if (ImGui::Button(part.string().c_str())) {
+            std::string fileName = part.string();
+            std::string buttonLabel = fileName + "##" + std::to_string(i);
+
+            if (ImGui::Button(buttonLabel.c_str())) {
                
                 currentPath = pathPart;
 
