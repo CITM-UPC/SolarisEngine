@@ -89,7 +89,6 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 	if (maxItemsPerRow < 1) maxItemsPerRow = 1;
 
 	int itemsInRow = 0;
-
 	int i = 0;
 
 	static std::string lastClickedItem;
@@ -162,6 +161,24 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 			}
 		}
 
+		// 设置拖动源
+		if (ImGui::BeginDragDropSource()) {
+			ImGui::SetDragDropPayload("DND_FILE", fileName.c_str(), fileName.size() + 1);
+			ImGui::Text("Dragging %s", fileName.c_str());
+			ImGui::EndDragDropSource();
+		}
+
+		// 设置拖动目标
+		if (ImGui::BeginDragDropTarget()) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
+				const char* payloadFileName = static_cast<const char*>(payload->Data);
+				std::filesystem::path srcPath = currentPath / payloadFileName;
+				std::filesystem::path destPath = entryPath / payloadFileName;
+				std::filesystem::rename(srcPath, destPath);
+			}
+			ImGui::EndDragDropTarget();
+		}
+
 		ImGui::PopStyleColor();
 
 		// File name
@@ -198,6 +215,9 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 		selectedItem = "";
 	}
 }
+
+
+
 
 void PanelProject::RenderContext() {
 	if (ImGui::BeginPopup("ProjectContextMenuFile")) {
