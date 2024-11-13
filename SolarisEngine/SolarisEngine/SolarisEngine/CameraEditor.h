@@ -29,6 +29,9 @@ public:
     void ChangeCameraSensivility(float value);
     float GetCameraSensivility();
 
+
+    glm::vec3 GetCameraPosition();
+
     int drawnObjectsCount; // Contador de objetos dibujados en cada frame
 
 private:

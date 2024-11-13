@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include "Component.h"
 #include "GameObject.h"
 #ifndef SCENE_H
 #define SCENE_H
@@ -28,6 +27,10 @@ public:
 
     void SetCopiedGameObject(GameObject* gameObject);
     GameObject* GetCopiedGameObject();
+
+    void DrawGrid(float size, int divisions);
+
+    void DrawInfiniteGrid(float gridSpacing, int halfGridLines);
 
 
 private:

@@ -123,6 +123,11 @@ float CameraEditor::GetCameraSensivility()
     return sensitivity;
 }
 
+glm::vec3 CameraEditor::GetCameraPosition()
+{
+    return position;
+}
+
 void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
     xoffset *= sensitivity;
     yoffset *= sensitivity;
