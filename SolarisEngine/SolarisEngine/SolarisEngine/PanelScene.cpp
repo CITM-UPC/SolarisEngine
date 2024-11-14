@@ -19,12 +19,39 @@ void PanelScene::Render() {
         float width = availableRegion.x;
         float height = availableRegion.y;
 
-        // Asegúrate de que el framebuffer esté disponible
         if (app->windowEditor->GetFrameBuffer()) {
+            // Rescalamos el framebuffer para que coincida con el área del panel
+            app->windowEditor->GetFrameBuffer()->RescaleFrameBuffer(width, height);
+
+            // Obtener las dimensiones actuales del framebuffer
+            float fbWidth = width;   // Usamos el tamaño de la región disponible
+            float fbHeight = height; // Usamos el tamaño de la región disponible
+            float fbAspect = fbWidth / fbHeight;
+            float panelAspect = width / height;
+
+            // Ajustar el tamaño de la imagen en función de la relación de aspecto
+            ImVec2 imageSize;
+            if (panelAspect > fbAspect) {
+                // El panel es más ancho que el framebuffer, limitamos el ancho
+                imageSize.x = height * fbAspect;
+                imageSize.y = height;
+            }
+            else {
+                // El panel es más alto que el framebuffer, limitamos la altura
+                imageSize.x = width;
+                imageSize.y = width / fbAspect;
+            }
+
+            // Centrar la imagen en el panel
+            ImVec2 offset((width - imageSize.x) / 2.0f, (height - imageSize.y) / 2.0f);
+            ImVec2 calc(ImGui::GetCursorPos().x + offset.x, ImGui::GetCursorPos().y + offset.y);
+
+            ImGui::SetCursorPos(calc);
+
             // Renderiza la textura del framebuffer en el panel ImGui
             ImGui::Image(
                 (ImTextureID)app->windowEditor->GetFrameBuffer()->getFrameTexture(),
-                ImVec2(width, height),  // Escala la textura para que se ajuste al área disponible
+                imageSize,    // Usa el tamaño ajustado con la relación de aspecto
                 ImVec2(0, 1),
                 ImVec2(1, 0)
             );

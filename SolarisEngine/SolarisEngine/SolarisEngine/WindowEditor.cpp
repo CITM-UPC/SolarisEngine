@@ -83,7 +83,7 @@ void WindowEditor::HandleSDLEvent(SDL_Event& e) {
 void WindowEditor::BeginRender() {
 	int width, height;
 	SDL_GetWindowSize(_window, &width, &height);
-	resizeViewport(width, height);
+	//resizeViewport(width, height);
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
@@ -143,7 +143,7 @@ WindowImGui* WindowEditor::GetImGuiWindow()
 
 void WindowEditor::resizeViewport(int width, int height) {
 	glViewport(0, 0, width, height);
-	//if(frameBuffer) frameBuffer->RescaleFrameBuffer(width, height);
+	if(frameBuffer) frameBuffer->RescaleFrameBuffer(width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	float aspectRatio = (float)width / (float)height;
