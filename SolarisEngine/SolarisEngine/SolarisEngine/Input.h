@@ -93,6 +93,9 @@ public:
 	bool mouseLeftIsPressed = false;
 	bool mouseRightIsPressed = false;
 	bool mouseMiddleIsPressed = false;
+
+	float xoffset;
+	float yoffset;
 };
 
 #endif // __ModuleInput_H__

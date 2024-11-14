@@ -37,6 +37,8 @@ public:
 
     Component* Clone() const override;
 
+    std::pair<glm::vec3, glm::vec3> GetBoundingBoxInWorldSpace() const;
+
     // Métodos de creación estáticos para cada primitivo
     void GenerateCubeMesh();
     void GenerateSphereMesh();

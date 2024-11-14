@@ -5,6 +5,7 @@
 #include "Debug.h"
 
 
+
 InputEditor::InputEditor() 
 {
 	for (uint i = 0; i < MAX_KEYS; ++i)
@@ -187,6 +188,8 @@ void InputEditor::UpdateGamepadsInput()
 				pad.rumble_countdown--;
 		}
 	}
+
+	
 }
 
 bool InputEditor::ShakeController(int id, int duration, float strength)
@@ -273,20 +276,20 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 	case SDL_MOUSEMOTION:
 		// Procesar órbita solo si Alt + clic izquierdo están activos
 		if (mouseLeftIsPressed && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LALT]) {
-			float xoffset = event.motion.xrel;
-			float yoffset = event.motion.yrel;
+			 xoffset = event.motion.xrel;
+			 yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMovement(xoffset, yoffset);
 		}
 		// Procesar movimiento de cámara libre si clic derecho está activo
 		else if (mouseRightIsPressed) {
-			float xoffset = event.motion.xrel;
-			float yoffset = event.motion.yrel;
+			 xoffset = event.motion.xrel;
+			 yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMovement(xoffset, yoffset);
 		}
 		// Procesar desplazamiento si el clic del medio está activo
 		else if (mouseMiddleIsPressed) {
-			float xoffset = event.motion.xrel;
-			float yoffset = event.motion.yrel;
+			 xoffset = event.motion.xrel;
+			 yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMiddle(xoffset, yoffset);
 		}
 		break;
@@ -306,6 +309,7 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 
 	ImGui_ImplSDL2_ProcessEvent(&event);
 
+	
 	return true;
 }
 

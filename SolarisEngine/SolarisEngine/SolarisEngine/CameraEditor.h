@@ -33,10 +33,11 @@ public:
     glm::vec3 GetCameraPosition();
 
     int drawnObjectsCount; // Contador de objetos dibujados en cada frame
+    glm::vec3 position;
 
 private:
 
-    glm::vec3 position;          // Posición actual de la cámara
+              // Posición actual de la cámara
     glm::vec3 front;             // Dirección en la que mira la cámara
     glm::vec3 up;                // Vector 'up' de la cámara
     glm::vec3 right = glm::normalize(glm::cross(front, up));

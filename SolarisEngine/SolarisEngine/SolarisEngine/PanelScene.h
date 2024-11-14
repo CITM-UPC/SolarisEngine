@@ -16,6 +16,9 @@ public:
     void Render() override; // Implementa el método Render
     void RenderContext() override; // Implementa el método Render
 
+    float width;
+    float height;
+
 private:
    
 };

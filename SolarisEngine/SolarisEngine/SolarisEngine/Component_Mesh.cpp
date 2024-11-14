@@ -527,3 +527,30 @@ void Component_Mesh::LoadMesh(const aiScene* ai_scene) {
     Component* Component_Mesh::Clone() const {
         return new Component_Mesh(*this); // Crea una copia usando el constructor de copia
     }
+
+    std::pair<glm::vec3, glm::vec3> Component_Mesh::GetBoundingBoxInWorldSpace() const {
+        // Verificar si hay mallas; si no, retornar una caja vacía
+        if (meshes.empty()) {
+            return { glm::vec3(0.0f), glm::vec3(0.0f) };
+        }
+
+        // Inicializar los límites locales con valores extremos
+        glm::vec3 minLocal(FLT_MAX, FLT_MAX, FLT_MAX);
+        glm::vec3 maxLocal(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+        // Iterar a través de todas las mallas para encontrar los límites mínimos y máximos
+        for (const auto& mesh : meshes) {
+            for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
+                glm::vec3 vertex(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
+                minLocal = glm::min(minLocal, vertex);
+                maxLocal = glm::max(maxLocal, vertex);
+            }
+        }
+
+        // Transformar los límites locales a espacio mundial
+        glm::mat4 modelMatrix = containerGO->GetComponent<Component_Transform>()->GetModelMatrix();
+        glm::vec3 minWorld = glm::vec3(modelMatrix * glm::vec4(minLocal, 1.0f));
+        glm::vec3 maxWorld = glm::vec3(modelMatrix * glm::vec4(maxLocal, 1.0f));
+
+        return { minWorld, maxWorld };
+    }

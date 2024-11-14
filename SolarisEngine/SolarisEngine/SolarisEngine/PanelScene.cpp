@@ -16,8 +16,8 @@ void PanelScene::Render() {
         ImGui::BeginChild("GameRender");  // Panel hijo para renderizado (opcional)
 
         ImVec2 availableRegion = ImGui::GetContentRegionAvail();
-        float width = availableRegion.x;
-        float height = availableRegion.y;
+         width = availableRegion.x;
+         height = availableRegion.y;
 
         if (app->windowEditor->GetFrameBuffer()) {
             // Rescalamos el framebuffer para que coincida con el área del panel
