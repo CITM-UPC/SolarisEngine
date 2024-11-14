@@ -153,6 +153,7 @@
     <ClCompile Include="PanelScene.cpp" />
     <ClCompile Include="Primitivos.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="UIDGen.cpp" />
     <ClCompile Include="WindowEditor.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Primitivos.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="UIDGen.h" />
     <ClInclude Include="WindowEditor.h" />

@@ -66,9 +66,6 @@
     <ClCompile Include="Component_Transform.cpp">
       <Filter>Source Files\Componentes</Filter>
     </ClCompile>
-    <ClCompile Include="WindowImGui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PanelHierarchy.cpp">
       <Filter>Source Files\Panel</Filter>
     </ClCompile>
@@ -120,6 +117,12 @@
     <ClCompile Include="Component_BoundingBox.cpp">
       <Filter>Source Files\Componentes</Filter>
     </ClCompile>
+    <ClCompile Include="WindowImGui.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyWindow.h">
@@ -151,9 +154,6 @@
     </ClInclude>
     <ClInclude Include="Component_Transform.h">
       <Filter>Header Files\Componentes</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowImGui.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PanelHierarchy.h">
       <Filter>Header Files\Panels</Filter>
@@ -208,6 +208,12 @@
     </ClInclude>
     <ClInclude Include="Ray.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowImGui.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
