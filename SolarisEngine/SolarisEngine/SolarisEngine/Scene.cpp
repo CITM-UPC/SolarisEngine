@@ -226,7 +226,7 @@ void Scene::UpdateMousePicking(int mouseX, int mouseY, int windowWidth, int wind
     }
 
     // Seleccionar el objeto más cercano
-    SelectGameObject(closestObject);
+    /*SelectGameObject(closestObject);*/
 
     DrawRay(ray, 100.0f);
 }
