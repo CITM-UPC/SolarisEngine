@@ -96,6 +96,8 @@ public:
 
 	float xoffset;
 	float yoffset;
+
+	bool isCameraMoving = false;
 };
 
 #endif // __ModuleInput_H__

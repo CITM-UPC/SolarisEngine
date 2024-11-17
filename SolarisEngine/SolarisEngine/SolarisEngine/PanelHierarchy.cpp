@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "App.h"
 #include "PanelInspector.h" // Asegúrate de incluir el header para el PanelInspector
+#include "Input.h"
 
 PanelHierarchy::PanelHierarchy() { // Inicializa el puntero seleccionado a nullptr
     selectedItem = ""; // item selecionado
@@ -120,8 +121,8 @@ void PanelHierarchy::DrawGameObject(GameObject* gameObject) {
         ImGui::OpenPopup("HierarchyContextMenu"); // 打开弹出菜单
     }
 
-    // 检测点击其他地方
-    if (ImGui::IsMouseClicked(0) && !ImGui::IsItemHovered() && !ImGui::IsAnyItemHovered()) {
+     /*检测点击其他地方*/
+    if (app->inputEditor->mouseLeftIsPressed && !app->inputEditor->isCameraMoving && !ImGui::IsItemHovered() && !ImGui::IsAnyItemHovered()) {
         app->actualScene->SelectGameObject(nullptr); // 取消选择
     }
 

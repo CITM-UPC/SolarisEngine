@@ -20,7 +20,7 @@ public:
     void RemoveGameObject(GameObject* gameObject);
 
     void SelectGameObject(GameObject* gameObject);
-    void SelectGameObject(uint index);
+    /*void SelectGameObject(uint index);*/
 
     GameObject* GetSelectedGameObject();
 

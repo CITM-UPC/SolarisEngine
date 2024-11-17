@@ -55,11 +55,11 @@ void Scene::SelectGameObject(GameObject* gameObject)
     selectedGameObject = gameObject;
 }
 
-void Scene::SelectGameObject(uint index)
-{
-    if(index >= 0 && index < gameObjects.size())
-        selectedGameObject = gameObjects.at(index);
-}
+//void Scene::SelectGameObject(uint index)
+//{
+//    if(index >= 0 && index < gameObjects.size())
+//        selectedGameObject = gameObjects.at(index);
+//}
 
 GameObject* Scene::GetSelectedGameObject()
 {
@@ -189,7 +189,7 @@ Ray GetMouseRay(int mouseX, int mouseY, int windowWidth, int windowHeight, const
 
     // Paso 4: Transformar las coordenadas del mouse desde NDC a espacio de cámara
     glm::vec4 worldPos = invProjection * screenPos;
-    worldPos /= worldPos.w;  // Homogeneizar (convertir de coordenadas homogéneas a cartesiana)
+    worldPos /= worldPos.w;  // Homogeneizar (convertir de coordenadas homogéneas a cartesiana)  
 
     // Paso 5: Transformar las coordenadas del mouse desde espacio de cámara a espacio de mundo
     glm::vec3 rayDir = glm::vec3(invView * worldPos);  // Dirección del rayo en el espacio de mundo

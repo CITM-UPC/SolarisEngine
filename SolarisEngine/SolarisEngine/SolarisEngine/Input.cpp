@@ -243,15 +243,22 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 
 	case SDL_KEYDOWN:
 		app->cameraEditor->processInput(event.key.keysym.sym, true);
+		if (event.key.keysym.sym == SDLK_LALT) {
+			isCameraMoving = true;
+		}
 		break;
 
 	case SDL_KEYUP:
 		app->cameraEditor->processInput(event.key.keysym.sym, false);
+		if (event.key.keysym.sym == SDLK_LALT) {
+			isCameraMoving = false;
+		}
 		break;
 
 	case SDL_MOUSEBUTTONDOWN:
 		if (event.button.button == SDL_BUTTON_LEFT) {
 			mouseLeftIsPressed = true;
+			
 		}
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			mouseRightIsPressed = true;
@@ -259,11 +266,13 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 		if (event.button.button == SDL_BUTTON_MIDDLE) {
 			mouseMiddleIsPressed = true;
 		}
+		
 		break;
 
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == SDL_BUTTON_LEFT) {
 			mouseLeftIsPressed = false;
+			
 		}
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			mouseRightIsPressed = false;
@@ -279,19 +288,27 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 			 xoffset = event.motion.xrel;
 			 yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMovement(xoffset, yoffset);
+			
 		}
 		// Procesar movimiento de cámara libre si clic derecho está activo
 		else if (mouseRightIsPressed) {
 			 xoffset = event.motion.xrel;
 			 yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMovement(xoffset, yoffset);
+			
 		}
 		// Procesar desplazamiento si el clic del medio está activo
 		else if (mouseMiddleIsPressed) {
 			 xoffset = event.motion.xrel;
 			 yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMiddle(xoffset, yoffset);
+			
 		}
+		else
+		{
+			
+		}
+		
 		break;
 
 	case SDL_MOUSEWHEEL:
