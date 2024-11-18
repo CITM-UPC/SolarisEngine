@@ -95,7 +95,7 @@ void PanelHierarchy::RenderSavePrefab()
 
 
         
-        if (ImGui::InputText("", input_buffer, sizeof(input_buffer))) {
+        if (ImGui::InputText("##", input_buffer, sizeof(input_buffer))) {
             // Si el texto cambia, actualizar el std::string
             input_text = input_buffer;
         }
