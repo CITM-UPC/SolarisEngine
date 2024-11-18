@@ -30,6 +30,11 @@ void PanelInspector::Render() {
         if (ImGui::Checkbox("Enabled", &isEnabled)) { // Usa una variable temporal
             selectedGameObject->SetEnable(isEnabled); // Cambia el estado
         }
+        ImGui::SameLine();
+        bool isStatic = selectedGameObject->IsStatic(); // Obtén el estado actual
+        if (ImGui::Checkbox("Static", &isStatic)) { // Usa una variable temporal
+            selectedGameObject->SetStatic(isStatic); // Cambia el estado
+        }
 
 
         // Renderiza los componentes del GameObject
