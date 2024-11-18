@@ -188,9 +188,11 @@ void CameraEditor::Update() {
     glLoadMatrixf(glm::value_ptr(getProjectionMatrix()));
 
     updateCameraPosition();
-
+ 
     glm::mat4 view = getViewMatrix();
+
     glMatrixMode(GL_MODELVIEW);
+    
     glLoadMatrixf(glm::value_ptr(view));
 }
 
