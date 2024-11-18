@@ -16,9 +16,12 @@ public:
     void Render() override; // Implementa el método Render
     void RenderContext() override; // Implementa el método Render
 
+    void RenderSavePrefab();
+
 private:
     void DrawGameObject(GameObject* gameObject); // Método para dibujar un GameObject
     std::string selectedItem;
+    bool showSavePrefabPopup = false;
 };
 
 #endif // __PANEL_HIERARCHY_H__

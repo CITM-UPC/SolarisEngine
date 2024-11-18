@@ -66,6 +66,54 @@ void PanelHierarchy::RenderContext()
                 app->actualScene->AddGameObject(newGO);
             }
         }
+        if (ImGui::MenuItem("Save Prefab")) {
+            showSavePrefabPopup = true;
+        }
+       
+
+        ImGui::EndPopup();
+    }
+    RenderSavePrefab();
+}
+
+void PanelHierarchy::RenderSavePrefab()
+{
+    if (showSavePrefabPopup && app->actualScene->GetSelectedGameObject()) {
+        ImGui::OpenPopup("Confirm SavePrefab");  // Abre el popup de confirmación
+    }
+    else {
+        showSavePrefabPopup = false;  // Cierra el popup sin eliminar
+        ImGui::CloseCurrentPopup();
+    }
+
+    if (ImGui::BeginPopupModal("Confirm SavePrefab", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Name of prefab?");
+        std::string input_text = "";
+        char input_buffer[256];
+        strncpy_s(input_buffer, input_text.c_str(), sizeof(input_buffer));
+        input_buffer[sizeof(input_buffer) - 1] = '\0'; // Asegurarse de que esté bien terminado en null
+
+
+        
+        if (ImGui::InputText("", input_buffer, sizeof(input_buffer))) {
+            // Si el texto cambia, actualizar el std::string
+            input_text = input_buffer;
+        }
+        ImGui::Separator();
+
+        bool enterPressed = ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter));
+
+        if (ImGui::Button("Save", ImVec2(120, 0)) || enterPressed) {
+            showSavePrefabPopup = false;     // Cierra el popup
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+            showSavePrefabPopup = false;  // Cierra el popup sin eliminar
+            ImGui::CloseCurrentPopup();
+        }
 
         ImGui::EndPopup();
     }
