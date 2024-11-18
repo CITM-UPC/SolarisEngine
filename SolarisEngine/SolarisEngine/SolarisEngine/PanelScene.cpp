@@ -21,7 +21,7 @@ void PanelScene::Render() {
 
         if (app->windowEditor->GetFrameBuffer()) {
             // Rescalamos el framebuffer para que coincida con el área del panel
-            app->windowEditor->GetFrameBuffer()->RescaleFrameBuffer(width, height);
+            //app->windowEditor->GetFrameBuffer()->RescaleFrameBuffer(width, height);
 
             // Obtener las dimensiones actuales del framebuffer
             float fbWidth = width;   // Usamos el tamaño de la región disponible
