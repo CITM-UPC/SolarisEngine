@@ -154,11 +154,34 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 				}
 			}
 
-			// Open context menu on right click and set selected item
+			// Combine both conditions to ensure only one popup is triggered
 			if (ImGui::IsMouseClicked(1)) {
-				selectedItem = fileName;
-				ImGui::OpenPopup("ProjectContextMenuFile");
+				/*if (fileName != "") {
+					Debug::Log("ProjectContextMenuFile");
+					selectedItem = fileName;
+					ImGui::OpenPopup("ProjectContextMenuFile");
+				}
+				else
+				{
+					Debug::Log("ProjectContextMenuEmpty");
+					selectedItem = "";
+					ImGui::OpenPopup("ProjectContextMenuEmpty");
+				}*/
+
+				if (ImGui::IsAnyItemHovered()) {
+					// If hovering over an item, set selectedItem and open the corresponding menu
+					Debug::Log("ProjectContextMenuFile");
+					selectedItem = fileName;
+					ImGui::OpenPopup("ProjectContextMenuFile");
+				}
+				else {
+					// If not hovering over any item, clear selection and open the empty space menu
+					Debug::Log("ProjectContextMenuEmpty");
+					selectedItem = "";
+					ImGui::OpenPopup("ProjectContextMenu");
+				}
 			}
+
 		}
 
 		// 设置拖动源
@@ -204,11 +227,11 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 		}
 	}
 
-	// Detect right-click on empty space
-	if (ImGui::IsMouseClicked(1) && !ImGui::IsAnyItemHovered()) {
-		selectedItem = "";
-		ImGui::OpenPopup("ProjectContextMenuEmpty");
-	}
+	//// Detect right-click on empty space
+	//if (ImGui::IsMouseClicked(1) && !ImGui::IsAnyItemHovered()) {
+	//	selectedItem = "";
+	//	ImGui::OpenPopup("ProjectContextMenuEmpty");
+	//}
 
 	// Deselect item on left-click outside any items
 	if (ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
@@ -239,8 +262,7 @@ void PanelProject::RenderContext() {
 
 		ImGui::EndPopup();
 	}
-
-	if (ImGui::BeginPopup("ProjectContextMenuEmpty")) {
+	else if((ImGui::BeginPopupContextWindow("ProjectContextMenuEmpty"))){
 		if (ImGui::MenuItem("New Folder")) {
 			CreateFolder(currentPath);
 		}
@@ -251,6 +273,7 @@ void PanelProject::RenderContext() {
 
 		ImGui::EndPopup();
 	}
+	
 }
 
 
@@ -351,13 +374,13 @@ bool PanelProject::DeleteFolder(const std::filesystem::path& folderPath) {
 		else if (std::filesystem::exists(folderPath)) {
 			std::filesystem::remove(folderPath);
 			Debug::Log("Delete ");
-			
+
 			return true;
 		}
 	}
 	catch (const std::filesystem::filesystem_error& e) {
-		Debug::Log("Error deleting folder: " , e.what());
-		
+		Debug::Log("Error deleting folder: ", e.what());
+
 	}
 	return false;
 }
