@@ -156,18 +156,6 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
 			// Combine both conditions to ensure only one popup is triggered
 			if (ImGui::IsMouseClicked(1)) {
-				/*if (fileName != "") {
-					Debug::Log("ProjectContextMenuFile");
-					selectedItem = fileName;
-					ImGui::OpenPopup("ProjectContextMenuFile");
-				}
-				else
-				{
-					Debug::Log("ProjectContextMenuEmpty");
-					selectedItem = "";
-					ImGui::OpenPopup("ProjectContextMenuEmpty");
-				}*/
-
 				if (ImGui::IsAnyItemHovered()) {
 					// If hovering over an item, set selectedItem and open the corresponding menu
 					Debug::Log("ProjectContextMenuFile");
@@ -237,6 +225,12 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 	if (ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
 		selectedItem = "";
 	}
+
+	if (showDeleteConfirmation) {
+		ImGui::OpenPopup("Confirm Delete");
+		ShowDeleteConfirmation();
+	}
+	
 }
 
 
@@ -246,9 +240,8 @@ void PanelProject::RenderContext() {
 	if (ImGui::BeginPopup("ProjectContextMenuFile")) {
 		if (ImGui::MenuItem("Delete File/Folder")) {
 			if (!selectedItem.empty()) {
-				std::filesystem::path deletePath = currentPath / selectedItem;
-				DeleteFolder(deletePath);
-				selectedItem = "";
+				showDeleteConfirmation = true;
+				//selectedItem = "";
 			}
 		}
 
@@ -262,7 +255,7 @@ void PanelProject::RenderContext() {
 
 		ImGui::EndPopup();
 	}
-	else if((ImGui::BeginPopupContextWindow("ProjectContextMenuEmpty"))){
+	else if ((ImGui::BeginPopupContextWindow("ProjectContextMenuEmpty"))) {
 		if (ImGui::MenuItem("New Folder")) {
 			CreateFolder(currentPath);
 		}
@@ -273,7 +266,49 @@ void PanelProject::RenderContext() {
 
 		ImGui::EndPopup();
 	}
-	
+
+}
+void PanelProject::ShowDeleteConfirmation() {
+
+	//if (ImGui::BeginPopupModal("Confirm Delete", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+	//	ImGui::Text("Are you sure you want to delete '%s'?", itemToDelete.c_str());
+	//	ImGui::Separator();
+	//	bool enterPressed = ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter));
+	//	if (ImGui::Button("OK", ImVec2(120, 0)) || enterPressed) {
+	//		pathToDelete = deletePath / itemToDelete;
+	//		pendingDelete = true;        // Activa el estado pendiente de eliminación
+	//		showDeletePopup = false;     // Cierra el popup
+	//		ImGui::CloseCurrentPopup();
+	//	}
+	//	ImGui::SameLine();
+	//	if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+	//		showDeletePopup = false;  // Cierra el popup sin eliminar
+	//		ImGui::CloseCurrentPopup();
+	//	}
+	//	ImGui::EndPopup();
+	//}
+
+	if (ImGui::BeginPopupModal("Confirm Delete", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+	ImGui::Text("Are you sure you want to delete '%s'?", selectedItem.c_str());
+	ImGui::Separator();
+	bool enterPressed = ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter));
+	if (ImGui::Button("OK", ImVec2(120, 0)) || enterPressed) {
+		std::filesystem::path deletePath = currentPath / selectedItem;
+		DeleteFolder(deletePath);
+		selectedItem = "";
+		showDeleteConfirmation = false;
+		ImGui::CloseCurrentPopup();
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+		showDeleteConfirmation = false;
+		ImGui::CloseCurrentPopup();
+	}
+
+	ImGui::EndPopup();
+	}
 }
 
 
