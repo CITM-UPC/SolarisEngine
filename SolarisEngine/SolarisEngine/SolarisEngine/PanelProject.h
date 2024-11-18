@@ -39,6 +39,7 @@ private:
     std::filesystem::path pathToDelete;    // Guarda la ruta del archivo/carpeta para eliminar después del bucle
     bool pendingDelete = false;            // Indica si hay una eliminación pendiente
 
+    bool panelFileOpen = false;
     std::unordered_map<std::string, std::string> iconTypes = {
         {".png", "png"},
         {".jpg", "jpg"},
