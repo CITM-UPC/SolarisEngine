@@ -73,8 +73,8 @@ void PanelScene::PlayPauseOverlay()
 {
     // Crear un overlay para los botones en la esquina superior derecha
     ImGui::SetNextWindowBgAlpha(0.5f);  // Transparencia del fondo
-    ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x + width - 100, ImGui::GetWindowPos().y + 30)); // Posición en la esquina superior derecha
-    ImGui::SetNextWindowSize(ImVec2(105, 35)); // Tamaño aproximado del panel
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x + width - 102, ImGui::GetWindowPos().y + 30)); // Posición en la esquina superior derecha
+    ImGui::SetNextWindowSize(ImVec2(107, 35)); // Tamaño aproximado del panel
 
     ImGui::Begin("PlayPauseOverlay", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
     {
