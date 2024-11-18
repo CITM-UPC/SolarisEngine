@@ -16,10 +16,15 @@ glm::mat4 CameraEditor::getViewMatrix() const {
 
 glm::mat4 CameraEditor::getProjectionMatrix() const
 {
-    float fov = glm::radians(90.0f);
+    float fov = glm::radians(105.0f);
     float nearPlane = 0.01f;
     float farPlane = 100.0f;
-    float aspectRatio = (float)app->WINDOW_SIZE.x / (float)app->WINDOW_SIZE.y;
+
+    float w = app->windowEditor->GetImGuiWindow()->scenePanel->width;
+    float h = app->windowEditor->GetImGuiWindow()->scenePanel->height;
+
+    //float aspectRatio = (float)app->WINDOW_SIZE.x / (float)app->WINDOW_SIZE.y;
+    float aspectRatio = w / h;
     return glm::perspective(fov, aspectRatio, nearPlane, farPlane);
 }
 
