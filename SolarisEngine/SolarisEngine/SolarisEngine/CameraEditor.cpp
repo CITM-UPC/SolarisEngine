@@ -18,7 +18,7 @@ glm::mat4 CameraEditor::getProjectionMatrix() const
 {
     float fov = glm::radians(105.0f);
     float nearPlane = 0.01f;
-    float farPlane = 100.0f;
+    float farPlane = 100000.0f;
 
     float w = app->windowEditor->GetImGuiWindow()->scenePanel->width;
     float h = app->windowEditor->GetImGuiWindow()->scenePanel->height;
