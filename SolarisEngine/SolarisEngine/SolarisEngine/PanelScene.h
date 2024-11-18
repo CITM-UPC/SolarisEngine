@@ -16,6 +16,8 @@ public:
     void Render() override; // Implementa el método Render
     void RenderContext() override; // Implementa el método Render
 
+    void PlayPauseOverlay();
+
     float width;
     float height;
 

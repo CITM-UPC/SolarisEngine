@@ -45,6 +45,7 @@ void PanelScene::Render() {
             // Centrar la imagen en el panel
             ImVec2 offset((width - imageSize.x) / 2.0f, (height - imageSize.y) / 2.0f);
             ImVec2 calc(ImGui::GetCursorPos().x + offset.x, ImGui::GetCursorPos().y + offset.y);
+            //ImVec2 calc(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y);
 
             ImGui::SetCursorPos(calc);
 
@@ -59,10 +60,31 @@ void PanelScene::Render() {
 
         ImGui::EndChild();
     }
+    PlayPauseOverlay();
     ImGui::End();  // Finaliza el panel "Scene"
 }
 
 
 void PanelScene::RenderContext()
 {
+}
+
+void PanelScene::PlayPauseOverlay()
+{
+    // Crear un overlay para los botones en la esquina superior derecha
+    ImGui::SetNextWindowBgAlpha(0.5f);  // Transparencia del fondo
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x + width - 100, ImGui::GetWindowPos().y + 30)); // Posición en la esquina superior derecha
+    ImGui::SetNextWindowSize(ImVec2(105, 35)); // Tamaño aproximado del panel
+
+    ImGui::Begin("PlayPauseOverlay", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
+    {
+        if (ImGui::Button(u8" \ue0A9  ")) {
+            // Acción de "Play"
+        }
+        ImGui::SameLine();
+        if (ImGui::Button(u8" \ue09E  ")) {
+            // Acción de "Pause"
+        }
+    }
+    ImGui::End();
 }
