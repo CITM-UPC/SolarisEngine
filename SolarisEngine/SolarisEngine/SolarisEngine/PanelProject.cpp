@@ -6,6 +6,8 @@
 #include "TextureLoader.h"
 #include "Debug.h"
 #include "Input.h"
+#include "imgui_internal.h"
+
 
 namespace fs = std::filesystem;
 // Constructor
@@ -178,95 +180,53 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 			ImGui::SetDragDropPayload("DND_FILE", fileName.c_str(), fileName.size() + 1);
 			ImGui::Text("Dragging %s", fileName.c_str());
 			ImGui::EndDragDropSource();
-			userDrop = true;
-		}
-		else
-		{
-			userDrop = false;
 		}
 
+		ImGui::Begin("Scene");
 
-		// Scene Panel中的代码
-		if ( userDrop == true) { // 确保这个名称与你现有的Scene Panel名称一致
-			ImGui::Begin("Scene");
-			// 获取面板的可用内容区域
-			ImVec2 availableRegion = ImGui::GetContentRegionAvail();
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 1.0f, 0.0f));
-			ImGui::Button("##dummy", availableRegion);
-			ImGui::PopStyleColor();
+		ImVec2 windowPos = ImGui::GetWindowPos();
+		ImVec2 availableRegion = ImGui::GetContentRegionAvail();
 
-			// 确保拖动目标在整个内容区域内有效
-			if (ImGui::BeginDragDropTarget()) {
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
-					const char* payloadFileName = static_cast<const char*>(payload->Data);
-					std::filesystem::path draggedFilePath = currentPath / payloadFileName;
+		// 手动计算矩形区域
+		ImVec2 rectMin = windowPos;
+		ImVec2 rectMax = ImVec2(windowPos.x + availableRegion.x + 20, windowPos.y + availableRegion.y + 50);
 
-					// 打印消息，验证是否进入了拖放目标
-					printf("File '%s' dropped into Scene Panel\n", payloadFileName);
+		// 定义拖放区域
+		ImRect dropRect(rectMin, rectMax);
 
-					// 检查文件扩展名是否为 .fbx
-					if (draggedFilePath.extension() == ".fbx") {
-						GameObject* gameObject = app->importer->Importar(draggedFilePath.string());
-						app->actualScene->AddGameObject(gameObject);
-					}
-					else {
-						std::cerr << "Only .fbx files can be imported into the scene." << std::endl;
-					}
+		// 使用自定义拖放目标
+		if (ImGui::BeginDragDropTargetCustom(dropRect, ImGui::GetID("SceneDragDropTarget"))) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
+				const char* payloadFileName = static_cast<const char*>(payload->Data);
+				std::filesystem::path draggedFilePath = currentPath / payloadFileName;
+
+				printf("File '%s' dropped into Scene Panel\n", payloadFileName);
+				app->inputEditor->handleDroppedFile(draggedFilePath.string().c_str());
+				/*if (draggedFilePath.extension() == ".fbx") {
+					GameObject* gameObject = app->importer->Importar(draggedFilePath.string());
+					app->actualScene->AddGameObject(gameObject);
 				}
-				ImGui::EndDragDropTarget();
+				else {
+					std::cerr << "Only .fbx files can be imported into the scene." << std::endl;
+				}*/
 			}
-
-			ImGui::End();
+			ImGui::EndDragDropTarget();
 		}
 
+		ImGui::End();
 
 
+		// 设置拖动目标
+		if (ImGui::BeginDragDropTarget()) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
+				const char* payloadFileName = static_cast<const char*>(payload->Data);
+				std::filesystem::path srcPath = currentPath / payloadFileName;
+				std::filesystem::path destPath = entryPath / payloadFileName;
+				std::filesystem::rename(srcPath, destPath);
+			}
+			ImGui::EndDragDropTarget();
+		}
 
-
-
-
-
-
-
-
-		//// 设置拖动源
-		//if (ImGui::BeginDragDropSource()) {
-		//	ImGui::SetDragDropPayload("DND_FILE", fileName.c_str(), fileName.size() + 1);
-		//	ImGui::Text("Dragging %s", fileName.c_str());
-		//	ImGui::EndDragDropSource();
-		//}
-
-		//// 设置拖动目标
-		//if (ImGui::BeginDragDropTarget()) {
-		//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
-		//		const char* payloadFileName = static_cast<const char*>(payload->Data);
-		//		std::filesystem::path srcPath = currentPath / payloadFileName;
-		//		std::filesystem::path destPath = entryPath / payloadFileName;
-		//		std::filesystem::rename(srcPath, destPath);
-		//	}
-		//	ImGui::EndDragDropTarget();
-		//}
-
-		//// 设置拖动目标（例如，在你的场景渲染函数中）
-		//if (ImGui::BeginDragDropTarget()) {
-		//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
-		//		const char* payloadFileName = static_cast<const char*>(payload->Data);
-		//		std::filesystem::path draggedFilePath = currentPath / payloadFileName;
-
-		//		// 检查文件扩展名是否为 .fbx
-		//		if (draggedFilePath.extension() == ".fbx") {
-		//			GameObject* gameObject = app->importer->Importar(draggedFilePath.string());
-		//			app->actualScene->AddGameObject(gameObject);
-		//		}
-		//		else {
-		//			std::cerr << "Only .fbx files can be imported into the scene." << std::endl;
-		//		}
-		//	}
-		//	ImGui::EndDragDropTarget();
-		//}
-
-		/*GameObject* gameObject = app->importer->Importar(draggedFilePath.string());
-		app->actualScene->AddGameObject(gameObject);*/
 
 		ImGui::PopStyleColor();
 
@@ -347,24 +307,6 @@ void PanelProject::RenderContext() {
 
 }
 void PanelProject::ShowDeleteConfirmation() {
-
-	//if (ImGui::BeginPopupModal("Confirm Delete", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-	//	ImGui::Text("Are you sure you want to delete '%s'?", itemToDelete.c_str());
-	//	ImGui::Separator();
-	//	bool enterPressed = ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter));
-	//	if (ImGui::Button("OK", ImVec2(120, 0)) || enterPressed) {
-	//		pathToDelete = deletePath / itemToDelete;
-	//		pendingDelete = true;        // Activa el estado pendiente de eliminación
-	//		showDeletePopup = false;     // Cierra el popup
-	//		ImGui::CloseCurrentPopup();
-	//	}
-	//	ImGui::SameLine();
-	//	if (ImGui::Button("Cancel", ImVec2(120, 0))) {
-	//		showDeletePopup = false;  // Cierra el popup sin eliminar
-	//		ImGui::CloseCurrentPopup();
-	//	}
-	//	ImGui::EndPopup();
-	//}
 
 	if (ImGui::BeginPopupModal("Confirm Delete", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 		ImGui::Text("Are you sure you want to delete '%s'?", selectedItem.c_str());
@@ -456,6 +398,7 @@ void PanelProject::ShowBreadcrumbNavigation() {
 	}
 
 }
+
 
 
 
