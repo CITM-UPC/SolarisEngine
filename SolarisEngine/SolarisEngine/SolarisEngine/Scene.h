@@ -39,6 +39,9 @@ public:
 
     bool RayIntersectsAABB(const Ray& ray, const glm::vec3& boxMin, const glm::vec3& boxMax);
 
+    bool isScenePicked = false;
+
+
 
 private:
     std::vector<GameObject*> gameObjects; // Lista de GameObjects en la jerarquía

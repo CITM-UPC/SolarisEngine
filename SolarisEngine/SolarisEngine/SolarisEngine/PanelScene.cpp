@@ -13,6 +13,7 @@ PanelScene::~PanelScene()
 void PanelScene::Render() {
     ImGui::Begin("Scene");  // Crea el panel "Scene"
     {
+        
         ImGui::BeginChild("GameRender");  // Panel hijo para renderizado (opcional)
 
         ImVec2 availableRegion = ImGui::GetContentRegionAvail();
@@ -22,6 +23,7 @@ void PanelScene::Render() {
         if (app->windowEditor->GetFrameBuffer()) {
             // Rescalamos el framebuffer para que coincida con el área del panel
             app->windowEditor->GetFrameBuffer()->RescaleFrameBuffer(width, height);
+            UpdateHoveredStatus();
 
             // Obtener las dimensiones actuales del framebuffer
             float fbWidth = width;   // Usamos el tamaño de la región disponible
@@ -61,6 +63,13 @@ void PanelScene::Render() {
         ImGui::EndChild();
     }
     PlayPauseOverlay();
+    if (isHovered) {
+        app->actualScene->isScenePicked = true;
+    }
+    else
+    {
+        app->actualScene->isScenePicked = false;
+    }
     ImGui::End();  // Finaliza el panel "Scene"
 }
 

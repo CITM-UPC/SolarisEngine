@@ -20,12 +20,13 @@ void Scene::Update(double dt)
         }
     }
 
-    if (app->inputEditor->mouseLeftIsPressed)
+    if (app->inputEditor->mouseLeftIsPressed && isScenePicked)
     {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
+        
         /*printf("Posición del mouse: X: %d, Y: %d\n", mouseX, mouseY);*/
-        UpdateMousePicking(mouseX, mouseY, 1024, 720);
+        UpdateMousePicking(mouseX, mouseY, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
     }
 }
 
@@ -176,31 +177,33 @@ bool Scene:: RayIntersectsAABB(const Ray& ray, const glm::vec3& boxMin, const gl
 }
 
 Ray GetMouseRay(int mouseX, int mouseY, int windowWidth, int windowHeight, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::vec3& cameraPosition) {
-    // Paso 1: Normalizar las coordenadas del mouse de [0, windowWidth] y [0, windowHeight] a [-1, 1]
+    // Normalizar coordenadas del mouse a [-1, 1]
     float x = (2.0f * mouseX) / windowWidth - 1.0f;
-    float y = 1.0f - (2.0f * mouseY) / windowHeight; // La coordenada Y se invierte debido a la convención de OpenGL
+    float y = 1.0f - (2.0f * mouseY) / windowHeight;
 
-    // Paso 2: Invertir la proyección y vista para convertir las coordenadas de pantalla en coordenadas del mundo
+    // Invertir las matrices de proyección y vista
     glm::mat4 invProjection = glm::inverse(projectionMatrix);
     glm::mat4 invView = glm::inverse(viewMatrix);
 
-    // Paso 3: Crear un vector en NDC (Normal Device Coordinates) para el punto del mouse
-    glm::vec4 screenPos(x, y, -1.0f, 1.0f);  // -1.0f porque estamos transformando de coordenadas de cámara
+    // Near y Far en espacio NDC
+    glm::vec4 screenPosNear(x, y, -1.0f, 1.0f);
+    glm::vec4 screenPosFar(x, y, 1.0f, 1.0f);
 
-    // Paso 4: Transformar las coordenadas del mouse desde NDC a espacio de cámara
-    glm::vec4 worldPos = invProjection * screenPos;
-    worldPos /= worldPos.w;  // Homogeneizar (convertir de coordenadas homogéneas a cartesiana)  
+    // Transformar a espacio mundial
+    glm::vec4 nearPointWorld = invView * (invProjection * screenPosNear);
+    glm::vec4 farPointWorld = invView * (invProjection * screenPosFar);
 
-    // Paso 5: Transformar las coordenadas del mouse desde espacio de cámara a espacio de mundo
-    glm::vec3 rayDir = glm::vec3(invView * worldPos);  // Dirección del rayo en el espacio de mundo
+    // Homogeneizar
+    nearPointWorld /= nearPointWorld.w;
+    farPointWorld /= farPointWorld.w;
 
-    // Paso 6: Crear el rayo desde la cámara
-    Ray ray(cameraPosition, rayDir);
+    // Calcular dirección del rayo
+    glm::vec3 rayDir = glm::normalize(glm::vec3(farPointWorld) - glm::vec3(nearPointWorld));
 
-    printf("rayDir: x = %f, y = %f, z = %f\n", rayDir.x, rayDir.y, rayDir.z);
-
-    return ray;
+    // Crear el rayo
+    return Ray(cameraPosition, rayDir);
 }
+
 
 void Scene::UpdateMousePicking(int mouseX, int mouseY, int windowWidth, int windowHeight) {
     // Crear el rayo desde el mouse
@@ -234,7 +237,7 @@ void Scene::UpdateMousePicking(int mouseX, int mouseY, int windowWidth, int wind
 void Scene::DrawRay(const Ray& ray, float length) {
     glm::vec3 endPoint = ray.origin + ray.direction * length;
 
-    glEnable(GL_DEPTH_TEST);
+    
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 0.0f); // Rojo para el rayo
