@@ -20,12 +20,19 @@ void PanelHierarchy::Render() {
 
     ImGui::Begin("Hierarchy"); // Nombre del panel
 
+    UpdateHoveredStatus();
+
     // Renderiza cada GameObject en la lista
     for (auto gameObject : app->actualScene->GetGameObjectsList()) {
         DrawGameObject(gameObject);
     }
 
     RenderContext();
+
+    if (isHovered && app->inputEditor->mouseLeftIsPressed &&
+        !ImGui::IsAnyItemHovered() && !app->inputEditor->isCameraMoving) {
+        app->actualScene->SelectGameObject(nullptr);
+    }
 
     ImGui::End(); // Finaliza el panel
 }
@@ -170,9 +177,9 @@ void PanelHierarchy::DrawGameObject(GameObject* gameObject) {
     }
 
      /*检测点击其他地方*/
-    if (app->inputEditor->mouseLeftIsPressed && !app->inputEditor->isCameraMoving && !ImGui::IsItemHovered() && !ImGui::IsAnyItemHovered()) {
-        app->actualScene->SelectGameObject(nullptr); // 取消选择
-    }
+    //if (app->inputEditor->mouseLeftIsPressed && !app->inputEditor->isCameraMoving && !ImGui::IsItemHovered() && !ImGui::IsAnyItemHovered() && isHovered) {
+    //    app->actualScene->SelectGameObject(nullptr); // 取消选择
+    //}
 
     // 悬停时变色恢复
     if (isHovered) {

@@ -80,6 +80,8 @@ void WindowImGui::CreatePanels() {
     panels.push_back(scenePanel);
 
     menuBar = new MenuBar();
+
+    
 }
 
 void WindowImGui::Create() {
