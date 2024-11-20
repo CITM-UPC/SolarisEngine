@@ -18,9 +18,14 @@ public:
 
     void PlayPauseOverlay();
 
+    ImVec2 GetMousePos();
+
+    
+
+
     float width;
     float height;
-
+    /*ImVec2 calc;*/
 
 private:
    

@@ -22,6 +22,8 @@ public:
     void MouseWheel(bool zoom);
     void GetCameraFrustum();
     bool IsInFrustum(const glm::vec3& objectPosition);
+    glm::vec3 getRayFromMouse(int mouseX, int mouseY);
+    void onMouseClick(int mouseX, int mouseY);
     void updateCameraSpeed();
     void focusOnObject();
     void updateCameraPosition();

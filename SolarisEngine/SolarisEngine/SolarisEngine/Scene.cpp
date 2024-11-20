@@ -23,10 +23,13 @@ void Scene::Update(double dt)
     if (app->inputEditor->mouseLeftIsPressed && isScenePicked)
     {
         int mouseX, mouseY;
+        ImVec2 mousePos = app->windowEditor->GetImGuiWindow()->scenePanel->GetMousePos();
         SDL_GetMouseState(&mouseX, &mouseY);
+        //app->windowEditor->GetImGuiWindow()->scenePanel.
         
         /*printf("Posición del mouse: X: %d, Y: %d\n", mouseX, mouseY);*/
-        UpdateMousePicking(mouseX, mouseY, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
+        //UpdateMousePicking(mousePos.x, mousePos.y, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
+        app->cameraEditor->onMouseClick(mousePos.x, mousePos.y);
     }
 }
 
@@ -176,10 +179,25 @@ bool Scene:: RayIntersectsAABB(const Ray& ray, const glm::vec3& boxMin, const gl
     return true;
 }
 
+bool Scene::intersectsAABB(const glm::vec3& rayOrigin, const glm::vec3& rayDir, const glm::vec3& aabbMin, const glm::vec3& aabbMax) {
+    glm::vec3 tMin = (aabbMin - rayOrigin) / rayDir;
+    glm::vec3 tMax = (aabbMax - rayOrigin) / rayDir;
+
+    glm::vec3 t1 = glm::min(tMin, tMax);
+    glm::vec3 t2 = glm::max(tMin, tMax);
+
+    float tNear = glm::max(glm::max(t1.x, t1.y), t1.z);
+    float tFar = glm::min(glm::min(t2.x, t2.y), t2.z);
+
+    return tNear <= tFar && tFar > 0;
+}
+
 Ray GetMouseRay(int mouseX, int mouseY, int windowWidth, int windowHeight, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::vec3& cameraPosition) {
     // Normalizar coordenadas del mouse a [-1, 1]
-    float x = (2.0f * mouseX) / windowWidth - 1.0f;
-    float y = 1.0f - (2.0f * mouseY) / windowHeight;
+    /*float x = (2.0f * mouseX) / windowWidth - 1.0f;
+    float y = 1.0f - (2.0f * mouseY) / windowHeight;*/
+    float x = mouseX / windowWidth;
+    float y = mouseY / windowHeight;
 
     // Invertir las matrices de proyección y vista
     glm::mat4 invProjection = glm::inverse(projectionMatrix);

@@ -39,6 +39,8 @@ public:
 
     bool RayIntersectsAABB(const Ray& ray, const glm::vec3& boxMin, const glm::vec3& boxMax);
 
+    bool intersectsAABB(const glm::vec3& rayOrigin, const glm::vec3& rayDir, const glm::vec3& aabbMin, const glm::vec3& aabbMax);
+
     bool isScenePicked = false;
 
 
