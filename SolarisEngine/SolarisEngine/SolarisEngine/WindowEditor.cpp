@@ -149,8 +149,14 @@ void WindowEditor::resizeViewport(int width, int height) {
 	float aspectRatio = (float)width / (float)height;
 	//glOrtho(-aspectRatio, aspectRatio, -1.0f, 1.0f, -1.0f, 1.0f);
 	gluPerspective(app->cameraEditor->fov, aspectRatio, app->cameraEditor->nearPlane, app->cameraEditor->farPlane);
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glClearDepth(1.0f);
+
+
 }
 ImGuiIO* WindowEditor::GetImGuiIO()
 {

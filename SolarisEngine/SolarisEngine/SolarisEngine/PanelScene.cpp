@@ -28,7 +28,7 @@ void PanelScene::Render() {
         if (app->windowEditor->GetFrameBuffer()) {
             // Rescalamos el framebuffer para que coincida con el área del panel
             //app->windowEditor->GetFrameBuffer()->RescaleFrameBuffer(width, height);
-            app->windowEditor->GetFrameBuffer()->SetScale(width, height);
+            //app->windowEditor->GetFrameBuffer()->SetScale(width, height);
             UpdateHoveredStatus();
 
             // Obtener las dimensiones actuales del framebuffer
@@ -36,6 +36,8 @@ void PanelScene::Render() {
             float fbHeight = height; // Usamos el tamaño de la región disponible
             float fbAspect = fbWidth / (float)fbHeight;
             float panelAspect = width / (float)height;
+
+
 
             // Ajustar el tamaño de la imagen en función de la relación de aspecto
             ImVec2 imageSize;

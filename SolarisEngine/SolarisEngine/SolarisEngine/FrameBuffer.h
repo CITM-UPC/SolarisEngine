@@ -24,8 +24,8 @@ public:
 	unsigned int texture;
 	unsigned int rbo;
 
-	float width = 100;
-	float height = 100;
+	float width = 1920;
+	float height = 980;
 
 private:
 
