@@ -27,7 +27,7 @@ glm::mat4 CameraEditor::getProjectionMatrix() const
     //float aspectRatio = (float)app->WINDOW_SIZE.x / (float)app->WINDOW_SIZE.y;
     if (h == 0.0f) h = 1.0f;
     float aspectRatio = w / h;
-    Debug::Log("Aspect ratio: ", aspectRatio);
+    //Debug::Log("Aspect ratio: ", aspectRatio);
     return glm::perspective(fov, aspectRatio, nearPlane, farPlane);
 }
 

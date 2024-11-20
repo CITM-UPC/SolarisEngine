@@ -3,6 +3,7 @@
 #include "CameraEditor.h"
 #include "Input.h"
 #include <SDL2/SDL.h>
+#include "Debug.h"
 
 Scene::Scene()
 {
@@ -28,6 +29,10 @@ void Scene::Update(double dt)
         //app->windowEditor->GetImGuiWindow()->scenePanel.
         
         /*printf("Posición del mouse: X: %d, Y: %d\n", mouseX, mouseY);*/
+
+
+
+
         UpdateMousePicking(mousePos.x, mousePos.y, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
         //app->cameraEditor->onMouseClick(mousePos.x, mousePos.y);
     }
@@ -194,9 +199,18 @@ bool Scene::intersectsAABB(const glm::vec3& rayOrigin, const glm::vec3& rayDir, 
 
 Ray GetMouseRay(int mouseX, int mouseY, int windowWidth, int windowHeight, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::vec3& cameraPosition) {
     // Normalizar coordenadas del mouse a [-1, 1]
+    
+    
+    /*No mirar*/
+    mouseX -= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.x;
+    mouseX -= 6;
+    mouseY -= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.y;
+    mouseY -= 25;
+    
     float x = (2.0f * mouseX) / windowWidth - 1.0f;
     float y = 1.0f - (2.0f * mouseY) / windowHeight;
     
+
 
     // Invertir las matrices de proyección y vista
     glm::mat4 invProjection = glm::inverse(projectionMatrix);
@@ -246,9 +260,9 @@ void Scene::UpdateMousePicking(int mouseX, int mouseY, int windowWidth, int wind
     }
 
     // Seleccionar el objeto más cercano
-    /*SelectGameObject(closestObject);*/
+    SelectGameObject(closestObject);
 
-    DrawRay(ray, 100.0f);
+    //DrawRay(ray, 100.0f);
 }
 
 void Scene::DrawRay(const Ray& ray, float length) {
