@@ -15,6 +15,7 @@ struct Mesh {
     std::vector<unsigned int> indices;
     std::vector<float> normals; // Normales de los vértices
     std::vector<float> faceNormals;    // Normales por cara
+    Material material;
 };
 
 class Component_Mesh : public Component {

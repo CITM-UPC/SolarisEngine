@@ -123,6 +123,9 @@
     <ClCompile Include="SceneManager.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="EditorSaveLoad.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyWindow.h">
@@ -213,6 +216,9 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorSaveLoad.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>

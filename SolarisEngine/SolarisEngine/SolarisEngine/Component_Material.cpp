@@ -2,6 +2,7 @@
 #include "App.h"
 #include "TextureLoader.h"
 #include <iostream>
+#include "EditorSaveLoad.h"
 
 Component_Material::Component_Material(GameObject* containerGO)  // Usar puntero crudo
     : Component(containerGO, ComponentType::Material) {
@@ -44,6 +45,8 @@ void Component_Material::SetTexture(const std::string& filePath) {
         material->texturePath = filePath; // Guarda la ruta de la textura
       /*  textureWidth = app->textureLoader->GetTextureWidth(textureID);
         textureHeight = app->textureLoader->GetTextureHeight(textureID);*/
+        EditorSaveLoad::SaveTextureDevIL(material, "test.dds");
+        
     }
 }
 

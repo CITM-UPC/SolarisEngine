@@ -98,6 +98,7 @@ inline double lerp(double A, double B, double t) {
 #define LIBRARY_DIR "./Library"
 #define MESHES_DIR "Library/Meshes"
 #define MATERIALS_DIR "Library/Materials"
+#define TEXTURES_DIR "Library/Textures"
 #define MODELS_DIR "Library/Models"
 #define FONTS_DIR "Library/Fonts"
 
