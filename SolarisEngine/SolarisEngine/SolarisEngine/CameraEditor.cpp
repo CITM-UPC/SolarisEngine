@@ -3,6 +3,7 @@
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_keyboard.h>
 #include "Ray.h"
+#include "Debug.h"
 
 CameraEditor::CameraEditor(glm::vec3 position, glm::vec3 front, glm::vec3 up)
     : position(position), front(front), up(up), orbiting(false) {
@@ -18,13 +19,15 @@ glm::mat4 CameraEditor::getProjectionMatrix() const
 {
     float fov = glm::radians(this->fov);
     float nearPlane = 0.01f;
-    float farPlane = 100000.0f;
+    float farPlane = 100.0f;
 
     float w = app->windowEditor->GetImGuiWindow()->scenePanel->width;
     float h = app->windowEditor->GetImGuiWindow()->scenePanel->height;
 
     //float aspectRatio = (float)app->WINDOW_SIZE.x / (float)app->WINDOW_SIZE.y;
+    if (h == 0.0f) h = 1.0f;
     float aspectRatio = w / h;
+    Debug::Log("Aspect ratio: ", aspectRatio);
     return glm::perspective(fov, aspectRatio, nearPlane, farPlane);
 }
 
@@ -161,11 +164,11 @@ void CameraEditor::processMouseMovement(float xoffset, float yoffset) {
     }
 
     // Debug output para seguimiento
-    printf("Front.z: %f,\n", front.z);
+    /*printf("Front.z: %f,\n", front.z);
     printf("Position.z: %f,\n", position.z);
     printf("Position.x: %f,\n", position.x);
     printf("Yaw: %f,\n", yaw);
-    printf("Pitch: %f,\n", pitch);
+    printf("Pitch: %f,\n", pitch);*/
 
 }
 
@@ -224,19 +227,19 @@ void CameraEditor::GetCameraFrustum()
 {
     glm::mat4 viewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
 
-    leftPlane = viewProjectionMatrix[3] + viewProjectionMatrix[0];
-    rightPlane = viewProjectionMatrix[3] - viewProjectionMatrix[0];
-    topPlane = viewProjectionMatrix[3] - viewProjectionMatrix[1];
-    bottomPlane = viewProjectionMatrix[3] + viewProjectionMatrix[1];
-    nearPlane = viewProjectionMatrix[3] + viewProjectionMatrix[2];
-    farPlane = viewProjectionMatrix[3] - viewProjectionMatrix[2];
+    leftPlaneFrustrum = viewProjectionMatrix[3] + viewProjectionMatrix[0];
+    rightPlaneFrustrum = viewProjectionMatrix[3] - viewProjectionMatrix[0];
+    topPlaneFrustrum = viewProjectionMatrix[3] - viewProjectionMatrix[1];
+    bottomPlaneFrustrum = viewProjectionMatrix[3] + viewProjectionMatrix[1];
+    nearPlaneFrustrum = viewProjectionMatrix[3] + viewProjectionMatrix[2];
+    farPlaneFrustrum = viewProjectionMatrix[3] - viewProjectionMatrix[2];
 
-    leftPlane /= glm::length(glm::vec3(leftPlane));
-    rightPlane /= glm::length(glm::vec3(rightPlane));
-    topPlane /= glm::length(glm::vec3(topPlane));
-    bottomPlane /= glm::length(glm::vec3(bottomPlane));
-    nearPlane /= glm::length(glm::vec3(nearPlane));
-    farPlane /= glm::length(glm::vec3(farPlane));
+    leftPlaneFrustrum /= glm::length(glm::vec3(leftPlaneFrustrum));
+    rightPlaneFrustrum /= glm::length(glm::vec3(rightPlaneFrustrum));
+    topPlaneFrustrum /= glm::length(glm::vec3(topPlaneFrustrum));
+    bottomPlaneFrustrum /= glm::length(glm::vec3(bottomPlaneFrustrum));
+    nearPlane /= glm::length(glm::vec3(nearPlaneFrustrum));
+    farPlane /= glm::length(glm::vec3(farPlaneFrustrum));
 
 }
 

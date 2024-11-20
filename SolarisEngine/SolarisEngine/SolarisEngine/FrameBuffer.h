@@ -15,13 +15,17 @@ public:
 	FrameBuffer(float width, float height);
 	~FrameBuffer();
 	unsigned int getFrameTexture();
-	void RescaleFrameBuffer(float width, float height);
+	void RescaleFrameBuffer();
+	void SetScale(float width, float height);
 	void Bind() const;
 	void Unbind() const;
 
 	unsigned int fbo;
 	unsigned int texture;
 	unsigned int rbo;
+
+	float width = 100;
+	float height = 100;
 
 private:
 

@@ -1,6 +1,7 @@
 #include "PanelScene.h"
 #include "imgui.h"
 #include "App.h"
+#include "Debug.h"
 
 PanelScene::PanelScene()
 {
@@ -15,6 +16,9 @@ void PanelScene::Render() {
     {
         scenePanelPos = ImGui::GetWindowPos();
         scenePanelSize = ImGui::GetWindowSize();
+
+        
+
         ImGui::BeginChild("GameRender");  // Panel hijo para renderizado (opcional)
 
         ImVec2 availableRegion = ImGui::GetContentRegionAvail();
@@ -23,14 +27,15 @@ void PanelScene::Render() {
 
         if (app->windowEditor->GetFrameBuffer()) {
             // Rescalamos el framebuffer para que coincida con el área del panel
-            app->windowEditor->GetFrameBuffer()->RescaleFrameBuffer(width, height);
+            //app->windowEditor->GetFrameBuffer()->RescaleFrameBuffer(width, height);
+            app->windowEditor->GetFrameBuffer()->SetScale(width, height);
             UpdateHoveredStatus();
 
             // Obtener las dimensiones actuales del framebuffer
             float fbWidth = width;   // Usamos el tamaño de la región disponible
             float fbHeight = height; // Usamos el tamaño de la región disponible
-            float fbAspect = fbWidth / fbHeight;
-            float panelAspect = width / height;
+            float fbAspect = fbWidth / (float)fbHeight;
+            float panelAspect = width / (float)height;
 
             // Ajustar el tamaño de la imagen en función de la relación de aspecto
             ImVec2 imageSize;

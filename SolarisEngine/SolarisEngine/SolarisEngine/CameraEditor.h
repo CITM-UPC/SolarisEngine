@@ -38,6 +38,8 @@ public:
     glm::vec3 position;
 
     float fov = 105.0f;
+    float nearPlane = 0.01f;
+    float farPlane = 100.0f;
 
     glm::vec3 front;             // Dirección en la que mira la cámara
     glm::vec3 up;                // Vector 'up' de la cámara
@@ -79,7 +81,7 @@ private:
 
     float movementSpeed = 2.5f;
 
-    glm::vec4 leftPlane, rightPlane, topPlane, bottomPlane, nearPlane, farPlane;
+    glm::vec4 leftPlaneFrustrum, rightPlaneFrustrum, topPlaneFrustrum, bottomPlaneFrustrum, nearPlaneFrustrum, farPlaneFrustrum;
 
     
 };

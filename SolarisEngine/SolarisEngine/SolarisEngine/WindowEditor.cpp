@@ -83,7 +83,7 @@ void WindowEditor::HandleSDLEvent(SDL_Event& e) {
 void WindowEditor::BeginRender() {
 	int width, height;
 	SDL_GetWindowSize(_window, &width, &height);
-	//resizeViewport(width, height);
+	resizeViewport(width, height);
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
@@ -143,11 +143,12 @@ WindowImGui* WindowEditor::GetImGuiWindow()
 
 void WindowEditor::resizeViewport(int width, int height) {
 	glViewport(0, 0, width, height);
-	//if(frameBuffer) frameBuffer->RescaleFrameBuffer(width, height); <-- Esto se hace en el panel de la escena
+	if(frameBuffer) frameBuffer->RescaleFrameBuffer();
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	float aspectRatio = (float)width / (float)height;
-	glOrtho(-aspectRatio, aspectRatio, -1.0f, 1.0f, -1.0f, 1.0f);
+	//glOrtho(-aspectRatio, aspectRatio, -1.0f, 1.0f, -1.0f, 1.0f);
+	gluPerspective(app->cameraEditor->fov, aspectRatio, app->cameraEditor->nearPlane, app->cameraEditor->farPlane);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
