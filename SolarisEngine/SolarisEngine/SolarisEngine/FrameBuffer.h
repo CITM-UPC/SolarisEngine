@@ -27,6 +27,8 @@ public:
 	float width = 1920;
 	float height = 980;
 
+
+
 private:
 
 };

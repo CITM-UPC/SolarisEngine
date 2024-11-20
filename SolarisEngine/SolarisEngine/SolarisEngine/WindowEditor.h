@@ -29,13 +29,13 @@ public:
 
 
    FrameBuffer* GetFrameBuffer();
-
+   SDL_Window* _window = nullptr;  // SDL Window
 
 private:
     void resizeViewport(int width, int height);
    
 
-    SDL_Window* _window = nullptr;  // SDL Window
+    
     void* _ctx = nullptr;           // OpenGL context
    
     bool _shouldClose = false;      // Flag to indicate if the window should close

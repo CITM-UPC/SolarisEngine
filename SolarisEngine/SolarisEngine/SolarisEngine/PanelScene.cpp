@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "App.h"
 #include "Debug.h"
+#include <SDL2/SDL_video.h>
 
 PanelScene::PanelScene()
 {
@@ -29,6 +30,13 @@ void PanelScene::Render() {
             // Rescalamos el framebuffer para que coincida con el área del panel
             //app->windowEditor->GetFrameBuffer()->RescaleFrameBuffer(width, height);
             //app->windowEditor->GetFrameBuffer()->SetScale(width, height);
+
+
+            int wwidth, wheight;
+            SDL_GetWindowSize(app->windowEditor->_window, &wwidth, &wheight);
+
+            app->windowEditor->GetFrameBuffer()->SetScale(wwidth, wheight);
+
             UpdateHoveredStatus();
 
             // Obtener las dimensiones actuales del framebuffer
