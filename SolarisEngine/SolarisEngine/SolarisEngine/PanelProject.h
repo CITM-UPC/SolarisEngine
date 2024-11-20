@@ -21,6 +21,10 @@ public:
 
     bool DeleteFolder(const std::filesystem::path& folderPath);
 
+
+    ImVec2 projectExplorerPos;
+    ImVec2  projectExplorerSize;
+
 private:
     void ShowFileSystemTree(const std::filesystem::path& path); // Recursive method to display file system
     void ShowBreadcrumbNavigation();
@@ -57,6 +61,7 @@ private:
         {".mat", "material"},
         {".go", "gameObject"}
     };
+
 
 
 };
