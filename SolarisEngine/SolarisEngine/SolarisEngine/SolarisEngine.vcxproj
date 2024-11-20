@@ -153,6 +153,10 @@
     <ClCompile Include="PanelProject.cpp" />
     <ClCompile Include="PanelScene.cpp" />
     <ClCompile Include="Primitivos.cpp" />
+    <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="ResourceMesh.cpp" />
+    <ClCompile Include="ResourceTexture.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
@@ -186,6 +190,10 @@
     <ClInclude Include="PanelScene.h" />
     <ClInclude Include="Primitivos.h" />
     <ClInclude Include="Ray.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="ResourceMesh.h" />
+    <ClInclude Include="ResourceTexture.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="TextureLoader.h" />
