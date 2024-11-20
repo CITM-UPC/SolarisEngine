@@ -13,16 +13,16 @@ namespace fs = std::filesystem;
 // Constructor
 PanelProject::PanelProject() {
 	projectPath = ASSETS_DIR;
-	icons["unknow"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/desconocido.png");
-	icons["folder"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/folder.png");
-	icons["file"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/file.png");
-	icons["text"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/txt.png");
-	icons["png"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/png.png");
-	icons["jpg"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/jpg.png");
-	icons["fbx"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/fbx.png");
-	icons["image"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/image.png");
-	icons["material"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/material.png");
-	icons["gameObject"] = (int*)app->textureLoader->LoadTextureDevIL("./Library/Icons/gameObject.png");
+	icons["unknow"] = (int*)app->textureLoader->LoadTextureDevIL("./Packages/Icons/desconocido.png");
+	icons["folder"] = (int*)app->textureLoader->LoadTextureDevIL("./Packages/Icons/folder.png");
+	icons["file"] = (int*)app->textureLoader->LoadTextureDevIL("./Packages/Icons/file.png");
+	icons["text"] = (int*)app->textureLoader->LoadTextureDevIL("./Packages/Icons/txt.png");
+	icons["png"] = (int*)app->textureLoader->LoadTextureDevIL("./Packages/Icons/png.png");
+	icons["jpg"] = (int*)app->textureLoader->LoadTextureDevIL("./Packages/Icons/jpg.png");
+	icons["fbx"] = (int*)app->textureLoader->LoadTextureDevIL("./Packages/Icons/fbx.png");
+	icons["image"] = (int*)app->textureLoader->LoadTextureDevIL("./Packages/Icons/image.png");
+	icons["material"] = (int*)app->textureLoader->LoadTextureDevIL("./Packages/Icons/material.png");
+	icons["gameObject"] = (int*)app->textureLoader->LoadTextureDevIL("./Packages/Icons/gameObject.png");
 	currentPath = projectPath; // ruta actual
 	selectedItem = ""; // item selecionado
 	pathStack.push(currentPath);

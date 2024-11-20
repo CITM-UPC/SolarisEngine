@@ -100,7 +100,8 @@ inline double lerp(double A, double B, double t) {
 #define MATERIALS_DIR "Library/Materials"
 #define TEXTURES_DIR "Library/Textures"
 #define MODELS_DIR "Library/Models"
-#define FONTS_DIR "Library/Fonts"
+#define FONTS_DIR "Packages/Fonts"
+#define ICONS_DIR "Packages/Icons"
 
 
 
