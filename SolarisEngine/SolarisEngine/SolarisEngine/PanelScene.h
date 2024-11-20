@@ -26,6 +26,7 @@ public:
     float width;
     float height;
 
+
     ImVec2 scenePanelPos;
     ImVec2 scenePanelSize;
 

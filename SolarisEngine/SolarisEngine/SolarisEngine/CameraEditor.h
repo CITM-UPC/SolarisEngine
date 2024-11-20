@@ -22,8 +22,8 @@ public:
     void MouseWheel(bool zoom);
     void GetCameraFrustum();
     bool IsInFrustum(const glm::vec3& objectPosition);
-    glm::vec3 getRayFromMouse(int mouseX, int mouseY);
-    void onMouseClick(int mouseX, int mouseY);
+    //glm::vec3 getRayFromMouse(int mouseX, int mouseY);
+    //void onMouseClick(int mouseX, int mouseY);
     void updateCameraSpeed();
     void focusOnObject();
     void updateCameraPosition();
@@ -37,12 +37,17 @@ public:
     int drawnObjectsCount; // Contador de objetos dibujados en cada frame
     glm::vec3 position;
 
-private:
+    float fov = 105.0f;
 
-              // Posición actual de la cámara
     glm::vec3 front;             // Dirección en la que mira la cámara
     glm::vec3 up;                // Vector 'up' de la cámara
     glm::vec3 right = glm::normalize(glm::cross(front, up));
+
+
+private:
+
+              // Posición actual de la cámara
+  
 
     glm::vec3 orbitCenter;       // Punto central alrededor del cual orbitar
     float orbitRadius = 5.0f;    // Radio de la órbita

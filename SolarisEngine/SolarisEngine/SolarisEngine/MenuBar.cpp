@@ -251,6 +251,17 @@ void MenuBar::PreferencePopup() {
         app->cameraEditor->ChangeCameraSensivility(currentSensitivity);
     }
 
+
+   
+
+    float fov = app->cameraEditor->fov;
+
+    // Control deslizante para la sensibilidad del ratón
+    if (ImGui::SliderFloat(u8"FOV", &fov, 0.001f, 360.0f, "Fov: %.01f", 0.01f)) {
+        app->cameraEditor->fov = fov;
+    }
+
+
     ImGui::Separator(); // Otro separador
 
     // Botones para aplicar cambios

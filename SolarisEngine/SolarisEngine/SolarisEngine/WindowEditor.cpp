@@ -143,7 +143,7 @@ WindowImGui* WindowEditor::GetImGuiWindow()
 
 void WindowEditor::resizeViewport(int width, int height) {
 	glViewport(0, 0, width, height);
-	//if(frameBuffer) frameBuffer->RescaleFrameBuffer(width, height);
+	//if(frameBuffer) frameBuffer->RescaleFrameBuffer(width, height); <-- Esto se hace en el panel de la escena
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	float aspectRatio = (float)width / (float)height;

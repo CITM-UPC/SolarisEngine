@@ -10,6 +10,8 @@ struct Ray {
 
     Ray(const glm::vec3& orig, const glm::vec3& dir)
         : origin(orig), direction(glm::normalize(dir)) {}
+
+  
 };
 
 #endif // RAY_H

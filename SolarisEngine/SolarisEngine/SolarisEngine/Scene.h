@@ -43,7 +43,7 @@ public:
 
     bool isScenePicked = false;
 
-
+    Ray ray = Ray(glm::vec3(0,0,0), glm::vec3(0, 0, 0));
 
 private:
     std::vector<GameObject*> gameObjects; // Lista de GameObjects en la jerarquía

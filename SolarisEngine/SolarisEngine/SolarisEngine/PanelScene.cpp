@@ -46,10 +46,13 @@ void PanelScene::Render() {
             }
 
             // Centrar la imagen en el panel
-            ImVec2 offset((width - imageSize.x) / 2.0f, (height - imageSize.y) / 2.0f);
+            ImVec2 offset(
+                std::max(0.0f, (width - imageSize.x) / 2.0f),
+                std::max(0.0f, (height - imageSize.y) / 2.0f)
+            );
             ImVec2 calc(ImGui::GetCursorPos().x + offset.x, ImGui::GetCursorPos().y + offset.y);
             //ImVec2 calc(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y);
-            printf("calc.x: %f, calc.y: %f\n", calc.x, calc.y);
+            //printf("calc.x: %f, calc.y: %f\n", calc.x, calc.y);
             ImGui::SetCursorPos(calc);
 
             // Renderiza la textura del framebuffer en el panel ImGui

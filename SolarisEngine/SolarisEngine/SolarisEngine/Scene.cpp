@@ -28,8 +28,8 @@ void Scene::Update(double dt)
         //app->windowEditor->GetImGuiWindow()->scenePanel.
         
         /*printf("Posición del mouse: X: %d, Y: %d\n", mouseX, mouseY);*/
-        //UpdateMousePicking(mousePos.x, mousePos.y, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
-        app->cameraEditor->onMouseClick(mousePos.x, mousePos.y);
+        UpdateMousePicking(mousePos.x, mousePos.y, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
+        //app->cameraEditor->onMouseClick(mousePos.x, mousePos.y);
     }
 }
 
@@ -194,10 +194,9 @@ bool Scene::intersectsAABB(const glm::vec3& rayOrigin, const glm::vec3& rayDir, 
 
 Ray GetMouseRay(int mouseX, int mouseY, int windowWidth, int windowHeight, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::vec3& cameraPosition) {
     // Normalizar coordenadas del mouse a [-1, 1]
-    /*float x = (2.0f * mouseX) / windowWidth - 1.0f;
-    float y = 1.0f - (2.0f * mouseY) / windowHeight;*/
-    float x = mouseX / windowWidth;
-    float y = mouseY / windowHeight;
+    float x = (2.0f * mouseX) / windowWidth - 1.0f;
+    float y = 1.0f - (2.0f * mouseY) / windowHeight;
+    
 
     // Invertir las matrices de proyección y vista
     glm::mat4 invProjection = glm::inverse(projectionMatrix);

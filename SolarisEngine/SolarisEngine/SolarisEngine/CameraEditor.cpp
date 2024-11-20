@@ -16,7 +16,7 @@ glm::mat4 CameraEditor::getViewMatrix() const {
 
 glm::mat4 CameraEditor::getProjectionMatrix() const
 {
-    float fov = glm::radians(105.0f);
+    float fov = glm::radians(this->fov);
     float nearPlane = 0.01f;
     float farPlane = 100000.0f;
 
@@ -271,45 +271,53 @@ bool CameraEditor::IsInFrustum(const glm::vec3& objectPosition) {
 
 
 
-glm::vec3 CameraEditor::getRayFromMouse(int mouseX, int mouseY) {
-    // Obtener la matriz de proyección y vista
-    glm::mat4 view = getViewMatrix();
-    glm::mat4 projection = getProjectionMatrix();
-    glm::mat4 inverseVP = glm::inverse(projection * view);
-
-    // Coordenadas normalizadas del mouse
-    float x = (2.0f * mouseX) / app->windowEditor->GetImGuiWindow()->scenePanel->width - 1.0f;
-    float y = 1.0f - (2.0f * mouseY) / app->windowEditor->GetImGuiWindow()->scenePanel->height;
-
-    glm::vec4 clipCoords(x, y, -1.0f, 1.0f);  // Poner la coordenada Z en -1 para el near plane
-
-    // Transformar las coordenadas desde el espacio de clip al espacio de cámara
-    glm::vec4 eyeCoords = inverseVP * clipCoords;
-    eyeCoords.z = -1.0f;  // El rayo se origina en el near plane
-    eyeCoords.w = 0.0f;   // No hay desplazamiento, ya que es un vector de dirección
-
-    glm::vec3 rayWorld = glm::vec3(eyeCoords);  // Convertir a coordenada 3D en el mundo
-    return glm::normalize(rayWorld);  // Normalizar la dirección del rayo
-}
-
-void CameraEditor::onMouseClick(int mouseX, int mouseY) {
-    // Obtener el rayo
-    glm::vec3 rayDir = getRayFromMouse(mouseX, mouseY);
-    glm::vec3 rayOrigin = position;  // El origen del rayo es la posición de la cámara
-
-    // Comprobar la intersección con los objetos en la escena
-    for (auto& gameObject : app->actualScene->GetGameObjectsList()) {
-        Component_Mesh* mesh = gameObject->GetComponent<Component_Mesh>();
-        if (mesh) {
-            auto [min, max] = mesh->GetBoundingBoxInWorldSpace();
-            if (app->actualScene->intersectsAABB(rayOrigin, rayDir, min, max)) {
-                // Aquí puedes gestionar la selección del objeto
-                app->actualScene->SelectGameObject(gameObject);
-                break;
-            }
-        }
-    }
-}
+//glm::vec3 CameraEditor::getRayFromMouse(int mouseX, int mouseY) {
+//    // Obtener la matriz de proyección y vista
+//    glm::mat4 view = getViewMatrix();
+//    glm::mat4 projection = getProjectionMatrix();
+//    glm::mat4 inverseVP = glm::inverse(projection * view);
+//
+//    // Coordenadas normalizadas del mouse
+//    float x = (2.0f * mouseX) / app->windowEditor->GetImGuiWindow()->scenePanel->width - 1.0f;
+//    float y = 1.0f - (2.0f * mouseY) / app->windowEditor->GetImGuiWindow()->scenePanel->height;
+//
+//    glm::vec4 clipCoords(x, y, -1.0f, 1.0f);  // Poner la coordenada Z en -1 para el near plane
+//
+//    // Transformar las coordenadas desde el espacio de clip al espacio de cámara
+//    glm::vec4 eyeCoords = inverseVP * clipCoords;
+//    eyeCoords.z = -1.0f;  // El rayo se origina en el near plane
+//    eyeCoords.w = 0.0f;   // No hay desplazamiento, ya que es un vector de dirección
+//
+//    glm::vec3 rayWorld = glm::vec3(eyeCoords);  // Convertir a coordenada 3D en el mundo
+//
+//
+//    return glm::normalize(rayWorld);  // Normalizar la dirección del rayo
+//}
+//
+//void CameraEditor::onMouseClick(int mouseX, int mouseY) {
+//    // Obtener el rayo
+//    glm::vec3 rayDir = getRayFromMouse(mouseX, mouseY);
+//    glm::vec3 rayOrigin = GetCameraPosition();  // El origen del rayo es la posición de la cámara
+//
+//    Ray ray(rayOrigin, rayDir);
+//
+//    app->actualScene->ray = ray;
+//
+//    //app->actualScene->DrawRay(ray, 100);
+//
+//    // Comprobar la intersección con los objetos en la escena
+//    for (auto& gameObject : app->actualScene->GetGameObjectsList()) {
+//        Component_Mesh* mesh = gameObject->GetComponent<Component_Mesh>();
+//        if (mesh) {
+//            auto [min, max] = mesh->GetBoundingBoxInWorldSpace();
+//            if (app->actualScene->intersectsAABB(rayOrigin, rayDir, min, max)) {
+//                // Aquí puedes gestionar la selección del objeto
+//                app->actualScene->SelectGameObject(gameObject);
+//                break;
+//            }
+//        }
+//    }
+//}
 
 
 

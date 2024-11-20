@@ -25,6 +25,7 @@ private:
     ImVec4 textColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // Color del texto
     ImVec4 backgroundColor = ImVec4(0.1f, 0.1f, 0.1f, 1.0f); // Color de fondo
 
+
     bool showPreferencePopup = false;
 
 
