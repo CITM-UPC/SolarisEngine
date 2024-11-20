@@ -13,8 +13,8 @@ public:
     PanelScene();
     ~PanelScene();
 
-    void Render() override; // Implementa el método Render
-    void RenderContext() override; // Implementa el método Render
+    void Render() override; // Implementa el mï¿½todo Render
+    void RenderContext() override; // Implementa el mï¿½todo Render
 
     void PlayPauseOverlay();
 
@@ -25,7 +25,9 @@ public:
 
     float width;
     float height;
-    /*ImVec2 calc;*/
+
+    ImVec2 scenePanelPos;
+    ImVec2 scenePanelSize;
 
 private:
    

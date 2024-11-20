@@ -1,12 +1,13 @@
-
+﻿
 #include "Input.h"
 #include "MyWindow.h"
 #include <SDL2/SDL.h>
 #include "Debug.h"
+#include <imgui_internal.h>
 
 
 
-InputEditor::InputEditor() 
+InputEditor::InputEditor()
 {
 	for (uint i = 0; i < MAX_KEYS; ++i)
 		keys[i] = KEY_IDLE;
@@ -86,7 +87,7 @@ void InputEditor::HandleDeviceConnection(int index)
 					pad.haptic = SDL_HapticOpen(index);
 					if (pad.haptic != nullptr)
 						//LOG("... gamepad has force feedback capabilities");
-					pad.index = SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(pad.controller));
+						pad.index = SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(pad.controller));
 				}
 			}
 		}
@@ -189,7 +190,7 @@ void InputEditor::UpdateGamepadsInput()
 		}
 	}
 
-	
+
 }
 
 bool InputEditor::ShakeController(int id, int duration, float strength)
@@ -258,7 +259,7 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 	case SDL_MOUSEBUTTONDOWN:
 		if (event.button.button == SDL_BUTTON_LEFT) {
 			mouseLeftIsPressed = true;
-			
+
 		}
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			mouseRightIsPressed = true;
@@ -266,13 +267,13 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 		if (event.button.button == SDL_BUTTON_MIDDLE) {
 			mouseMiddleIsPressed = true;
 		}
-		
+
 		break;
 
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == SDL_BUTTON_LEFT) {
 			mouseLeftIsPressed = false;
-			
+
 		}
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			mouseRightIsPressed = false;
@@ -283,32 +284,32 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 		break;
 
 	case SDL_MOUSEMOTION:
-		// Procesar �rbita solo si Alt + clic izquierdo est�n activos
+		// Procesar órbita solo si Alt + clic izquierdo están activos
 		if (mouseLeftIsPressed && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LALT]) {
-			 xoffset = event.motion.xrel;
-			 yoffset = event.motion.yrel;
+			xoffset = event.motion.xrel;
+			yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMovement(xoffset, yoffset);
-			
+
 		}
-		// Procesar movimiento de c�mara libre si clic derecho est� activo
+		// Procesar movimiento de cámara libre si clic derecho está activo
 		else if (mouseRightIsPressed) {
-			 xoffset = event.motion.xrel;
-			 yoffset = event.motion.yrel;
+			xoffset = event.motion.xrel;
+			yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMovement(xoffset, yoffset);
-			
+
 		}
-		// Procesar desplazamiento si el clic del medio est� activo
+		// Procesar desplazamiento si el clic del medio está activo
 		else if (mouseMiddleIsPressed) {
-			 xoffset = event.motion.xrel;
-			 yoffset = event.motion.yrel;
+			xoffset = event.motion.xrel;
+			yoffset = event.motion.yrel;
 			app->cameraEditor->processMouseMiddle(xoffset, yoffset);
-			
+
 		}
 		else
 		{
-			
+
 		}
-		
+
 		break;
 
 	case SDL_MOUSEWHEEL:
@@ -316,7 +317,8 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 		break;
 
 	case SDL_DROPFILE:
-		handleDroppedFile(event.drop.file);
+		
+			handleDroppedFile(event.drop.file);
 		break;
 
 	default:
@@ -326,31 +328,76 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 
 	ImGui_ImplSDL2_ProcessEvent(&event);
 
-	
+
 	return true;
 }
 
 
 
-void InputEditor::handleDroppedFile(const char* filePath)
-{
-	std::string droppedFile = filePath;
-	std::string extension = droppedFile.substr(droppedFile.find_last_of('.') + 1);
-	std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
-	if (extension == "fbx" || extension == "obj") {
-		GameObject* gameObject = app->importer->Importar(droppedFile);
-		app->actualScene->AddGameObject(gameObject);
-		
+//void InputEditor::handleDroppedFile(const char* filePath)
+//{
+//	std::string droppedFile = filePath;
+//	std::string extension = droppedFile.substr(droppedFile.find_last_of('.') + 1);
+//	std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+//	if (extension == "fbx" || extension == "obj") {
+//		GameObject* gameObject = app->importer->Importar(droppedFile);
+//		app->actualScene->AddGameObject(gameObject);
+//
+//	}
+//	else if (app->actualScene->GetSelectedGameObject() && (extension == "png" || extension == "jpg" || extension == "dds")) {
+//		Component_Material* cm = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Material>();
+//		if (cm == nullptr) {
+//			app->actualScene->GetSelectedGameObject()->AddComponent<Component_Material>()->SetTexture(droppedFile);
+//		}
+//		else {
+//			app->actualScene->GetSelectedGameObject()->GetComponent<Component_Material>()->SetTexture(droppedFile);
+//		}
+//
+//	}
+//	Debug::Log("Import file: ", filePath);
+//}
+
+
+
+
+void InputEditor::handleDroppedFile(const char* filePath) {
+	int mouseX, mouseY;
+	SDL_GetMouseState(&mouseX, &mouseY);
+
+	// 确定文件拖放到哪个面板
+	if (mouseX >= app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerPos.x && mouseX <= app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerPos.x + app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerSize.x &&
+		mouseY >= app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerPos.y && mouseY <= app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerPos.y + app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerSize.y) {
+		// 文件拖放到Project Explorer面板
+		Debug::Log("File dropped into Project Explorer: ", filePath);
+		// 将文件移动到游戏引擎的文件夹中
+		// 具体操作代码在此添加
 	}
-	else if (app->actualScene->GetSelectedGameObject() && (extension == "png" || extension == "jpg" || extension == "dds")) {
-		Component_Material* cm = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Material>();
-		if (cm == nullptr) {
-			app->actualScene->GetSelectedGameObject()->AddComponent<Component_Material>()->SetTexture(droppedFile);
+	else if (mouseX >= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.x && mouseX <= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.x + app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelSize.x &&
+		mouseY >= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.y && mouseY <= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.y + app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelSize.y) {
+		// 文件拖放到Scene Panel面板
+		Debug::Log("File dropped into Scene Panel: ", filePath);
+
+		// 根据文件类型执行相应操作
+		std::string droppedFile = filePath;
+		std::string extension = droppedFile.substr(droppedFile.find_last_of('.') + 1);
+		std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+		if (extension == "fbx" || extension == "obj") {
+			GameObject* gameObject = app->importer->Importar(droppedFile);
+			app->actualScene->AddGameObject(gameObject);
 		}
-		else {
-			app->actualScene->GetSelectedGameObject()->GetComponent<Component_Material>()->SetTexture(droppedFile);
+		else if (app->actualScene->GetSelectedGameObject() &&
+			(extension == "png" || extension == "jpg" || extension == "dds")) {
+			Component_Material* cm = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Material>();
+			if (cm == nullptr) {
+				app->actualScene->GetSelectedGameObject()->AddComponent<Component_Material>()->SetTexture(droppedFile);
+			}
+			else {
+				app->actualScene->GetSelectedGameObject()->GetComponent<Component_Material>()->SetTexture(droppedFile);
+			}
 		}
-		
 	}
-	Debug::Log("Import file: ", filePath);
+	else {
+		Debug::Log("File dropped outside any target area: ", filePath);
+	}
+	SDL_free((void*)filePath); // 释放SDL分配的文件路径内存
 }

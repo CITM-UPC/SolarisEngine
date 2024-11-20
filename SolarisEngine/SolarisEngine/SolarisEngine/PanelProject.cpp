@@ -42,6 +42,8 @@ void PanelProject::Render() {
 
 	ImGui::Begin("Project Explorer");
 
+	projectExplorerPos = ImGui::GetWindowPos(); 
+	projectExplorerSize = ImGui::GetWindowSize();
 	// breadnavigation
 	ImGui::BeginChild("BreadcrumbNavigation", ImVec2(0, 20), false, ImGuiWindowFlags_NoScrollbar);
 	ShowBreadcrumbNavigation();

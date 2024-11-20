@@ -13,7 +13,8 @@ PanelScene::~PanelScene()
 void PanelScene::Render() {
     ImGui::Begin("Scene");  // Crea el panel "Scene"
     {
-        
+        scenePanelPos = ImGui::GetWindowPos();
+        scenePanelSize = ImGui::GetWindowSize();
         ImGui::BeginChild("GameRender");  // Panel hijo para renderizado (opcional)
 
         ImVec2 availableRegion = ImGui::GetContentRegionAvail();
