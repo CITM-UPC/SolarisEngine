@@ -342,6 +342,23 @@ void Component_Mesh::GenerateCubeMesh() {
 		20, 21, 22, 22, 23, 20,
 	};
 
+	cubeMesh.texCoords = {
+		// Frente
+		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+		// Atrás
+		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+		// Izquierda
+		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+		// Derecha
+		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+		// Arriba
+		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+		// Abajo
+		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+	};
+
+
+
 	meshes.push_back(cubeMesh);
 }
 
@@ -376,6 +393,17 @@ void Component_Mesh::GenerateSphereMesh() {
 			sphereMesh.indices.push_back(first + 1);
 		}
 	}
+
+
+	for (int i = 0; i <= stackCount; ++i) {
+		for (int j = 0; j <= sectorCount; ++j) {
+			float u = (float)j / sectorCount; // Coordenada horizontal (longitud)
+			float v = (float)i / stackCount; // Coordenada vertical (latitud)
+			sphereMesh.texCoords.push_back(u);
+			sphereMesh.texCoords.push_back(v);
+		}
+	}
+
 	meshes.push_back(sphereMesh);
 }
 
@@ -383,6 +411,15 @@ void Component_Mesh::GeneratePlaneMesh() {
 	Mesh planeMesh;
 	planeMesh.vertices = { -0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.5f };
 	planeMesh.indices = { 0, 1, 2, 2, 3, 0 };
+
+	planeMesh.texCoords = {
+	0.0f, 0.0f,  // Vértice 1
+	1.0f, 0.0f,  // Vértice 2
+	1.0f, 1.0f,  // Vértice 3
+	0.0f, 1.0f   // Vértice 4
+	};
+
+
 	meshes.push_back(planeMesh);
 }
 
@@ -407,6 +444,20 @@ void Component_Mesh::GenerateTriangleMesh() {
 		1, 3, 4,  // BDE
 		1, 4, 2   // BCE
 	};
+
+
+	// Coordenadas UV
+	triangleMesh.texCoords = {
+		// Coordenadas para el vértice superior (compartido)
+		0.5f, 1.0f,  // A (vértice superior)
+
+		// Coordenadas para la base cuadrada (comparten vértices)
+		0.0f, 0.0f,  // B (inferior izquierda)
+		1.0f, 0.0f,  // C (inferior derecha)
+		1.0f, 1.0f,  // D (superior derecha)
+		0.0f, 1.0f   // E (superior izquierda)
+	};
+
 
 	meshes.push_back(triangleMesh);
 }
@@ -459,9 +510,18 @@ void Component_Mesh::GenerateCapsuleMesh() {
 		}
 	}
 
+
+	for (int i = 0; i <= stacks; ++i) {
+		for (int j = 0; j <= slices; ++j) {
+			float u = (float)j / slices;
+			float v = (float)i / stacks;
+			capsuleMesh.texCoords.push_back(u);
+			capsuleMesh.texCoords.push_back(v);
+		}
+	}
+
 	meshes.push_back(capsuleMesh);
 }
-
 
 
 
@@ -472,39 +532,48 @@ void Component_Mesh::GenerateCylinderMesh() {
 	const float radius = 0.5f;
 	const float height = 1.0f;
 
-
+	// Generar vértices y coordenadas UV para el cuerpo del cilindro
 	for (int i = 0; i <= slices; ++i) {
 		float angle = i * 2.0f * M_PI / slices;
 		float x = radius * cos(angle);
 		float z = radius * sin(angle);
+		float u = (float)i / slices;
 
-
+		// Vértices del cuerpo
 		cylinderMesh.vertices.push_back(x);
 		cylinderMesh.vertices.push_back(-0.5f * height);
 		cylinderMesh.vertices.push_back(z);
-
+		cylinderMesh.texCoords.push_back(u); // Coordenada U
+		cylinderMesh.texCoords.push_back(0.0f); // Coordenada V
 
 		cylinderMesh.vertices.push_back(x);
 		cylinderMesh.vertices.push_back(0.5f * height);
 		cylinderMesh.vertices.push_back(z);
+		cylinderMesh.texCoords.push_back(u); // Coordenada U
+		cylinderMesh.texCoords.push_back(1.0f); // Coordenada V
 	}
 
-
+	// Centro de las tapas (vértices adicionales)
 	cylinderMesh.vertices.push_back(0.0f);
 	cylinderMesh.vertices.push_back(-0.5f * height);
 	cylinderMesh.vertices.push_back(0.0f);
+	cylinderMesh.texCoords.push_back(0.5f); // Coordenada U
+	cylinderMesh.texCoords.push_back(0.5f); // Coordenada V
+
 	cylinderMesh.vertices.push_back(0.0f);
 	cylinderMesh.vertices.push_back(0.5f * height);
 	cylinderMesh.vertices.push_back(0.0f);
+	cylinderMesh.texCoords.push_back(0.5f); // Coordenada U
+	cylinderMesh.texCoords.push_back(0.5f); // Coordenada V
 
-
+	// Generar índices para el cuerpo del cilindro
 	for (int i = 0; i < slices; ++i) {
 		int bottom1 = 2 * i;
 		int bottom2 = 2 * ((i + 1) % slices);
 		int top1 = bottom1 + 1;
 		int top2 = bottom2 + 1;
 
-
+		// Lados del cilindro
 		cylinderMesh.indices.push_back(bottom1);
 		cylinderMesh.indices.push_back(bottom2);
 		cylinderMesh.indices.push_back(top1);
@@ -513,17 +582,35 @@ void Component_Mesh::GenerateCylinderMesh() {
 		cylinderMesh.indices.push_back(bottom2);
 		cylinderMesh.indices.push_back(top2);
 
-
+		// Tapa inferior
 		cylinderMesh.indices.push_back(bottom1);
 		cylinderMesh.indices.push_back(bottom2);
 		cylinderMesh.indices.push_back(2 * slices);
 
-
+		// Tapa superior
 		cylinderMesh.indices.push_back(top1);
 		cylinderMesh.indices.push_back(2 * slices + 1);
 		cylinderMesh.indices.push_back(top2);
 	}
 
+	// Coordenadas UV para las tapas
+	for (int i = 0; i < slices; ++i) {
+		float angle = i * 2.0f * M_PI / slices;
+		float x = radius * cos(angle);
+		float z = radius * sin(angle);
+		float u = (x / radius + 1.0f) * 0.5f;
+		float v = (z / radius + 1.0f) * 0.5f;
+
+		// UV para la tapa inferior
+		cylinderMesh.texCoords.push_back(u);
+		cylinderMesh.texCoords.push_back(v);
+
+		// UV para la tapa superior
+		cylinderMesh.texCoords.push_back(u);
+		cylinderMesh.texCoords.push_back(v);
+	}
+
+	// Guardar el cilindro
 	meshes.push_back(cylinderMesh);
 }
 
