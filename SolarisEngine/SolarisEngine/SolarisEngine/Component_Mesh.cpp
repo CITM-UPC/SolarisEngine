@@ -29,6 +29,19 @@ void Component_Mesh::Update(double dt) {
 void Component_Mesh::DrawComponent() {
 	if (!enabled) return;
 
+
+	if (containerGO->GetComponent<Component_Material>()) {
+		material = containerGO->GetComponent<Component_Material>(); 
+		material->DrawTexture();
+
+	}
+	else {
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glColor3f(1.0f, 0.0f, 1.0f); // Color rosa si no hay material
+	}
+
+
+
 	// Obtener el GameObject contenedor
 	auto transform = containerGO->GetComponent<Component_Transform>();
 	if (!transform) {
@@ -42,24 +55,6 @@ void Component_Mesh::DrawComponent() {
 	glPushMatrix();
 	glMultMatrixf(glm::value_ptr(modelMatrix));
 
-	// Configurar el material y textura
-	if (material) {
-		GLuint textureID = material->GetTextureID();
-		if (textureID == 0) {
-			std::cerr << "Advertencia: Textura no v�lida en material. Usando color rosa de error." << std::endl;
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glColor3f(1.0f, 0.0f, 1.0f); // Color rosa de error
-		}
-		else {
-			glBindTexture(GL_TEXTURE_2D, textureID);
-			glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
-		}
-	}
-	else {
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glColor3f(1.0f, 0.0f, 1.0f); // Color rosa si no hay material
-		material = containerGO->GetComponent<Component_Material>(); // No usar shared_ptr
-	}
 
 	// Dibujo de la malla usando OpenGL
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -84,13 +79,24 @@ void Component_Mesh::DrawComponent() {
 			glBegin(GL_LINES);
 			for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
 				glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
-				glm::vec3 n(mesh.normals[i], mesh.normals[i + 1], mesh.normals[i + 2]);
+				glm::vec3 n;
+				if (mesh.normals.size() > 0) {
+					n = glm::vec3(mesh.normals[i], mesh.normals[i + 1], mesh.normals[i + 2]);
+				}
+				else {
+					n = glm::vec3(mesh.faceNormals[i], mesh.faceNormals[i + 1], mesh.faceNormals[i + 2]);
+				}
+
+
+				//glm::vec3 n(mesh.normals[i], mesh.normals[i + 1], mesh.normals[i + 2]);
 				glm::vec3 end = v + n * 0.1f; // Escala de la l�nea
 				glVertex3fv(glm::value_ptr(v));
 				glVertex3fv(glm::value_ptr(end));
 			}
 			glEnd();
-			glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
+			if (material) {
+				glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
+			}
 		}
 
 		// Mostrar normales de caras
@@ -108,7 +114,10 @@ void Component_Mesh::DrawComponent() {
 				glVertex3fv(glm::value_ptr(end));
 			}
 			glEnd();
-			glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
+			if (material) {
+				glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
+			}
+			
 		}
 
 		// Mostrar la Bounding Box si est� activado
@@ -357,6 +366,8 @@ void Component_Mesh::GenerateCubeMesh() {
 		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
 	};
 
+	CalculateFaceNormals(cubeMesh);
+
 
 
 	meshes.push_back(cubeMesh);
@@ -404,6 +415,8 @@ void Component_Mesh::GenerateSphereMesh() {
 		}
 	}
 
+	CalculateFaceNormals(sphereMesh);
+
 	meshes.push_back(sphereMesh);
 }
 
@@ -418,6 +431,8 @@ void Component_Mesh::GeneratePlaneMesh() {
 	1.0f, 1.0f,  // Vértice 3
 	0.0f, 1.0f   // Vértice 4
 	};
+
+	CalculateFaceNormals(planeMesh);
 
 
 	meshes.push_back(planeMesh);
@@ -457,6 +472,8 @@ void Component_Mesh::GenerateTriangleMesh() {
 		1.0f, 1.0f,  // D (superior derecha)
 		0.0f, 1.0f   // E (superior izquierda)
 	};
+
+	CalculateFaceNormals(triangleMesh);
 
 
 	meshes.push_back(triangleMesh);
@@ -519,6 +536,8 @@ void Component_Mesh::GenerateCapsuleMesh() {
 			capsuleMesh.texCoords.push_back(v);
 		}
 	}
+
+	CalculateFaceNormals(capsuleMesh);
 
 	meshes.push_back(capsuleMesh);
 }
@@ -609,6 +628,8 @@ void Component_Mesh::GenerateCylinderMesh() {
 		cylinderMesh.texCoords.push_back(u);
 		cylinderMesh.texCoords.push_back(v);
 	}
+
+	CalculateFaceNormals(cylinderMesh);
 
 	// Guardar el cilindro
 	meshes.push_back(cylinderMesh);

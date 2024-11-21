@@ -39,6 +39,8 @@ public:
     void DrawComponent() override;
     void DrawInspectorComponent() override;
 
+    void DrawTexture();
+
    
     Component* Clone() const override;
   
@@ -57,7 +59,7 @@ private:
     //float diffuseColor[3]; // Color difuso del material (RGB)
     //ILuint textureID;      // ID de la textura de DevIL
     ILuint textureCheckersID;      // ID de la textura de DevIL
-    Material* material;
+    Material* material = nullptr;
 };
 
 #endif // !__COMPONENT_MATERIAL_H__

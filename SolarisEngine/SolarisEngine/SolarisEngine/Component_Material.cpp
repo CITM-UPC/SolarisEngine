@@ -3,6 +3,7 @@
 #include "TextureLoader.h"
 #include <iostream>
 #include "EditorSaveLoad.h"
+#include "Debug.h"
 
 Component_Material::Component_Material(GameObject* containerGO)  // Usar puntero crudo
     : Component(containerGO, ComponentType::Material) {
@@ -88,24 +89,35 @@ void Component_Material::Update(double dt) {
 void Component_Material::DrawComponent() {
     if (!enabled) return;
 
-    //Creo k no sirve
+    // Si la textura no es la de cuadros, se dibuja la textura del material
     if (material->textureID != 0 && !showCheckerTexture) {
         glBindTexture(GL_TEXTURE_2D, material->textureID);  // Usa la textura cargada
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         glColor3f(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
     }
     else {
-     
-        glBindTexture(GL_TEXTURE_2D, textureCheckersID);
+        glBindTexture(GL_TEXTURE_2D, textureCheckersID);  // Usa la textura de cuadros
         glColor3f(1.0f, 0.0f, 1.0f); // Color rosa para la textura de cuadros
-       
     }
 }
 
 void Component_Material::DrawInspectorComponent() {
 
 
+ 
+
+
     if (ImGui::CollapsingHeader(u8"\ue08F Material")) {
+           
+        if (ImGui::Checkbox("Enable Material", &enabled)) {
+            if (enabled) {
+                Enable();
+            }
+            else {
+                Disable();
+            }
+        }
+
         // Editor de color
         ImGui::ColorEdit3("Diffuse Color", material->diffuseColor);
         SetDiffuseColor(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
@@ -131,6 +143,26 @@ void Component_Material::DrawInspectorComponent() {
     }
 
     
+}
+
+void Component_Material::DrawTexture()
+{
+    if (enabled) {
+        // Si hay una textura, activarla
+        if (material->textureID != 0 && !showCheckerTexture) {
+            glBindTexture(GL_TEXTURE_2D, material->textureID);  // Usa la textura cargada
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+            glColor3f(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
+        }
+        else {
+            glBindTexture(GL_TEXTURE_2D, textureCheckersID);
+            glColor3f(1.0f, 0.0f, 1.0f); // Color rosa para la textura de cuadros
+        }
+    }
+    else {
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glColor3f(1.0f, 0.0f, 1.0f); // Color rosa si no hay material
+    }
 }
 
 Component* Component_Material::Clone() const
