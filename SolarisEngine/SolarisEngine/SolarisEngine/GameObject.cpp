@@ -76,10 +76,20 @@ void GameObject::SetEnable(bool enable) { (enable) ? Enable() : Disable(); }
 void GameObject::Delete() {
     Disable();
     for (auto component : components) {
-        delete component; // Limpiar los componentes
+        if (component) {
+            delete component; 
+        }
+        
     }
     components.clear();
-    delete this;
+
+    for (auto child : children) {
+        if (child) {
+            child->Delete();
+        }
+    }
+    children.clear();
+
 }
 
 

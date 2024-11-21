@@ -31,16 +31,34 @@ void PanelHierarchy::Render() {
 
     ImGui::End(); // Finaliza el panel
 }
-
-void PanelHierarchy::RenderGameObjectsRecursively(const std::vector<GameObject*> gameObjects) {
+void PanelHierarchy::RenderGameObjectsRecursively(const std::vector<GameObject*> gameObjects, int indentLevel) {
     for (auto& gameObject : gameObjects) {
         bool isSelected = (gameObject == app->actualScene->GetSelectedGameObject());
 
         // Crear un ID único para cada GameObject en el panel
         ImGui::PushID(gameObject);
 
-        // Hacerlo seleccionable
-        if (ImGui::Selectable(gameObject->GetName().c_str(), isSelected)) {
+        // Detectar si el GameObject tiene hijos
+        bool hasChildren = !gameObject->GetChildren().empty();
+
+        // Indentar la posición dependiendo del nivel
+        ImGui::Indent(indentLevel * 20.0f);
+
+        // Mostrar un botón para expandir o contraer los hijos (fuera de la Selectable)
+        bool isExpanded = gameObject->isExpanded; // Suponemos que 'isExpanded' está gestionado en el GameObject
+        if (hasChildren) {
+            // Mostrar flecha solo si tiene hijos
+            if (ImGui::ArrowButton(("##expand_" + gameObject->GetName()).c_str(), isExpanded ? ImGuiDir_Down : ImGuiDir_Right)) {
+                gameObject->isExpanded = !isExpanded; // Cambiar estado de expansión
+            }
+
+            // Añadir un pequeño espacio después de la flecha
+            ImGui::SameLine();
+        }
+
+        // Mostrar el nombre del GameObject de manera separada de la flecha
+        std::string gameObjectName = u8"\ue079 " + gameObject->GetName(); // Puedes cambiar el ícono por algo más adecuado
+        if (ImGui::Selectable(gameObjectName.c_str(), isSelected)) {
             app->actualScene->SelectGameObject(gameObject);
         }
 
@@ -65,9 +83,12 @@ void PanelHierarchy::RenderGameObjectsRecursively(const std::vector<GameObject*>
             ImGui::EndDragDropTarget();
         }
 
-        // Llamada recursiva para hijos
-        RenderGameObjectsRecursively(gameObject->GetChildren());
+        // Llamada recursiva para los hijos si están expandidos
+        if (gameObject->isExpanded) {
+            RenderGameObjectsRecursively(gameObject->GetChildren(), indentLevel + 1);
+        }
 
+        ImGui::Unindent(indentLevel * 20.0f); // Restaurar la indentación
         ImGui::PopID(); // Pop ID para este GameObject
     }
 }

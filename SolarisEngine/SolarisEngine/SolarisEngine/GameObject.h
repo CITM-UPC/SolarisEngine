@@ -67,6 +67,8 @@ public:
     bool isStatic;
     bool enabled;
 
+    bool isExpanded = false;
+
 private:
     std::string name;
     std::vector<Component*> components; // Cambiado a punteros crudos
