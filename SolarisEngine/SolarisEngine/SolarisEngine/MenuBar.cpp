@@ -17,7 +17,27 @@
 #endif
 
 MenuBar::MenuBar()
-    : showDemo(false), fpsHistory{}, currentFPS(0.0f), frameCounter(0), showOverlayFPS(false) {} // Añadido showOverlayFPS
+    : showDemo(false), fpsHistory{}, currentFPS(0.0f), frameCounter(0), showOverlayFPS(false) {
+
+    ImGui::GetStyle().Colors[ImGuiCol_Text] = textColor;
+    ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = backgroundColor;
+    ImGui::GetStyle().Colors[ImGuiCol_Border] = borderColor;
+    ImGui::GetStyle().Colors[ImGuiCol_Button] = buttonColor;
+    ImGui::GetStyle().Colors[ImGuiCol_Header] = headerColor;
+    ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered] = headerHoveredColor;
+    ImGui::GetStyle().Colors[ImGuiCol_HeaderActive] = headerActiveColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TitleBg] = titleBgColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TitleBgActive] = titleBgActiveColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TitleBgCollapsed] = titleBgCollapsedColor;
+    ImGui::GetStyle().Colors[ImGuiCol_Tab] = tabColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TabActive] = tabSelectedColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TabHovered] = tabHoveredColor;
+    ImGui::GetStyle().Colors[ImGuiCol_Tab] = tabUnselectedColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TabUnfocused] = tabUnfocusedColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TabUnfocusedActive] = tabUnfocusedActiveColor;
+
+
+} // Añadido showOverlayFPS
 
 size_t MenuBar::GetMemoryUsage() {
 #if defined(_WIN32) || defined(_WIN64)
@@ -234,12 +254,96 @@ void MenuBar::PreferencePopup() {
     // Categoría: Apariencia
     ImGui::Text("Apariencia");
 
-    //ImGui::SliderFloat(u8"Tamaño de la tipografía", &fontSize, 10.0f, 30.0f, "Font Size: %.1f");
-    ImGui::ColorEdit4("Color del Texto", (float*)&textColor);
-    ImGui::ColorEdit4("Color de Fondo", (float*)&backgroundColor);
 
+    ImGui::ColorEdit4("Color del Texto", (float*)&textColor);
     ImGui::GetStyle().Colors[ImGuiCol_Text] = textColor;
+
+    ImGui::ColorEdit4("Color de Fondo", (float*)&backgroundColor);
     ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = backgroundColor;
+
+    ImGui::ColorEdit4("Color de Bordes", (float*)&borderColor);
+    ImGui::GetStyle().Colors[ImGuiCol_Border] = borderColor;
+
+    ImGui::ColorEdit4("Color de Botones", (float*)&buttonColor);
+    ImGui::GetStyle().Colors[ImGuiCol_Button] = buttonColor;
+
+
+    // Color de la cabecera (normal)
+    ImGui::ColorEdit4("Color de Cabecera", (float*)&headerColor);
+    ImGui::GetStyle().Colors[ImGuiCol_Header] = headerColor;
+
+    // Color de la cabecera al pasar el ratón
+    ImGui::ColorEdit4("Color de Cabecera Hover", (float*)&headerHoveredColor);
+    ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered] = headerHoveredColor;
+
+    // Color de la cabecera activa
+    ImGui::ColorEdit4("Color de Cabecera Activa", (float*)&headerActiveColor);
+    ImGui::GetStyle().Colors[ImGuiCol_HeaderActive] = headerActiveColor;
+
+
+    // Color de la pestaña (normal)
+    ImGui::ColorEdit4("Color de Pestaña", (float*)&tabColor);
+    ImGui::GetStyle().Colors[ImGuiCol_Tab] = tabColor;
+
+    // Color de la pestaña seleccionada
+    ImGui::ColorEdit4("Color de Pestaña Seleccionada", (float*)&tabSelectedColor);
+    ImGui::GetStyle().Colors[ImGuiCol_TabActive] = tabSelectedColor;
+
+    // Color de la pestaña al pasar el ratón
+    ImGui::ColorEdit4("Color de Pestaña Hover", (float*)&tabHoveredColor);
+    ImGui::GetStyle().Colors[ImGuiCol_TabHovered] = tabHoveredColor;
+
+    // Color de la pestaña no seleccionada (normal)
+    ImGui::ColorEdit4("Color de Pestaña No Seleccionada", (float*)&tabUnselectedColor);
+    ImGui::GetStyle().Colors[ImGuiCol_Tab] = tabUnselectedColor;
+
+    // Color de la pestaña no seleccionada cuando la ventana no tiene foco
+    ImGui::ColorEdit4("Color de Pestaña No Seleccionada Sin Foco", (float*)&tabUnfocusedColor);
+    ImGui::GetStyle().Colors[ImGuiCol_TabUnfocused] = tabUnfocusedColor;
+
+    // Color de la pestaña no seleccionada cuando la ventana no tiene foco pero está activa
+    ImGui::ColorEdit4("Color de Pestaña No Seleccionada Activa", (float*)&tabUnfocusedActiveColor);
+    ImGui::GetStyle().Colors[ImGuiCol_TabUnfocusedActive] = tabUnfocusedActiveColor;
+
+
+
+
+
+
+
+    // Fondo de la cabecera de ventanas flotantes
+    ImGui::ColorEdit4("Fondo de Cabecera", (float*)&titleBgColor);
+    ImGui::GetStyle().Colors[ImGuiCol_TitleBg] = titleBgColor;
+
+    // Fondo de la cabecera activa de ventanas flotantes
+    ImGui::ColorEdit4("Fondo de Cabecera Activa", (float*)&titleBgActiveColor);
+    ImGui::GetStyle().Colors[ImGuiCol_TitleBgActive] = titleBgActiveColor;
+
+    // Fondo de la cabecera colapsada de ventanas flotantes
+    ImGui::ColorEdit4("Fondo de Cabecera Colapsada", (float*)&titleBgCollapsedColor);
+    ImGui::GetStyle().Colors[ImGuiCol_TitleBgCollapsed] = titleBgCollapsedColor;
+
+
+
+    if (ImGui::SliderFloat("Transparencia", &ImGui::GetStyle().Alpha, 0.1f, 1.0f, "Alpha: %.2f")) {
+        // El estilo Alpha se aplica automáticamente
+    }
+
+    if (ImGui::SliderFloat("Tamaño de Fuente", &fontSize, 10.0f, 30.0f, "Font Size: %.1f")) {
+        ImGui::GetIO().FontGlobalScale = fontSize / 20.0f; // Escala proporcional
+    }
+
+    if (ImGui::SliderFloat("Redondeo de Bordes", &ImGui::GetStyle().WindowRounding, 0.0f, 12.0f, "%.1f")) {
+        // Cambia el redondeo de bordes al vuelo
+    }
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (ImGui::SliderFloat("Espaciado entre Elementos", &style.ItemSpacing.x, 0.0f, 20.0f, "Horizontal: %.1f")) {}
+    if (ImGui::SliderFloat("Espaciado Vertical", &style.ItemSpacing.y, 0.0f, 20.0f, "Vertical: %.1f")) {}
+
+
+
+
+   
 
     ImGui::Separator(); // Otro separador
 
@@ -253,17 +357,42 @@ void MenuBar::PreferencePopup() {
     }
 
 
-   
-
     float fov = app->cameraEditor->fov;
-
     // Control deslizante para la sensibilidad del ratón
     if (ImGui::SliderFloat(u8"FOV", &fov, 0.001f, 360.0f, "Fov: %.01f", 0.01f)) {
         app->cameraEditor->fov = fov;
     }
 
 
+
+
+
+
     ImGui::Separator(); // Otro separador
+
+
+    if (ImGui::Button("Tema Oscuro")) {
+        ImGui::StyleColorsDark();
+    }
+    if (ImGui::Button("Tema Claro")) {
+        ImGui::StyleColorsLight();
+    }
+    if (ImGui::Button("Tema Clásico")) {
+        ImGui::StyleColorsClassic();
+    }
+
+
+    ImGui::Separator(); // Otro separador
+
+
+    if (ImGui::Button("Restaurar Valores Predeterminados")) {
+        textColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // Resetear color de texto
+        backgroundColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f); // Resetear color de fondo
+        //app->cameraEditor->ResetSettings(); // Resetear configuración de cámara
+    }
+
+    ImGui::Separator(); // Otro separador
+
 
     // Botones para aplicar cambios
     if (ImGui::Button("Cerrar")) {

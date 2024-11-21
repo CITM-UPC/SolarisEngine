@@ -23,7 +23,27 @@ private:
 
     float fontSize = 14.0f; // Tamaño de la tipografía
     ImVec4 textColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // Color del texto
-    ImVec4 backgroundColor = ImVec4(0.1f, 0.1f, 0.1f, 1.0f); // Color de fondo
+    ImVec4 backgroundColor = ImVec4(0.0235, 0.0118, 0.0f, 1.0f); // Color de fondo
+    ImVec4 borderColor = ImVec4(0.1686, 0.1020, 0.0000, 1.0f); // Color de los bordes
+    ImVec4 buttonColor = ImVec4(0.6588, 0.3882, 0.0000, 1.0f); // Color de los botones
+
+    ImVec4 headerColor = ImVec4(0.593f, 0.213f, 0.006f, 1.000f);         // Azul para cabecera
+    ImVec4 headerHoveredColor = ImVec4(0.716f, 0.210f, 0.000f, 1.000f); // Azul más claro al pasar el ratón
+    ImVec4 headerActiveColor = ImVec4(0.931f, 0.657f, 0.000f, 1.000f);  // Azul más intenso cuando está activa
+
+    ImVec4 tabColor = ImVec4(0.314f, 0.005f, 0.005f, 1.000f);           // Pestaña normal
+    ImVec4 tabSelectedColor = ImVec4(0.912f, 0.402f, 0.000f, 1.000f);  // Pestaña seleccionada
+    ImVec4 tabHoveredColor = ImVec4(0.696f, 0.553f, 0.000f, 1.000f);    // Pestaña con hover
+    ImVec4 tabUnselectedColor = ImVec4(0.539f, 0.398f, 0.272f, 1.000f);      // Color de la pestaña no seleccionada
+    ImVec4 tabUnfocusedColor = ImVec4(0.539f, 0.398f, 0.272f, 1.000f);    // Color de la pestaña no seleccionada sin foco
+    ImVec4 tabUnfocusedActiveColor = ImVec4(0.868f, 0.332f, 0.000f, 1.000f);  // Color de la pestaña no seleccionada activa sin foco
+
+
+
+    ImVec4 titleBgColor = ImVec4(0.176f, 0.088f, 0.000f, 1.000f);      // Fondo de cabecera inactiva
+    ImVec4 titleBgActiveColor = ImVec4(0.152f, 0.027f, 0.000f, 1.000f); // Fondo de cabecera activa
+    ImVec4 titleBgCollapsedColor = ImVec4(0.098f, 0.066f, 0.000f, 1.000f); // Fondo de cabecera colapsada
+
 
 
     bool showPreferencePopup = false;
