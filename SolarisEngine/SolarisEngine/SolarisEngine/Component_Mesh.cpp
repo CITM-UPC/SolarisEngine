@@ -658,9 +658,8 @@ glm::vec3 Component_Mesh::CalculateMeshSize() {
 	// Calcular el tama�o de la malla en cada dimensi�n
 	glm::vec3 meshSize = maxBounds - minBounds;
 
-	//std::cout << "Mesh size: " << meshSize.x << ", " << meshSize.y << ", " << meshSize.z << std::endl;
-	//Debug::Log("Mesh size: ", meshSize.x, ", ", meshSize.y, ", ", meshSize.z);
-	return meshSize; // Retornar el tama�o de la malla
+	
+	return meshSize; 
 }
 
 Component* Component_Mesh::Clone() const {

@@ -14,7 +14,10 @@ public:
     ~PanelHierarchy();
 
     void Render() override; // Implementa el método Render
+    void RenderGameObjectsRecursively(std::vector<GameObject*> gameObjects);
     void RenderContext() override; // Implementa el método Render
+
+    void UpdateHoveredStatus();
 
     void RenderSavePrefab();
 

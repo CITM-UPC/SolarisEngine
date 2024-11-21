@@ -52,6 +52,8 @@ public:
     void CreateUID();
     GameObject* Duplicate() const;
     void AddChild(GameObject* child);
+    void RemoveChild(GameObject* child);
+    std::vector<GameObject*> GetChildren();
     void SetParent(GameObject* parent);
     uint32_t GetUID() { return UID; }
 

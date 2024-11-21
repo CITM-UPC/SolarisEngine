@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Component_Transform.h"
+#include "App.h"
 #include <iostream>
 
 // Método estático para crear el GameObject e inicializarlo con un Component_Transform
@@ -25,7 +26,8 @@ GameObject::~GameObject() {
     components.clear();
     // Limpiar los hijos
     for (auto child : children) {
-        delete child; // Limpiar cada hijo
+        child->Delete();
+       
     }
     children.clear();
 }
@@ -119,12 +121,42 @@ GameObject* GameObject::Duplicate() const {
 // Método para añadir un hijo (implementación simple)
 void GameObject::AddChild(GameObject* child) {
     if (child) {
-        child->SetParent(this); // Establece el padre
-        children.push_back(child); // Añade a la lista de hijos
+        children.push_back(child);
+        if (child->parent != this) {
+            child->SetParent(this);
+        }
     }
+}
+
+void GameObject::RemoveChild(GameObject* child) {
+    // Elimina un hijo de la lista de hijos
+    auto it = std::find(children.begin(), children.end(), child);
+    if (it != children.end()) {
+        children.erase(it);
+    }
+}
+
+std::vector<GameObject*> GameObject::GetChildren()
+{
+    return children;
 }
 
 // Método para establecer el padre (implementación simple)
 void GameObject::SetParent(GameObject* parent) {
-    this->parent = parent; // Establece el padre
+    // Detectar si el nuevo padre es un hijo del GameObject actual (ciclo)
+    if (parent) {
+        if (parent != this->parent) {
+
+            if (this->parent) {
+                this->parent->RemoveChild(this);
+            }
+            else {
+                app->actualScene->RemoveRootGameObject(this);
+            }
+            
+
+            this->parent = parent;
+            this->parent->AddChild(this);
+        }
+    }
 }

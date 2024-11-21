@@ -14,12 +14,7 @@ void Scene::Update(double dt)
 
     DrawInfiniteGrid(1, 50);
 
-    for (GameObject* gameObject : gameObjects)
-    {
-        if (gameObject && gameObject->IsEnabled()) {
-            gameObject->Draw();
-        }
-    }
+    DrawGameObjectsRecursively(gameObjects);
 
     if (app->inputEditor->mouseLeftIsPressed && isScenePicked)
     {
@@ -45,6 +40,15 @@ void Scene::SaveScene()
 void Scene::AddGameObject(GameObject* gameObject)
 {
     gameObjects.push_back(gameObject);
+}
+
+void Scene::RemoveRootGameObject(GameObject* gameObject)
+{
+    if (selectedGameObject == gameObject) selectedGameObject = nullptr;
+    auto it = std::find(gameObjects.begin(), gameObjects.end(), gameObject);
+    if (it != gameObjects.end()) {
+        gameObjects.erase(it);
+    }
 }
 
 void Scene::RemoveGameObject(GameObject* gameObject) {
@@ -287,6 +291,47 @@ void Scene::DrawRay(const Ray& ray, float length) {
     glEnd();
 
     glPopMatrix();
+}
+
+void Scene::MoveGameObjectUp(GameObject* gameObject) {
+    // Buscar el índice del GameObject seleccionado
+    auto it = std::find(gameObjects.begin(), gameObjects.end(), gameObject);
+
+    // Si no se encuentra el GameObject en la lista, salir
+    if (it == gameObjects.end()) return;
+
+    // Asegurarse de que no es el primer elemento de la lista
+    if (it != gameObjects.begin()) {
+        // Intercambiar el GameObject con el anterior
+        std::iter_swap(it, it - 1);
+    }
+}
+
+void Scene::MoveGameObjectDown(GameObject* gameObject) {
+    // Buscar el índice del GameObject seleccionado
+    auto it = std::find(gameObjects.begin(), gameObjects.end(), gameObject);
+
+    // Si no se encuentra el GameObject en la lista, salir
+    if (it == gameObjects.end()) return;
+
+    // Asegurarse de que no es el último elemento de la lista
+    if (it != gameObjects.end() - 1) {
+        // Intercambiar el GameObject con el siguiente
+        std::iter_swap(it, it + 1);
+    }
+}
+
+void Scene::DrawGameObjectsRecursively(std::vector<GameObject*> gameObjects) {
+    for (GameObject* gameObject : gameObjects) {
+        if (gameObject && gameObject->IsEnabled()) {
+            gameObject->Draw();  // Dibuja el GameObject actual
+
+            // Si el GameObject tiene hijos, dibuja los hijos recursivamente
+            if (!gameObject->GetChildren().empty()) {
+                DrawGameObjectsRecursively(gameObject->GetChildren());
+            }
+        }
+    }
 }
 
 

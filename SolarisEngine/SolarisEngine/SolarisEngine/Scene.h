@@ -17,6 +17,7 @@ public:
     void SaveScene();
 
     void AddGameObject(GameObject* gameObject);
+    void RemoveRootGameObject(GameObject* gameObject);
     void RemoveGameObject(GameObject* gameObject);
 
     void SelectGameObject(GameObject* gameObject);
@@ -36,6 +37,12 @@ public:
     void UpdateMousePicking(int mouseX, int mouseY, int windowWidth, int windowHeight);
 
     void DrawRay(const Ray& ray, float length);
+
+    void MoveGameObjectUp(GameObject* gameObject);
+
+    void MoveGameObjectDown(GameObject* gameObject);
+
+    void DrawGameObjectsRecursively(std::vector<GameObject*> gameObjects);
 
     bool RayIntersectsAABB(const Ray& ray, const glm::vec3& boxMin, const glm::vec3& boxMax);
 

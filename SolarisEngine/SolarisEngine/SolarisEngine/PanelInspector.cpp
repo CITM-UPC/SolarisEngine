@@ -24,7 +24,18 @@ void PanelInspector::Render() {
     if (selectedGameObject) {
        
 
-        ImGui::Text("Inspector for: %s", selectedGameObject->GetName().c_str()); // Muestra el nombre del GameObject seleccionado
+        // Muestra el nombre del GameObject seleccionado
+        if (selectedGameObject->parent) {
+            ImGui::Text("Inspector for: %s, (P: %s)", selectedGameObject->GetName().c_str(), selectedGameObject->parent->GetName().c_str()); 
+        }
+        else {
+            ImGui::Text("Inspector for: %s", selectedGameObject->GetName().c_str()); 
+        }
+      
+
+
+
+
         // Checkbox para habilitar/deshabilitar el GameObject
         bool isEnabled = selectedGameObject->IsEnabled(); // Obtén el estado actual
         if (ImGui::Checkbox("Enabled", &isEnabled)) { // Usa una variable temporal
