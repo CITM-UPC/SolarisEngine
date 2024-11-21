@@ -200,7 +200,7 @@ void MenuBar::Render() {
        
     }
     if (showPreferencePopup) {
-        ImGui::OpenPopup("PreferencesPopup");
+        //ImGui::OpenPopup("PreferencesPopup");
         PreferencePopup();
     }
 
@@ -226,13 +226,14 @@ void MenuBar::Render() {
 void MenuBar::PreferencePopup() {
 
 
-    ImGui::Begin("Configuraciones de Preferencias", &showPreferencePopup, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin("Configuraciones de Preferencias", &showPreferencePopup);
 
     // Separador para mejorar la legibilidad
     ImGui::Separator();
 
     // Categoría: Apariencia
     ImGui::Text("Apariencia");
+
     //ImGui::SliderFloat(u8"Tamaño de la tipografía", &fontSize, 10.0f, 30.0f, "Font Size: %.1f");
     ImGui::ColorEdit4("Color del Texto", (float*)&textColor);
     ImGui::ColorEdit4("Color de Fondo", (float*)&backgroundColor);
