@@ -25,7 +25,11 @@ private:
     ImVec4 textColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // Color del texto
     ImVec4 backgroundColor = ImVec4(0.0235, 0.0118, 0.0f, 1.0f); // Color de fondo
     ImVec4 borderColor = ImVec4(0.1686, 0.1020, 0.0000, 1.0f); // Color de los bordes
+
     ImVec4 buttonColor = ImVec4(0.6588, 0.3882, 0.0000, 1.0f); // Color de los botones
+    ImVec4 buttonHoveredColor = ImVec4(0.831f, 0.670f, 0.439f, 1.000f); // Color de los botones cuando el ratón pasa sobre ellos
+    ImVec4 buttonActiveColor = ImVec4(0.627f, 0.295f, 0.000f, 1.000f); // Color de los botones cuando están activos (pulsados)
+
 
     ImVec4 headerColor = ImVec4(0.593f, 0.213f, 0.006f, 1.000f);         // Azul para cabecera
     ImVec4 headerHoveredColor = ImVec4(0.716f, 0.210f, 0.000f, 1.000f); // Azul más claro al pasar el ratón
@@ -64,6 +68,7 @@ private:
     void UpdateColorIfChanged(const char* label, ImVec4& color, ImVec4& prevColor, ImGuiCol idx);
 
     void SpookyTheme();
+    void PurpleTheme();
 
 };
 

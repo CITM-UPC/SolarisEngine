@@ -245,6 +245,8 @@ void MenuBar::PreferencePopup() {
     static ImVec4 prevBackgroundColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
     static ImVec4 prevBorderColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
     static ImVec4 prevButtonColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevButtonHoverColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevButtonActiveColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
     static ImVec4 prevHeaderColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
     static ImVec4 prevHeaderHoveredColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
     static ImVec4 prevHeaderActiveColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
@@ -267,6 +269,10 @@ void MenuBar::PreferencePopup() {
     UpdateColorIfChanged("Color de Fondo", backgroundColor, prevBackgroundColor, ImGuiCol_WindowBg);
     UpdateColorIfChanged("Color de Bordes", borderColor, prevBorderColor, ImGuiCol_Border);
     UpdateColorIfChanged("Color de Botones", buttonColor, prevButtonColor, ImGuiCol_Button);
+    UpdateColorIfChanged("Color de Botones Hover", buttonHoveredColor, prevButtonHoverColor, ImGuiCol_ButtonHovered);
+    UpdateColorIfChanged("Color de Botones Active", buttonActiveColor, prevButtonActiveColor, ImGuiCol_ButtonActive);
+
+
     UpdateColorIfChanged("Color de Cabecera", headerColor, prevHeaderColor, ImGuiCol_Header);
     UpdateColorIfChanged("Color de Cabecera Hover", headerHoveredColor, prevHeaderHoveredColor, ImGuiCol_HeaderHovered);
     UpdateColorIfChanged("Color de Cabecera Activa", headerActiveColor, prevHeaderActiveColor, ImGuiCol_HeaderActive);
@@ -356,6 +362,9 @@ void MenuBar::PreferencePopup() {
         if (ImGui::Button("Tema Spooky")) {
             SpookyTheme();  // Función personalizada para el tema Spooky
         }
+        if (ImGui::Button("Tema Morado")) {
+            PurpleTheme();  // Función personalizada para el tema Spooky
+        }
 
        
     }
@@ -386,6 +395,8 @@ void MenuBar::ReloadColors()
     ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = backgroundColor;
     ImGui::GetStyle().Colors[ImGuiCol_Border] = borderColor;
     ImGui::GetStyle().Colors[ImGuiCol_Button] = buttonColor;
+    ImGui::GetStyle().Colors[ImGuiCol_ButtonHovered] = buttonHoveredColor;
+    ImGui::GetStyle().Colors[ImGuiCol_ButtonActive] = buttonActiveColor;
     ImGui::GetStyle().Colors[ImGuiCol_Header] = headerColor;
     ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered] = headerHoveredColor;
     ImGui::GetStyle().Colors[ImGuiCol_HeaderActive] = headerActiveColor;
@@ -425,6 +436,9 @@ void MenuBar::SpookyTheme()
      borderColor = ImVec4(0.1686, 0.1020, 0.0000, 1.0f); // Color de los bordes
      buttonColor = ImVec4(0.6588, 0.3882, 0.0000, 1.0f); // Color de los botones
 
+     buttonHoveredColor = ImVec4(0.831f, 0.670f, 0.439f, 1.000f); // Color de los botones cuando el ratón pasa sobre ellos
+     buttonActiveColor = ImVec4(0.627f, 0.295f, 0.000f, 1.000f); // Color de los botones cuando están activos (pulsados)
+
      headerColor = ImVec4(0.593f, 0.213f, 0.006f, 1.000f);         // Azul para cabecera
      headerHoveredColor = ImVec4(0.716f, 0.210f, 0.000f, 1.000f); // Azul más claro al pasar el ratón
      headerActiveColor = ImVec4(0.931f, 0.657f, 0.000f, 1.000f);  // Azul más intenso cuando está activa
@@ -447,6 +461,43 @@ void MenuBar::SpookyTheme()
 
      ReloadColors();
 
+}
+
+void MenuBar::PurpleTheme()
+{
+    // Colores morados
+    textColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // Color del texto (blanco para contraste)
+    backgroundColor = ImVec4(0.066f, 0.0f, 0.133f, 1.0f); // Color de fondo (morado oscuro)
+    borderColor = ImVec4(0.188f, 0.062f, 0.188f, 1.0f); // Color de los bordes (morado oscuro)
+    buttonColor = ImVec4(0.627f, 0.188f, 0.627f, 1.0f); // Color de los botones (morado claro)
+
+    buttonHoveredColor = ImVec4(0.831f, 0.439f, 0.831f, 1.0f); // Color de los botones cuando el ratón pasa sobre ellos
+    buttonActiveColor = ImVec4(0.627f, 0.0f, 0.627f, 1.0f); // Color de los botones cuando están activos (pulsados)
+
+    // Colores de la cabecera
+    headerColor = ImVec4(0.392f, 0.058f, 0.392f, 1.000f); // Morado para cabecera
+    headerHoveredColor = ImVec4(0.576f, 0.188f, 0.576f, 1.000f); // Morado más claro al pasar el ratón
+    headerActiveColor = ImVec4(0.831f, 0.439f, 0.831f, 1.000f);  // Morado más intenso cuando está activa
+
+    // Colores de las pestañas
+    tabColor = ImVec4(0.188f, 0.062f, 0.188f, 1.000f); // Pestaña normal (morado oscuro)
+    tabSelectedColor = ImVec4(0.627f, 0.188f, 0.627f, 1.000f);  // Pestaña seleccionada (morado claro)
+    tabHoveredColor = ImVec4(0.576f, 0.188f, 0.576f, 1.000f); // Pestaña con hover (morado brillante)
+    tabUnselectedColor = ImVec4(0.392f, 0.058f, 0.392f, 1.000f); // Pestaña no seleccionada (morado más oscuro)
+    tabUnfocusedColor = ImVec4(0.392f, 0.058f, 0.392f, 1.000f); // Pestaña no seleccionada sin foco
+    tabUnfocusedActiveColor = ImVec4(0.831f, 0.439f, 0.831f, 1.000f);  // Pestaña no seleccionada activa sin foco
+
+    // Colores de la cabecera
+    titleBgColor = ImVec4(0.188f, 0.062f, 0.188f, 1.000f); // Fondo de cabecera inactiva (morado oscuro)
+    titleBgActiveColor = ImVec4(0.576f, 0.188f, 0.576f, 1.000f); // Fondo de cabecera activa (morado brillante)
+    titleBgCollapsedColor = ImVec4(0.392f, 0.058f, 0.392f, 1.000f); // Fondo de cabecera colapsada (morado suave)
+
+    // Colores de los controles (sliders, inputs, etc.)
+    frameBgColor = ImVec4(0.211f, 0.035f, 0.211f, 1.000f); // Fondo normal (morado oscuro)
+    frameBgHoveredColor = ImVec4(0.576f, 0.188f, 0.576f, 1.000f); // Fondo cuando el ratón pasa sobre el control (morado brillante)
+    frameBgActiveColor = ImVec4(0.831f, 0.439f, 0.831f, 1.000f); // Fondo cuando el control está activo (morado fuerte)
+
+    ReloadColors(); // Recargar los colores definidos
 }
 
 
