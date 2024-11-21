@@ -34,6 +34,7 @@ public:
     const glm::vec3& GetScale() const;
     float GetRelativeSize() const;
     glm::vec3 GetRotation() const; // Devuelve los ángulos de Euler en grados
+    void SetParent(GameObject* newParent);
 
     glm::mat4 GetModelMatrix() const;
    /* Debug::Log("",ddhhd,"ss")*/
@@ -43,6 +44,10 @@ private:
     glm::vec3 position;
     glm::vec3 scale;
     glm::quat rotationQuat;
+
+    glm::vec3 localPositionOffset;
+    glm::quat localRotationOffset;
+    glm::vec3 localScaleOffset;
 
     glm::vec3 eulerRotation;
 };

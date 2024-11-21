@@ -96,12 +96,55 @@ glm::vec3 Component_Transform::GetRotation() const {
     return glm::degrees(glm::eulerAngles(rotationQuat));
 }
 
-glm::mat4 Component_Transform::GetModelMatrix() const {
-    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
-    glm::mat4 rotationMatrix = glm::mat4_cast(rotationQuat);
-    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
+void Component_Transform::SetParent(GameObject* newParent) {
+    if (newParent) {
+        // Guardar el offset actual relativo al nuevo padre
+        Component_Transform* parentTransform = newParent->GetComponent<Component_Transform>();
+        if (parentTransform) {
+            // Calcular el offset de la posición, rotación y escala
+            localPositionOffset = position - parentTransform->GetPosition();
+            localRotationOffset = glm::inverse(parentTransform->rotationQuat) * rotationQuat;
+            localScaleOffset = scale / parentTransform->GetScale();
+        }
+    }
+    else {
+        // Si el padre es nulo, simplemente reseteamos el offset
+        localPositionOffset = glm::vec3(0.0f);
+        localRotationOffset = glm::quat();
+        localScaleOffset = glm::vec3(1.0f);
+    }
+}
 
-    return translationMatrix * rotationMatrix * scaleMatrix;
+glm::mat4 Component_Transform::GetModelMatrix() const {
+
+    if (containerGO->parent) {
+        glm::mat4 parentModelMatrix = glm::mat4(1.0f); // Si no tiene padre, usa la matriz identidad
+        if (containerGO->parent != nullptr) {
+            Component_Transform* parentTransform = containerGO->parent->GetComponent<Component_Transform>();
+            if (parentTransform) {
+                parentModelMatrix = parentTransform->GetModelMatrix();
+            }
+        }
+
+        // Crear las matrices de transformación locales (traslación, rotación, escala) usando el offset
+        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), localPositionOffset);
+        glm::mat4 rotationMatrix = glm::mat4_cast(localRotationOffset);
+        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), localScaleOffset);
+
+        // Multiplicar la matriz del padre con la transformación local (con el offset)
+        return parentModelMatrix * translationMatrix * rotationMatrix * scaleMatrix;
+    }
+    else {
+        // Si no tiene padre, la matriz global es solo la combinación de su propia transformación local
+        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);  // usa `position`, no el offset
+        glm::mat4 rotationMatrix = glm::mat4_cast(rotationQuat);  // usa `rotationQuat`, no el offset
+        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);  // usa `scale`, no el offset
+
+        // Matriz global para un objeto sin padre es simplemente la multiplicación de las transformaciones locales
+        return translationMatrix * rotationMatrix * scaleMatrix;
+    }
+
+    
 }
 
 Component* Component_Transform::Clone() const {

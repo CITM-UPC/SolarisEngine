@@ -55,6 +55,7 @@ public:
     void RemoveChild(GameObject* child);
     std::vector<GameObject*> GetChildren();
     void SetParent(GameObject* parent);
+    void RemoveParent();
     uint32_t GetUID() { return UID; }
 
 private:
@@ -62,7 +63,7 @@ private:
     GameObject(const std::string& name = "gameObject");
 
 public:
-    GameObject* parent; // Cambiado a puntero crudo
+    GameObject* parent = nullptr; // Cambiado a puntero crudo
     std::vector<GameObject*> children; // Cambiado a punteros crudos
     bool isStatic;
     bool enabled;

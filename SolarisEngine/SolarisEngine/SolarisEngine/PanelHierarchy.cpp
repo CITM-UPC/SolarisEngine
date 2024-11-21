@@ -160,6 +160,12 @@ void PanelHierarchy::RenderContext() {
             }
         }
 
+        if (ImGui::MenuItem("Remove Parent")) {
+            if (gameObjectSelected) {
+                gameObjectSelected->RemoveParent();  // Llama a este método en el GameObject seleccionado
+            }
+        }
+
         if (ImGui::MenuItem("Move Up")) {
             if (gameObjectSelected) {
                 app->actualScene->MoveGameObjectUp(gameObjectSelected);

@@ -146,6 +146,7 @@ void GameObject::RemoveChild(GameObject* child) {
     }
 }
 
+
 std::vector<GameObject*> GameObject::GetChildren()
 {
     return children;
@@ -166,7 +167,16 @@ void GameObject::SetParent(GameObject* parent) {
             
 
             this->parent = parent;
+            this->GetComponent<Component_Transform>()->SetParent(this->parent);
             this->parent->AddChild(this);
         }
+    }
+}
+
+void GameObject::RemoveParent() {
+    if (this->parent != nullptr) {
+        this->parent->RemoveChild(this);  // Elimina este GameObject de la lista de hijos de su padre.
+        this->parent = nullptr;  // Desasocia el padre.
+        app->actualScene->AddGameObject(this); //Metemos el objeto al root de la escena
     }
 }
