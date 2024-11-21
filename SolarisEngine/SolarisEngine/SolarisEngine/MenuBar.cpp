@@ -19,22 +19,7 @@
 MenuBar::MenuBar()
     : showDemo(false), fpsHistory{}, currentFPS(0.0f), frameCounter(0), showOverlayFPS(false) {
 
-    ImGui::GetStyle().Colors[ImGuiCol_Text] = textColor;
-    ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = backgroundColor;
-    ImGui::GetStyle().Colors[ImGuiCol_Border] = borderColor;
-    ImGui::GetStyle().Colors[ImGuiCol_Button] = buttonColor;
-    ImGui::GetStyle().Colors[ImGuiCol_Header] = headerColor;
-    ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered] = headerHoveredColor;
-    ImGui::GetStyle().Colors[ImGuiCol_HeaderActive] = headerActiveColor;
-    ImGui::GetStyle().Colors[ImGuiCol_TitleBg] = titleBgColor;
-    ImGui::GetStyle().Colors[ImGuiCol_TitleBgActive] = titleBgActiveColor;
-    ImGui::GetStyle().Colors[ImGuiCol_TitleBgCollapsed] = titleBgCollapsedColor;
-    ImGui::GetStyle().Colors[ImGuiCol_Tab] = tabColor;
-    ImGui::GetStyle().Colors[ImGuiCol_TabActive] = tabSelectedColor;
-    ImGui::GetStyle().Colors[ImGuiCol_TabHovered] = tabHoveredColor;
-    ImGui::GetStyle().Colors[ImGuiCol_Tab] = tabUnselectedColor;
-    ImGui::GetStyle().Colors[ImGuiCol_TabUnfocused] = tabUnfocusedColor;
-    ImGui::GetStyle().Colors[ImGuiCol_TabUnfocusedActive] = tabUnfocusedActiveColor;
+    ReloadColors();
 
 
 } // Añadido showOverlayFPS
@@ -255,73 +240,51 @@ void MenuBar::PreferencePopup() {
     ImGui::Text("Apariencia");
 
 
-    ImGui::ColorEdit4("Color del Texto", (float*)&textColor);
-    ImGui::GetStyle().Colors[ImGuiCol_Text] = textColor;
-
-    ImGui::ColorEdit4("Color de Fondo", (float*)&backgroundColor);
-    ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = backgroundColor;
-
-    ImGui::ColorEdit4("Color de Bordes", (float*)&borderColor);
-    ImGui::GetStyle().Colors[ImGuiCol_Border] = borderColor;
-
-    ImGui::ColorEdit4("Color de Botones", (float*)&buttonColor);
-    ImGui::GetStyle().Colors[ImGuiCol_Button] = buttonColor;
-
-
-    // Color de la cabecera (normal)
-    ImGui::ColorEdit4("Color de Cabecera", (float*)&headerColor);
-    ImGui::GetStyle().Colors[ImGuiCol_Header] = headerColor;
-
-    // Color de la cabecera al pasar el ratón
-    ImGui::ColorEdit4("Color de Cabecera Hover", (float*)&headerHoveredColor);
-    ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered] = headerHoveredColor;
-
-    // Color de la cabecera activa
-    ImGui::ColorEdit4("Color de Cabecera Activa", (float*)&headerActiveColor);
-    ImGui::GetStyle().Colors[ImGuiCol_HeaderActive] = headerActiveColor;
+    // Colores anteriores (previamente inicializados, puede ser valores predeterminados)
+    static ImVec4 prevTextColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+    static ImVec4 prevBackgroundColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevBorderColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevButtonColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevHeaderColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevHeaderHoveredColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevHeaderActiveColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevTabColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevTabSelectedColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevTabHoveredColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevTabUnselectedColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevTabUnfocusedColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevTabUnfocusedActiveColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevTitleBgColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevTitleBgActiveColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevTitleBgCollapsedColor = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    static ImVec4 prevFrameBgColor = ImVec4(0.1f, 0.1f, 0.1f, 1.0f); // Fondo normal
+    static ImVec4 prevFrameBgHoveredColor = ImVec4(0.3f, 0.3f, 0.3f, 1.0f); // Fondo cuando el ratón pasa sobre el control
+    static ImVec4 prevFrameBgActiveColor = ImVec4(0.5f, 0.5f, 0.5f, 1.0f); // Fondo cuando el control está activo
 
 
-    // Color de la pestaña (normal)
-    ImGui::ColorEdit4("Color de Pestaña", (float*)&tabColor);
-    ImGui::GetStyle().Colors[ImGuiCol_Tab] = tabColor;
-
-    // Color de la pestaña seleccionada
-    ImGui::ColorEdit4("Color de Pestaña Seleccionada", (float*)&tabSelectedColor);
-    ImGui::GetStyle().Colors[ImGuiCol_TabActive] = tabSelectedColor;
-
-    // Color de la pestaña al pasar el ratón
-    ImGui::ColorEdit4("Color de Pestaña Hover", (float*)&tabHoveredColor);
-    ImGui::GetStyle().Colors[ImGuiCol_TabHovered] = tabHoveredColor;
-
-    // Color de la pestaña no seleccionada (normal)
-    ImGui::ColorEdit4("Color de Pestaña No Seleccionada", (float*)&tabUnselectedColor);
-    ImGui::GetStyle().Colors[ImGuiCol_Tab] = tabUnselectedColor;
-
-    // Color de la pestaña no seleccionada cuando la ventana no tiene foco
-    ImGui::ColorEdit4("Color de Pestaña No Seleccionada Sin Foco", (float*)&tabUnfocusedColor);
-    ImGui::GetStyle().Colors[ImGuiCol_TabUnfocused] = tabUnfocusedColor;
-
-    // Color de la pestaña no seleccionada cuando la ventana no tiene foco pero está activa
-    ImGui::ColorEdit4("Color de Pestaña No Seleccionada Activa", (float*)&tabUnfocusedActiveColor);
-    ImGui::GetStyle().Colors[ImGuiCol_TabUnfocusedActive] = tabUnfocusedActiveColor;
+    // Usamos la función para actualizar los colores
+    UpdateColorIfChanged("Color del Texto", textColor, prevTextColor, ImGuiCol_Text);
+    UpdateColorIfChanged("Color de Fondo", backgroundColor, prevBackgroundColor, ImGuiCol_WindowBg);
+    UpdateColorIfChanged("Color de Bordes", borderColor, prevBorderColor, ImGuiCol_Border);
+    UpdateColorIfChanged("Color de Botones", buttonColor, prevButtonColor, ImGuiCol_Button);
+    UpdateColorIfChanged("Color de Cabecera", headerColor, prevHeaderColor, ImGuiCol_Header);
+    UpdateColorIfChanged("Color de Cabecera Hover", headerHoveredColor, prevHeaderHoveredColor, ImGuiCol_HeaderHovered);
+    UpdateColorIfChanged("Color de Cabecera Activa", headerActiveColor, prevHeaderActiveColor, ImGuiCol_HeaderActive);
+    UpdateColorIfChanged("Color de Pestaña", tabColor, prevTabColor, ImGuiCol_Tab);
+    UpdateColorIfChanged("Color de Pestaña Seleccionada", tabSelectedColor, prevTabSelectedColor, ImGuiCol_TabActive);
+    UpdateColorIfChanged("Color de Pestaña Hover", tabHoveredColor, prevTabHoveredColor, ImGuiCol_TabHovered);
+    UpdateColorIfChanged("Color de Pestaña No Seleccionada", tabUnselectedColor, prevTabUnselectedColor, ImGuiCol_Tab);
+    UpdateColorIfChanged("Color de Pestaña No Seleccionada Sin Foco", tabUnfocusedColor, prevTabUnfocusedColor, ImGuiCol_TabUnfocused);
+    UpdateColorIfChanged("Color de Pestaña No Seleccionada Activa", tabUnfocusedActiveColor, prevTabUnfocusedActiveColor, ImGuiCol_TabUnfocusedActive);
+    UpdateColorIfChanged("Fondo de Cabecera", titleBgColor, prevTitleBgColor, ImGuiCol_TitleBg);
+    UpdateColorIfChanged("Fondo de Cabecera Activa", titleBgActiveColor, prevTitleBgActiveColor, ImGuiCol_TitleBgActive);
+    UpdateColorIfChanged("Fondo de Cabecera Colapsada", titleBgCollapsedColor, prevTitleBgCollapsedColor, ImGuiCol_TitleBgCollapsed);
 
 
+    UpdateColorIfChanged("Color de Fondo de Sliders", frameBgColor, prevFrameBgColor, ImGuiCol_FrameBg);
+    UpdateColorIfChanged("Color de Fondo de Sliders Hover", frameBgHoveredColor, prevFrameBgHoveredColor, ImGuiCol_FrameBgHovered);
+    UpdateColorIfChanged("Color de Fondo de Sliders Activo", frameBgActiveColor, prevFrameBgActiveColor, ImGuiCol_FrameBgActive);
 
-
-
-
-
-    // Fondo de la cabecera de ventanas flotantes
-    ImGui::ColorEdit4("Fondo de Cabecera", (float*)&titleBgColor);
-    ImGui::GetStyle().Colors[ImGuiCol_TitleBg] = titleBgColor;
-
-    // Fondo de la cabecera activa de ventanas flotantes
-    ImGui::ColorEdit4("Fondo de Cabecera Activa", (float*)&titleBgActiveColor);
-    ImGui::GetStyle().Colors[ImGuiCol_TitleBgActive] = titleBgActiveColor;
-
-    // Fondo de la cabecera colapsada de ventanas flotantes
-    ImGui::ColorEdit4("Fondo de Cabecera Colapsada", (float*)&titleBgCollapsedColor);
-    ImGui::GetStyle().Colors[ImGuiCol_TitleBgCollapsed] = titleBgCollapsedColor;
 
 
 
@@ -371,16 +334,31 @@ void MenuBar::PreferencePopup() {
     ImGui::Separator(); // Otro separador
 
 
-    if (ImGui::Button("Tema Oscuro")) {
-        ImGui::StyleColorsDark();
-    }
-    if (ImGui::Button("Tema Claro")) {
-        ImGui::StyleColorsLight();
-    }
-    if (ImGui::Button("Tema Clásico")) {
-        ImGui::StyleColorsClassic();
-    }
+    // Crear el menú colapsable de Temas
+    if (ImGui::CollapsingHeader("Seleccionar Tema", ImGuiTreeNodeFlags_DefaultOpen)) {
 
+        // Botón para Tema Oscuro
+        if (ImGui::Button("Tema Oscuro")) {
+            ImGui::StyleColorsDark();
+        }
+
+        // Botón para Tema Claro
+        if (ImGui::Button("Tema Claro")) {
+            ImGui::StyleColorsLight();
+        }
+
+        // Botón para Tema Clásico
+        if (ImGui::Button("Tema Clásico")) {
+            ImGui::StyleColorsClassic();
+        }
+
+        // Botón para Tema Spooky
+        if (ImGui::Button("Tema Spooky")) {
+            SpookyTheme();  // Función personalizada para el tema Spooky
+        }
+
+       
+    }
 
     ImGui::Separator(); // Otro separador
 
@@ -400,6 +378,75 @@ void MenuBar::PreferencePopup() {
     }
 
     ImGui::End(); // Cierra la ventana de preferencias
+}
+
+void MenuBar::ReloadColors()
+{
+    ImGui::GetStyle().Colors[ImGuiCol_Text] = textColor;
+    ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = backgroundColor;
+    ImGui::GetStyle().Colors[ImGuiCol_Border] = borderColor;
+    ImGui::GetStyle().Colors[ImGuiCol_Button] = buttonColor;
+    ImGui::GetStyle().Colors[ImGuiCol_Header] = headerColor;
+    ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered] = headerHoveredColor;
+    ImGui::GetStyle().Colors[ImGuiCol_HeaderActive] = headerActiveColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TitleBg] = titleBgColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TitleBgActive] = titleBgActiveColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TitleBgCollapsed] = titleBgCollapsedColor;
+    ImGui::GetStyle().Colors[ImGuiCol_Tab] = tabColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TabActive] = tabSelectedColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TabHovered] = tabHoveredColor;
+    ImGui::GetStyle().Colors[ImGuiCol_Tab] = tabUnselectedColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TabUnfocused] = tabUnfocusedColor;
+    ImGui::GetStyle().Colors[ImGuiCol_TabUnfocusedActive] = tabUnfocusedActiveColor;
+
+    ImGui::GetStyle().Colors[ImGuiCol_FrameBg] = frameBgColor;
+    ImGui::GetStyle().Colors[ImGuiCol_FrameBgHovered] = frameBgHoveredColor;
+    ImGui::GetStyle().Colors[ImGuiCol_FrameBgActive] = frameBgActiveColor;
+}
+
+// Función para comparar dos ImVec4 y ver si son diferentes
+bool MenuBar::AreColorsDifferent(const ImVec4& color1, const ImVec4& color2) {
+    return (color1.x != color2.x || color1.y != color2.y || color1.z != color2.z || color1.w != color2.w);
+}
+
+// Función para actualizar el color solo si ha cambiado
+void MenuBar::UpdateColorIfChanged(const char* label, ImVec4& color, ImVec4& prevColor, ImGuiCol idx) {
+    if (ImGui::ColorEdit4(label, (float*)&color)) {
+        if (AreColorsDifferent(color, prevColor)) {
+            ImGui::GetStyle().Colors[idx] = color;
+            prevColor = color;  // Guardamos el nuevo color
+        }
+    }
+}
+void MenuBar::SpookyTheme()
+{
+     textColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // Color del texto
+     backgroundColor = ImVec4(0.0235, 0.0118, 0.0f, 1.0f); // Color de fondo
+     borderColor = ImVec4(0.1686, 0.1020, 0.0000, 1.0f); // Color de los bordes
+     buttonColor = ImVec4(0.6588, 0.3882, 0.0000, 1.0f); // Color de los botones
+
+     headerColor = ImVec4(0.593f, 0.213f, 0.006f, 1.000f);         // Azul para cabecera
+     headerHoveredColor = ImVec4(0.716f, 0.210f, 0.000f, 1.000f); // Azul más claro al pasar el ratón
+     headerActiveColor = ImVec4(0.931f, 0.657f, 0.000f, 1.000f);  // Azul más intenso cuando está activa
+
+     tabColor = ImVec4(0.314f, 0.005f, 0.005f, 1.000f);           // Pestaña normal
+     tabSelectedColor = ImVec4(0.912f, 0.402f, 0.000f, 1.000f);  // Pestaña seleccionada
+     tabHoveredColor = ImVec4(0.696f, 0.553f, 0.000f, 1.000f);    // Pestaña con hover
+     tabUnselectedColor = ImVec4(0.539f, 0.398f, 0.272f, 1.000f);      // Color de la pestaña no seleccionada
+     tabUnfocusedColor = ImVec4(0.539f, 0.398f, 0.272f, 1.000f);    // Color de la pestaña no seleccionada sin foco
+     tabUnfocusedActiveColor = ImVec4(0.868f, 0.332f, 0.000f, 1.000f);  // Color de la pestaña no seleccionada activa sin foco
+
+     titleBgColor = ImVec4(0.176f, 0.088f, 0.000f, 1.000f);      // Fondo de cabecera inactiva
+     titleBgActiveColor = ImVec4(0.152f, 0.027f, 0.000f, 1.000f); // Fondo de cabecera activa
+     titleBgCollapsedColor = ImVec4(0.098f, 0.066f, 0.000f, 1.000f); // Fondo de cabecera colapsada
+
+     frameBgColor = ImVec4(0.127f, 0.105f, 0.083f, 1.000f); // Fondo normal
+     frameBgHoveredColor = ImVec4(0.495f, 0.278f, 0.002f, 1.000f); // Fondo cuando el ratón pasa sobre el control
+     frameBgActiveColor = ImVec4(0.848f, 0.424f, 0.000f, 1.000f); // Fondo cuando el control está activo
+
+
+     ReloadColors();
+
 }
 
 

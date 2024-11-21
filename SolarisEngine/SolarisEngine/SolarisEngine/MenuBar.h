@@ -44,6 +44,11 @@ private:
     ImVec4 titleBgActiveColor = ImVec4(0.152f, 0.027f, 0.000f, 1.000f); // Fondo de cabecera activa
     ImVec4 titleBgCollapsedColor = ImVec4(0.098f, 0.066f, 0.000f, 1.000f); // Fondo de cabecera colapsada
 
+    ImVec4 frameBgColor = ImVec4(0.127f, 0.105f, 0.083f, 1.000f); // Fondo normal
+    ImVec4 frameBgHoveredColor = ImVec4(0.495f, 0.278f, 0.002f, 1.000f); // Fondo cuando el ratón pasa sobre el control
+    ImVec4 frameBgActiveColor = ImVec4(0.848f, 0.424f, 0.000f, 1.000f); // Fondo cuando el control está activo
+
+
 
 
     bool showPreferencePopup = false;
@@ -51,6 +56,14 @@ private:
 
     void PreferencePopup();
 
+    void ReloadColors();
+
+    bool AreColorsDifferent(const ImVec4& color1, const ImVec4& color2);
+
+
+    void UpdateColorIfChanged(const char* label, ImVec4& color, ImVec4& prevColor, ImGuiCol idx);
+
+    void SpookyTheme();
 
 };
 
