@@ -103,8 +103,8 @@ void Component_Transform::SetParent(GameObject* newParent) {
         if (parentTransform) {
             // Calcular el offset de la posición, rotación y escala
             localPositionOffset = position - parentTransform->GetPosition();
-            localRotationOffset = glm::inverse(parentTransform->rotationQuat) * rotationQuat;
-            localScaleOffset = scale / parentTransform->GetScale();
+            localRotationOffset = glm::inverse(parentTransform->rotationQuat);
+            localScaleOffset = scale - parentTransform->GetScale();
         }
     }
     else {
@@ -127,9 +127,9 @@ glm::mat4 Component_Transform::GetModelMatrix() const {
         }
 
         // Crear las matrices de transformación locales (traslación, rotación, escala) usando el offset
-        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), localPositionOffset);
-        glm::mat4 rotationMatrix = glm::mat4_cast(localRotationOffset);
-        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), localScaleOffset);
+        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), localPositionOffset + position);
+        glm::mat4 rotationMatrix = glm::mat4_cast(localRotationOffset + rotationQuat);
+        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), localScaleOffset + scale);
 
         // Multiplicar la matriz del padre con la transformación local (con el offset)
         return parentModelMatrix * translationMatrix * rotationMatrix * scaleMatrix;
