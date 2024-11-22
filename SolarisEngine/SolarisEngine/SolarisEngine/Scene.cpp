@@ -16,7 +16,7 @@ void Scene::Update(double dt)
 
     DrawGameObjectsRecursively(gameObjects);
 
-    if (app->inputEditor->mouseLeftIsPressed && isScenePicked)
+    if (app->inputEditor->mouseLeftIsPressed && isScenePicked && !app->inputEditor->isCameraMoving)
     {
         int mouseX, mouseY;
         ImVec2 mousePos = app->windowEditor->GetImGuiWindow()->scenePanel->GetMousePos();
