@@ -35,6 +35,16 @@ void PanelConsola::Render() {
     // Here, set the height of the child window to the panel's available height minus 50 (leaving space for the search box and other controls)
     ImGui::BeginChild("ScrollRegion", ImVec2(panelSize.x, panelSize.y - 50), true);
 
+    // Get current scroll position and scroll max
+    float scrollY = ImGui::GetScrollY();
+    float scrollMaxY = ImGui::GetScrollMaxY();
+
+    // Check if we should scroll to bottom
+    bool scrollToBottom = false;
+    if (scrollY >= scrollMaxY - 50) { // Check if scrollbar is near the bottom
+        scrollToBottom = true;
+    }
+
     // Check if the filter is active
     if (filter.IsActive()) {
         // Show filtered log information
@@ -52,20 +62,15 @@ void PanelConsola::Render() {
     else {
         // Show all log information
         ImGui::TextWrapped("%s", logBuffer.begin());
+        if (scrollToBottom) {
+            ImGui::SetScrollHereY(1.0f); // Scroll to bottom
+        }
     }
 
     ImGui::EndChild(); // End the scrollable region
 
     ImGui::End(); // End the panel window
 }
-
-
-
-
-
-
-
-
 
 void PanelConsola::RenderContext()
 {
@@ -75,3 +80,5 @@ void PanelConsola::AddLog(const std::string& message) {
     // Append log message to the buffer
     logBuffer.appendf("%s\n", message.c_str());
 }
+
+
