@@ -429,12 +429,12 @@ void InputEditor::CopyToAssetsFolder(const std::string& filePath) {
 		std::filesystem::copy(src, dest, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
 		Debug::Log("File copied to assets folder: ", dest.string());
 
-		// 在确保复制操作完成后，再释放SDL分配的内存
-		SDL_free((void*)filePath); // 释放SDL分配的文件路径内存
+	
+		
 	}
 	catch (const std::filesystem::filesystem_error& e) {
 		Debug::Log("Error copying file to assets folder: ", e.what());
 	}
-}
 
+}
 
