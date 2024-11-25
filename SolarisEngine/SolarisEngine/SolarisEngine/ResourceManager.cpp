@@ -49,7 +49,7 @@ const Resource* ResourceManager::RequestResource(UID uid) const
 Resource* ResourceManager::RequestResource(UID uid)
 {
     auto it = resources.find(uid);
-    if (it != resources.end())
+    if (it != resources.end())                  
     {
         return it->second;
     }
@@ -71,6 +71,8 @@ Resource* ResourceManager::CreateNewResource(const char* assetsFile, Resource::T
     // Aquí puedes implementar lógica para crear diferentes tipos de recursos según el archivo
     switch (type)
     {
+    case Resource::mesh:
+        return new ResourceMesh(GenerateNewUID());
     case Resource::texture:
         return new ResourceTexture(GenerateNewUID());
         // Agregar casos para otros tipos de recursos (mesh, audio, etc.)

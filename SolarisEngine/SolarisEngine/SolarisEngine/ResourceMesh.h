@@ -11,6 +11,7 @@ public:
 	ResourceMesh(UID id); virtual
 		~ResourceMesh(); bool LoadInMemory()
 		override;
+	void SaveMeshes();
 	/*void Save(Config& config) const override;
 	void Load(const Config& config) override;*/
 public:

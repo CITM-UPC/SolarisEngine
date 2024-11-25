@@ -41,7 +41,9 @@ GameObject* Importer::Importar(const std::string& modelPath) {
     Component_Mesh* meshComponent = newGameObject->GetComponent<Component_Mesh>();
     if (meshComponent) {
         Debug::Log("Cargando mesh:", scene->GetShortFilename(modelPath.c_str()));
-        meshComponent->LoadMesh(scene);
+        //meshComponent->LoadMesh(scene);
+        //ResourceManager-<LoadMesh()
+            //,esdmidwaim-dfesjifesiuf
     }
 
     return newGameObject;
