@@ -254,6 +254,7 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 		if (event.key.keysym.sym == SDLK_LALT) {
 			isCameraMoving = false;
 		}
+		app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog("2");
 		break;
 
 	case SDL_MOUSEBUTTONDOWN:
