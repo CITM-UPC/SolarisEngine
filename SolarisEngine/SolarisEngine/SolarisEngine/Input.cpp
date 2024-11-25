@@ -317,8 +317,8 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 		break;
 
 	case SDL_DROPFILE:
-		
-			handleDroppedFile(event.drop.file);
+
+		handleDroppedFile(event.drop.file);
 		break;
 
 	default:
@@ -370,7 +370,7 @@ void InputEditor::handleDroppedFile(const char* filePath) {
 		// 文件拖放到Project Explorer面板
 		Debug::Log("File dropped into Project Explorer: ", filePath);
 		// 将文件移动到游戏引擎的文件夹中
-		// 具体操作代码在此添加
+		CopyToAssetsFolder(filePath);
 	}
 	else if (mouseX >= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.x && mouseX <= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.x + app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelSize.x &&
 		mouseY >= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.y && mouseY <= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.y + app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelSize.y) {
@@ -399,5 +399,42 @@ void InputEditor::handleDroppedFile(const char* filePath) {
 	else {
 		Debug::Log("File dropped outside any target area: ", filePath);
 	}
-	SDL_free((void*)filePath); // 释放SDL分配的文件路径内存
+	//SDL_free((void*)filePath); // 释放SDL分配的文件路径内存
 }
+
+
+
+void InputEditor::CopyToAssetsFolder(const std::string& filePath) {
+	// Define the destination path
+	std::string destinationFolder = "./assets/";
+
+	// Use the filesystem library to copy files or directories
+	try {
+		std::filesystem::path src(filePath);
+		std::filesystem::path dest = std::filesystem::path(destinationFolder) / src.filename();
+
+		// Check if the destination file already exists
+		if (std::filesystem::exists(dest)) {
+			// Generate a new file name with a number appended
+			int copyIndex = 1;
+			std::filesystem::path newDest;
+			do {
+				newDest = dest.parent_path() / (dest.stem().string() + "(" + std::to_string(copyIndex) + ")" + dest.extension().string());
+				copyIndex++;
+			} while (std::filesystem::exists(newDest));
+			dest = newDest;
+		}
+
+		// Copy the file or directory
+		std::filesystem::copy(src, dest, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+		Debug::Log("File copied to assets folder: ", dest.string());
+
+		// 在确保复制操作完成后，再释放SDL分配的内存
+		SDL_free((void*)filePath); // 释放SDL分配的文件路径内存
+	}
+	catch (const std::filesystem::filesystem_error& e) {
+		Debug::Log("Error copying file to assets folder: ", e.what());
+	}
+}
+
+
