@@ -132,6 +132,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="CameraEditor.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Component_Billboard.cpp" />
     <ClCompile Include="Component_BoundingBox.cpp" />
     <ClCompile Include="Component_Material.cpp" />
     <ClCompile Include="Component_Mesh.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="CameraEditor.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Component_Billboard.h" />
     <ClInclude Include="Component_BoundingBox.h" />
     <ClInclude Include="Component_Material.h" />
     <ClInclude Include="Component_Mesh.h" />

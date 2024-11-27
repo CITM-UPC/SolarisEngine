@@ -144,6 +144,9 @@
     <ClCompile Include="ResourceMesh.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Component_Billboard.cpp">
+      <Filter>Source Files\Componentes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyWindow.h">
@@ -250,6 +253,9 @@
     </ClInclude>
     <ClInclude Include="ResourceMesh.h">
       <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Component_Billboard.h">
+      <Filter>Header Files\Componentes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

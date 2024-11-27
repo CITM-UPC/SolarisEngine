@@ -37,6 +37,8 @@ public:
     void SetParent(GameObject* newParent);
 
     glm::mat4 GetModelMatrix() const;
+    void ApplyMatrix(const glm::mat4& matrix);
+    void SetModelMatrix(const glm::mat4& matrix);
    /* Debug::Log("",ddhhd,"ss")*/
     Component* Clone() const override;
 

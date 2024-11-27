@@ -15,6 +15,7 @@
 #elif defined(__APPLE__)
 #include <mach/mach.h>
 #endif
+#include "Component_Billboard.h"
 
 MenuBar::MenuBar()
     : showDemo(false), fpsHistory{}, currentFPS(0.0f), frameCounter(0), showOverlayFPS(false) {
@@ -157,6 +158,9 @@ void MenuBar::Render() {
             }
             if (ImGui::MenuItem("Mesh")) {
                 app->actualScene->GetSelectedGameObject()->AddComponent<Component_Mesh>();
+            }
+            if (ImGui::MenuItem("Billboard")) {
+                app->actualScene->GetSelectedGameObject()->AddComponent<Component_Billboard>();
             }
 
 
