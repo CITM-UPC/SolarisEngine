@@ -18,6 +18,65 @@ bool ResourceMesh::LoadInMemory()
 }
 
 
+//bool ResourceMesh::SaveMeshToFile(const std::string& filePath) const {
+//    if (indices.empty() || vertices.empty()) {
+//        std::cerr << "Error: La malla no tiene datos para guardar." << std::endl;
+//        return false;
+//    }
+//
+//    // Calcular el tamaño total necesario
+//    uint ranges[2] = { static_cast<uint>(indices.size()), static_cast<uint>(vertices.size() / 3) };
+//    size_t size = sizeof(ranges) +
+//        sizeof(uint) * ranges[0] +
+//        sizeof(float) * ranges[1] * 3; // Vértices (x, y, z)
+//
+//    if (!normals.empty()) size += sizeof(float) * ranges[1] * 3; // Normales (x, y, z)
+//    if (!texture_coords.empty()) size += sizeof(float) * ranges[1] * 2; // Coord. textura (u, v)
+//
+//    // Crear un buffer para los datos
+//    std::vector<char> fileBuffer(size);
+//    char* cursor = fileBuffer.data();
+//
+//    // Copiar las rangos
+//    memcpy(cursor, ranges, sizeof(ranges));
+//    cursor += sizeof(ranges);
+//
+//    // Copiar índices
+//    memcpy(cursor, indices.data(), sizeof(uint) * ranges[0]);
+//    cursor += sizeof(uint) * ranges[0];
+//
+//    // Copiar vértices
+//    memcpy(cursor, vertices.data(), sizeof(float) * ranges[1] * 3);
+//    cursor += sizeof(float) * ranges[1] * 3;
+//
+//    // Copiar normales si están presentes
+//    if (!normals.empty()) {
+//        memcpy(cursor, normals.data(), sizeof(float) * ranges[1] * 3);
+//        cursor += sizeof(float) * ranges[1] * 3;
+//    }
+//
+//    // Copiar coordenadas de textura si están presentes
+//    if (!texture_coords.empty()) {
+//        memcpy(cursor, texture_coords.data(), sizeof(float) * ranges[1] * 2);
+//        cursor += sizeof(float) * ranges[1] * 2;
+//    }
+//
+//    // Escribir el buffer en un archivo
+//    std::ofstream outFile(filePath, std::ios::binary);
+//    if (!outFile) {
+//        std::cerr << "Error: No se pudo abrir el archivo para escribir: " << filePath << std::endl;
+//        return false;
+//    }
+//
+//    outFile.write(fileBuffer.data(), size);
+//    outFile.close();
+//
+//    std::cout << "Malla guardada con éxito en " << filePath << std::endl;
+//    return true;
+//}
+
+
+
 //void ResourceMesh::SaveMeshes()
 //{
 //    // Asegúrate de que tienes acceso a los datos de la malla (índices, vértices, normales, etc.)

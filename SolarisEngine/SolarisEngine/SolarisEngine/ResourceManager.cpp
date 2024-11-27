@@ -80,3 +80,5 @@ Resource* ResourceManager::CreateNewResource(const char* assetsFile, Resource::T
         return nullptr;
     }
 }
+
+
