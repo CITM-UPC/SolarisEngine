@@ -27,6 +27,8 @@ public:
     ImVec2 projectExplorerPos;
     ImVec2  projectExplorerSize;
 
+    void CopyToAssetsFolder(const std::string& filePath, const std::string& destinationFolder);
+
 private:
     void ShowFileSystemTree(const std::filesystem::path& path); // Recursive method to display file system
     void ShowBreadcrumbNavigation();

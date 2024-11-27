@@ -371,7 +371,7 @@ void InputEditor::handleDroppedFile(const char* filePath) {
 		Debug::Log("File dropped into Project Explorer: ", filePath);
 		// 将文件移动到游戏引擎的文件夹中
 		std::string destinationFolder = app->windowEditor->GetImGuiWindow()->projectPanel->getCurrentPath().string();
-		CopyToAssetsFolder(filePath, destinationFolder);
+		app->windowEditor->GetImGuiWindow()->projectPanel->CopyToAssetsFolder(filePath, destinationFolder);
 	}
 	else if (mouseX >= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.x && mouseX <= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.x + app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelSize.x &&
 		mouseY >= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.y && mouseY <= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.y + app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelSize.y) {
@@ -404,32 +404,32 @@ void InputEditor::handleDroppedFile(const char* filePath) {
 }
 
 
-void InputEditor::CopyToAssetsFolder(const std::string& filePath, const std::string& destinationFolder) {
-	// Use the filesystem library to copy files or directories
-	try {
-		std::filesystem::path src(filePath);
-		std::filesystem::path dest = std::filesystem::path(destinationFolder) / src.filename();
-
-		// Check if the destination file already exists
-		if (std::filesystem::exists(dest)) {
-			// Generate a new file name with a number appended
-			int copyIndex = 1;
-			std::filesystem::path newDest;
-			do {
-				newDest = dest.parent_path() / (dest.stem().string() + " (" + std::to_string(copyIndex) + ")" + dest.extension().string());
-				copyIndex++;
-			} while (std::filesystem::exists(newDest));
-			dest = newDest;
-		}
-
-		// Copy the file or directory
-		std::filesystem::copy(src, dest, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
-		Debug::Log("File copied to destination folder: ", dest.string());
-	}
-	catch (const std::filesystem::filesystem_error& e) {
-		Debug::Log("Error copying file to destination folder: ", e.what());
-	}
-}
+//void InputEditor::CopyToAssetsFolder(const std::string& filePath, const std::string& destinationFolder) {
+//	// Use the filesystem library to copy files or directories
+//	try {
+//		std::filesystem::path src(filePath);
+//		std::filesystem::path dest = std::filesystem::path(destinationFolder) / src.filename();
+//
+//		// Check if the destination file already exists
+//		if (std::filesystem::exists(dest)) {
+//			// Generate a new file name with a number appended
+//			int copyIndex = 1;
+//			std::filesystem::path newDest;
+//			do {
+//				newDest = dest.parent_path() / (dest.stem().string() + " (" + std::to_string(copyIndex) + ")" + dest.extension().string());
+//				copyIndex++;
+//			} while (std::filesystem::exists(newDest));
+//			dest = newDest;
+//		}
+//
+//		// Copy the file or directory
+//		std::filesystem::copy(src, dest, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+//		Debug::Log("File copied to destination folder: ", dest.string());
+//	}
+//	catch (const std::filesystem::filesystem_error& e) {
+//		Debug::Log("Error copying file to destination folder: ", e.what());
+//	}
+//}
 
 
 //void InputEditor::CopyToAssetsFolder(const std::string& filePath) {

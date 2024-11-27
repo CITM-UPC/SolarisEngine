@@ -336,6 +336,7 @@ void PanelProject::ShowDeleteConfirmation() {
 
 
 void PanelProject::ShowBreadcrumbNavigation() {
+
 	std::filesystem::path pathPart;
 	bool showBreadcrumb = false;
 
@@ -356,7 +357,6 @@ void PanelProject::ShowBreadcrumbNavigation() {
 
 				currentPath = pathPart;
 
-
 				while (!pathStack.empty() && pathStack.top() != currentPath) {
 					pathStack.pop();
 				}
@@ -365,6 +365,26 @@ void PanelProject::ShowBreadcrumbNavigation() {
 				break;
 			}
 
+			// Add drag and drop support
+			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+				const char* pathStr = pathPart.string().c_str();
+				ImGui::SetDragDropPayload("PATH_PAYLOAD", pathStr, strlen(pathStr) + 1);
+				ImGui::Text("Dragging %s", pathStr);
+				ImGui::EndDragDropSource();
+			}
+
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("PATH_PAYLOAD")) {
+					const char* droppedPath = (const char*)payload->Data;
+					std::string destinationFolder = pathPart.string();
+
+					// Call your function to copy the file to the destination folder
+					CopyToAssetsFolder(droppedPath, destinationFolder);
+
+					Debug::Log("File dropped into: ", destinationFolder);
+				}
+				ImGui::EndDragDropTarget();
+			}
 
 			ImGui::SameLine();
 			ImGui::Text(">");
@@ -398,8 +418,35 @@ void PanelProject::ShowBreadcrumbNavigation() {
 
 		ImGui::EndPopup();
 	}
-
 }
+
+void PanelProject::CopyToAssetsFolder(const std::string& filePath, const std::string& destinationFolder) {
+	// Use the filesystem library to copy files or directories
+	try {
+		std::filesystem::path src(filePath);
+		std::filesystem::path dest = std::filesystem::path(destinationFolder) / src.filename();
+
+		// Check if the destination file already exists
+		if (std::filesystem::exists(dest)) {
+			// Generate a new file name with a number appended
+			int copyIndex = 1;
+			std::filesystem::path newDest;
+			do {
+				newDest = dest.parent_path() / (dest.stem().string() + " (" + std::to_string(copyIndex) + ")" + dest.extension().string());
+				copyIndex++;
+			} while (std::filesystem::exists(newDest));
+			dest = newDest;
+		}
+
+		// Copy the file or directory
+		std::filesystem::copy(src, dest, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+		Debug::Log("File copied to destination folder: ", dest.string());
+	}
+	catch (const std::filesystem::filesystem_error& e) {
+		Debug::Log("Error copying file to destination folder: ", e.what());
+	}
+}
+
 
 
 
