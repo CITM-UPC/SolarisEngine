@@ -147,6 +147,29 @@ glm::mat4 Component_Transform::GetModelMatrix() const {
     
 }
 
+void Component_Transform::ApplyMatrix(const glm::mat4& matrix) {
+    // Extraer posición
+    position = glm::vec3(matrix[3]);
+
+    // Extraer escala
+    scale = glm::vec3(
+        glm::length(glm::vec3(matrix[0])),
+        glm::length(glm::vec3(matrix[1])),
+        glm::length(glm::vec3(matrix[2]))
+    );
+
+    // Extraer rotación
+    glm::mat3 rotationMatrix = glm::mat3(
+        glm::vec3(matrix[0]) / scale.x,
+        glm::vec3(matrix[1]) / scale.y,
+        glm::vec3(matrix[2]) / scale.z
+    );
+    rotationQuat = glm::quat_cast(rotationMatrix);
+
+    // Actualizar eulerRotation para reflejar la nueva rotación
+    eulerRotation = glm::degrees(glm::eulerAngles(rotationQuat));
+}
+
 Component* Component_Transform::Clone() const {
     return new Component_Transform(*this);
 }

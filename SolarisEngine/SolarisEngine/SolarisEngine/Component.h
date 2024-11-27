@@ -8,13 +8,15 @@
 class GameObject;
 
 enum class ComponentType {
+    Unknown = 0,
     Transform,
     Camera,
     Mesh,
     Texture,
     Material,
     BoundingBox,
-    Unknown
+    Billboard
+    
 };
 
 class Component {
