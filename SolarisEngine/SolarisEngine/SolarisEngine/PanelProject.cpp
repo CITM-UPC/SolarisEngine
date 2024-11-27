@@ -443,6 +443,11 @@ bool PanelProject::DeleteFolder(const std::filesystem::path& folderPath) {
 	return false;
 }
 
+std::filesystem::path PanelProject::getCurrentPath()
+{
+	return currentPath;
+}
+
 
 
 

@@ -76,7 +76,7 @@ public:
 
 	void handleDroppedFile(const char* filePath);
 
-	void CopyToAssetsFolder(const std::string& filePath);
+	void CopyToAssetsFolder(const std::string& filePath, const std::string& destinationFolder);
 
 	// Called at PreUpdate
 	// Iterates through all active gamepads and update all input data

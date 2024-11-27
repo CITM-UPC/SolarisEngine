@@ -21,6 +21,8 @@ public:
 
     bool DeleteFolder(const std::filesystem::path& folderPath);
 
+    std::filesystem::path getCurrentPath();
+
 
     ImVec2 projectExplorerPos;
     ImVec2  projectExplorerSize;
