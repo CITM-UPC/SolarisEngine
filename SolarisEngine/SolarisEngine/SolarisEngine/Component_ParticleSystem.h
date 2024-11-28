@@ -69,6 +69,11 @@ private:
     float minRotation;     // Rotación mínima aleatoria
     float maxRotation;     // Rotación máxima aleatoria
     glm::vec3 gravity;     // Gravedad personalizada
+
+    bool randomizeVelocity;
+    bool randomizeSize;
+    bool randomizeRotation;
+
 };
 
 #endif // __COMPONENT_PARTICLESYSTEM_H__

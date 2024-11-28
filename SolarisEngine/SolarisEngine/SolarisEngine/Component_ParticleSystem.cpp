@@ -36,14 +36,34 @@ void Component_ParticleSystem::EmitParticle() {
 
     // Configuración inicial de la partícula
     newParticle.position = containerGO->GetComponent<Component_Transform>()->GetPosition();
-    newParticle.velocity = glm::mix(minVelocity, maxVelocity, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)); // Velocidad aleatoria
-    newParticle.acceleration = gravity;  // Gravedad personalizada
-    newParticle.life = 0.0f;  // Empieza con vida en 0
+    newParticle.life = 0.0f;
     newParticle.maxLife = particleLifetime;
-    newParticle.size = glm::mix(minSize, maxSize, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)); // Tamaño aleatorio
     newParticle.color = particleColor;
-    newParticle.rotation = glm::mix(minRotation, maxRotation, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)); // Rotación aleatoria
-    newParticle.rotationSpeed = rotationSpeed; // Velocidad de rotación
+
+    // Aleatorización si está habilitada
+    if (randomizeVelocity) {
+        newParticle.velocity = glm::mix(minVelocity, maxVelocity, static_cast<float>(rand()) / static_cast<float>(RAND_MAX));
+    }
+    else {
+        newParticle.velocity = particleVelocity;
+    }
+
+    if (randomizeSize) {
+        newParticle.size = glm::mix(minSize, maxSize, static_cast<float>(rand()) / static_cast<float>(RAND_MAX));
+    }
+    else {
+        newParticle.size = particleSize;
+    }
+
+    if (randomizeRotation) {
+        newParticle.rotation = glm::mix(minRotation, maxRotation, static_cast<float>(rand()) / static_cast<float>(RAND_MAX));
+    }
+    else {
+        newParticle.rotation = 0.0f;
+    }
+
+    newParticle.rotationSpeed = rotationSpeed;
+    newParticle.acceleration = gravity;
 
     particles.push_back(newParticle);
 }
@@ -136,22 +156,50 @@ void Component_ParticleSystem::RenderParticle(const glm::vec3& position, float s
 }
 
 void Component_ParticleSystem::DrawInspectorComponent() {
-    if (ImGui::CollapsingHeader("Particle System Settings")) {
-        ImGui::SliderFloat("Emission Rate", &emissionRate, 0.0f, 100.0f);
-        ImGui::SliderFloat("Particle Lifetime", &particleLifetime, 0.1f, 10.0f);
-        ImGui::DragFloat3("Particle Velocity", &particleVelocity[0], 0.1f);
-        ImGui::SliderFloat("Particle Size", &particleSize, 0.1f, 10.0f);
-        ImGui::ColorEdit4("Particle Color", &particleColor[0]);
+    if (ImGui::CollapsingHeader(u8"\ue08E ParticleSystem")) {
+        if (ImGui::BeginTabBar("ParticleSystemTabs")) {
+            if (ImGui::BeginTabItem("Emisión")) {
+                ImGui::DragFloat("Emission Rate", &emissionRate, 0.1f, 0.0f, 100.0f);
+                ImGui::DragFloat("Particle Lifetime", &particleLifetime, 0.1f, 0.1f, 10.0f);
+                ImGui::InputFloat3("Particle Velocity", &particleVelocity[0]);
+                ImGui::EndTabItem();
+            }
 
-        // Nuevas opciones de personalización
-        ImGui::SliderFloat3("Min Velocity", &minVelocity[0], -10.0f, 10.0f);
-        ImGui::SliderFloat3("Max Velocity", &maxVelocity[0], -10.0f, 10.0f);
-        ImGui::SliderFloat("Min Size", &minSize, 0.1f, 5.0f);
-        ImGui::SliderFloat("Max Size", &maxSize, 0.1f, 5.0f);
-        ImGui::SliderFloat("Rotation Speed", &rotationSpeed, -180.0f, 180.0f);
-        ImGui::SliderFloat("Min Rotation", &minRotation, 0.0f, 360.0f);
-        ImGui::SliderFloat("Max Rotation", &maxRotation, 0.0f, 360.0f);
-        ImGui::SliderFloat3("Gravity", &gravity[0], -20.0f, 20.0f);
+            if (ImGui::BeginTabItem("Forma")) {
+                ImGui::Checkbox("Randomize Size", &randomizeSize);
+                if (randomizeSize) {
+                    ImGui::DragFloat("Min Size", &minSize, 0.1f, 0.0f, 10.0f);
+                    ImGui::DragFloat("Max Size", &maxSize, 0.1f, 0.0f, 10.0f);
+                }
+
+                ImGui::Checkbox("Randomize Velocity", &randomizeVelocity);
+                if (randomizeVelocity) {
+                    ImGui::InputFloat3("Min Velocity", &minVelocity[0]);
+                    ImGui::InputFloat3("Max Velocity", &maxVelocity[0]);
+                }
+
+                ImGui::Checkbox("Randomize Rotation", &randomizeRotation);
+                if (randomizeRotation) {
+                    ImGui::DragFloat("Min Rotation", &minRotation, 0.1f, -360.0f, 360.0f);
+                    ImGui::DragFloat("Max Rotation", &maxRotation, 0.1f, -360.0f, 360.0f);
+                }
+
+                ImGui::DragFloat("Rotation Speed", &rotationSpeed, 0.1f, -10.0f, 10.0f);
+                ImGui::EndTabItem();
+            }
+
+            if (ImGui::BeginTabItem("Renderizado")) {
+                ImGui::ColorEdit4("Particle Color", &particleColor[0]);
+                ImGui::EndTabItem();
+            }
+
+            //if (ImGui::BeginTabItem("Alineación")) {
+            //    ImGui::Checkbox("Use Billboard Alignment", &useBillboardAlignment);
+            //    ImGui::EndTabItem();
+            //}
+
+            ImGui::EndTabBar();
+        }
     }
 }
 
