@@ -103,8 +103,14 @@ void Component_ParticleSystem::Update(double dt) {
 
 void Component_ParticleSystem::DrawComponent() {
     if (materialComponent && materialComponent->GetTextureID() != 0) {
+
+        materialComponent->DrawTexture();
         // Si existe el componente de material y tiene una textura cargada
-        glBindTexture(GL_TEXTURE_2D, materialComponent->GetTextureID());  // Usar la textura del material
+        //glBindTexture(GL_TEXTURE_2D, materialComponent->GetTextureID());  // Usar la textura del material
+    }
+    else {
+        materialComponent = containerGO->GetComponent<Component_Material>();
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     for (const auto& particle : particles) {
@@ -114,9 +120,9 @@ void Component_ParticleSystem::DrawComponent() {
 
 void Component_ParticleSystem::RenderParticle(const glm::vec3& position, float size, const glm::vec4& color, float rotation) {
     // Asegúrate de que la textura está activa
-    if (materialComponent && materialComponent->GetTextureID() != 0) {
-        glBindTexture(GL_TEXTURE_2D, materialComponent->GetTextureID());  // Usar la textura del material
-    }
+    //if (materialComponent && materialComponent->GetTextureID() != 0) {
+    //    glBindTexture(GL_TEXTURE_2D, materialComponent->GetTextureID());  // Usar la textura del material
+    //}
 
     // Coordenadas UV para el cuadrado de la partícula
     glm::vec2 uv1(0.0f, 0.0f);  // Inferior izquierda
