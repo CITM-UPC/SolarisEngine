@@ -13,6 +13,7 @@ public:
 
 
     void Update(double dt);
+    void Draw();
 
     void SaveScene();
 
@@ -43,6 +44,7 @@ public:
     void MoveGameObjectDown(GameObject* gameObject);
 
     void DrawGameObjectsRecursively(std::vector<GameObject*> gameObjects);
+    void UpdateGameObjectsRecursively(std::vector<GameObject*> gameObjects, float dt);
 
     bool RayIntersectsAABB(const Ray& ray, const glm::vec3& boxMin, const glm::vec3& boxMax);
 

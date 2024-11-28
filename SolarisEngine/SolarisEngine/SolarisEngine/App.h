@@ -22,6 +22,8 @@
 #include "Component_Material.h"
 #include "Component_Transform.h"
 #include "Component_BoundingBox.h"
+#include "Component_Billboard.h"
+#include "Component_ParticleSystem.h"
 
 // Classes "globales"
 class MyWindow;

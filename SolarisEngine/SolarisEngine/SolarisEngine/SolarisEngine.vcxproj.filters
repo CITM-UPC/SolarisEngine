@@ -147,6 +147,9 @@
     <ClCompile Include="Component_Billboard.cpp">
       <Filter>Source Files\Componentes</Filter>
     </ClCompile>
+    <ClCompile Include="Component_ParticleSystem.cpp">
+      <Filter>Source Files\Componentes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyWindow.h">
@@ -227,9 +230,6 @@
     <ClInclude Include="Debug.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Component_BoundingBox.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Ray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -255,6 +255,12 @@
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Component_Billboard.h">
+      <Filter>Header Files\Componentes</Filter>
+    </ClInclude>
+    <ClInclude Include="Component_ParticleSystem.h">
+      <Filter>Header Files\Componentes</Filter>
+    </ClInclude>
+    <ClInclude Include="Component_BoundingBox.h">
       <Filter>Header Files\Componentes</Filter>
     </ClInclude>
   </ItemGroup>

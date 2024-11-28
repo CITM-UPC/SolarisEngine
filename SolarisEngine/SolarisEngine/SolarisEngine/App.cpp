@@ -240,6 +240,10 @@ bool App::DoUpdate(double dt)
 }
 
 bool App::PostUpdate(double dt) {
+
+
+    actualScene->Draw();
+
     if (windowEditor->GetFrameBuffer()) {
         windowEditor->GetFrameBuffer()->Unbind();
         GLint currentFbo = 0;

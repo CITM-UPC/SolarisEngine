@@ -12,9 +12,7 @@ Scene::Scene()
 void Scene::Update(double dt)
 {
 
-    DrawInfiniteGrid(1, 50);
-
-    DrawGameObjectsRecursively(gameObjects);
+    UpdateGameObjectsRecursively(gameObjects, dt);
 
     if (app->inputEditor->mouseLeftIsPressed && isScenePicked && !app->inputEditor->isCameraMoving)
     {
@@ -31,6 +29,12 @@ void Scene::Update(double dt)
         UpdateMousePicking(mousePos.x, mousePos.y, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
         //app->cameraEditor->onMouseClick(mousePos.x, mousePos.y);
     }
+}
+
+void Scene::Draw()
+{
+    DrawInfiniteGrid(1, 50);
+    DrawGameObjectsRecursively(gameObjects);
 }
 
 void Scene::SaveScene()
@@ -333,6 +337,22 @@ void Scene::DrawGameObjectsRecursively(std::vector<GameObject*> gameObjects) {
         }
     }
 }
+
+void Scene::UpdateGameObjectsRecursively(std::vector<GameObject*> gameObjects, float dt)
+{
+    for (GameObject* gameObject : gameObjects) {
+        if (gameObject && gameObject->IsEnabled()) {
+            gameObject->Update(dt);  // Dibuja el GameObject actual
+
+            // Si el GameObject tiene hijos, dibuja los hijos recursivamente
+            if (!gameObject->GetChildren().empty()) {
+                DrawGameObjectsRecursively(gameObject->GetChildren());
+            }
+        }
+    }
+}
+
+
 
 
 

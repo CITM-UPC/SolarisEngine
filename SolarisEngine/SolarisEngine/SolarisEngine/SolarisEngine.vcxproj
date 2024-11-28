@@ -136,6 +136,7 @@
     <ClCompile Include="Component_BoundingBox.cpp" />
     <ClCompile Include="Component_Material.cpp" />
     <ClCompile Include="Component_Mesh.cpp" />
+    <ClCompile Include="Component_ParticleSystem.cpp" />
     <ClCompile Include="Component_Transform.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="EditorSaveLoad.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="Component_BoundingBox.h" />
     <ClInclude Include="Component_Material.h" />
     <ClInclude Include="Component_Mesh.h" />
+    <ClInclude Include="Component_ParticleSystem.h" />
     <ClInclude Include="Component_Transform.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="EditorSaveLoad.h" />

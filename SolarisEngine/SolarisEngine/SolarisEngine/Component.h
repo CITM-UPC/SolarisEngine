@@ -15,7 +15,8 @@ enum class ComponentType {
     Texture,
     Material,
     BoundingBox,
-    Billboard
+    Billboard,
+    ParticleSystem
     
 };
 
