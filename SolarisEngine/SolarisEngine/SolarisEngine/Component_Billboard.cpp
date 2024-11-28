@@ -30,33 +30,47 @@ glm::mat4 Component_Billboard::CalculateBillboardMatrix(const glm::mat4& viewMat
     glm::mat4 result(1.0f);
 
     if (type == BillboardType::SCREEN_ALIGNED) {
+        // Extraemos la posición de la cámara de la matriz de vista inversa
+        glm::mat4 inverseViewMatrix = glm::inverse(viewMatrix);
+        glm::vec3 cameraPosition = glm::vec3(inverseViewMatrix[3]);
+
+        // Obtenemos la posición del objeto
         Component_Transform* transform = containerGO->GetComponent<Component_Transform>();
+        if (!transform) return glm::mat4(1.0f); // Fallback si no hay transform
+
+        glm::vec3 objectPosition = transform->GetPosition();
+
+        // Calcular el vector hacia la cámara (eje Z)
+        glm::vec3 forward = glm::normalize(cameraPosition - objectPosition);
+
+        // Recalcular el eje X (derecha) usando el eje Y global (up)
         const glm::vec3 worldUp(0.0f, 1.0f, 0.0f);
-
-
-        glm::inverse(viewMatrix);
-
-        // Copiar las columnas rotacionales de la matriz de vista (sin traslación)
-        result[0] = glm::vec4(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0], 0.0f);
-        result[1] = glm::vec4(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1], 0.0f);
-        result[2] = glm::vec4(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2], 0.0f);
-
-
-    }
-    else if (type == BillboardType::WORLD_ALIGNED) {
-        // Usar constantes para el eje Y en lugar de recalcular
-        const glm::vec3 worldUp(0.0f, 1.0f, 0.0f);
-
-        glm::vec3 forward = glm::normalize(glm::vec3(viewMatrix[2][0], 0.0f, viewMatrix[2][2]));
         glm::vec3 right = glm::normalize(glm::cross(worldUp, forward));
 
-        result[0] = glm::vec4(right, 0.0f);
-        result[1] = glm::vec4(worldUp, 0.0f);
-        result[2] = glm::vec4(forward, 0.0f);
+        // Recalcular el eje Y usando los otros dos
+        glm::vec3 up = glm::normalize(glm::cross(forward, right));
+
+        // Construir la matriz de rotación usando los vectores calculados
+        result[0] = glm::vec4(right, 0.0f);   // Primera columna: X
+        result[1] = glm::vec4(up, 0.0f);      // Segunda columna: Y
+        result[2] = glm::vec4(forward, 0.0f); // Tercera columna: Z
+        result[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f); // Cuarta columna: sin traslación
+    }
+    else if (type == BillboardType::WORLD_ALIGNED) {
+        // Usar constantes para el eje Y (worldUp)
+        const glm::vec3 worldUp(0.0f, 1.0f, 0.0f);
+
+        glm::vec3 forward = glm::normalize(glm::vec3(viewMatrix[2][0], 0.0f, viewMatrix[2][2])); // Eje Z (mirando adelante)
+        glm::vec3 right = glm::normalize(glm::cross(worldUp, forward)); // Eje X (derecha)
+
+        result[0] = glm::vec4(right, 0.0f);   // Primera columna: X
+        result[1] = glm::vec4(worldUp, 0.0f); // Segunda columna: Y
+        result[2] = glm::vec4(forward, 0.0f); // Tercera columna: Z
     }
 
     return result;
 }
+
 
 void Component_Billboard::DrawInspectorComponent() {
     if (ImGui::CollapsingHeader("Billboard Settings")) {
