@@ -147,6 +147,20 @@ void PanelHierarchy::RenderContext() {
             app->actualScene->AddGameObject(newGO);
         }
 
+        if (ImGui::BeginMenu("Create...")) {
+            if (ImGui::MenuItem("Particle System")) {
+                auto newGO = GameObject::Create("ParticleSystem");
+                newGO->AddComponent<Component_ParticleSystem>();
+                //newGO->AddComponent<Component_Billboard>();
+                //newGO->AddComponent<Component_Material>();
+                app->actualScene->AddGameObject(newGO);
+                
+            }
+            ImGui::EndMenu();
+        
+        }
+
+
         if (ImGui::MenuItem("Duplicate")) {
             if (gameObjectSelected) {
                 auto duplicateGO = gameObjectSelected->Duplicate();

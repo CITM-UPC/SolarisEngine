@@ -1,60 +1,74 @@
-#pragma once
-#ifndef COMPONENT_PARTICLESYSTEM_H
-#define COMPONENT_PARTICLESYSTEM_H
+#ifndef __COMPONENT_PARTICLESYSTEM_H__
+#define __COMPONENT_PARTICLESYSTEM_H__
 
 #include "Component.h"
 #include "Component_Material.h"
+#include "Component_Billboard.h"
 #include <vector>
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
+
+class Component_Transform;
 
 struct Particle {
     glm::vec3 position;
     glm::vec3 velocity;
     glm::vec3 acceleration;
-    float life;           // Tiempo de vida
-    float maxLife;        // Vida máxima (para controlar la desaparición)
-    float size;           // Tamaño de la partícula
-    glm::vec4 color;      // Color de la partícula
-    float rotation;       // Rotación de la partícula
+    float life;
+    float maxLife;
+    float size;
+    glm::vec4 color;
+    float rotation;
+    float rotationSpeed;
 };
 
 class Component_ParticleSystem : public Component {
 public:
     // Constructor y Destructor
     Component_ParticleSystem(GameObject* containerGO);
-    ~Component_ParticleSystem() override;
+    ~Component_ParticleSystem();
 
-    // Métodos para actualizar y renderizar el sistema
-    void Update(double dt) override;
-    void DrawComponent() override;
-
-    // Métodos para configurar el sistema de partículas
+    // Métodos de configuración
     void SetEmitterProperties(float rate, float lifetime, glm::vec3 velocity, float size, glm::vec4 color);
 
-    // Para el inspector (si lo necesitas)
-    void DrawInspectorComponent() override;
+    // Métodos de emisión y actualización de partículas
+    void EmitParticle();
+    void UpdateParticles(double dt);
+    void Update(double dt);
 
+    // Métodos de dibujo
+    void DrawComponent();
+    void RenderParticle(const glm::vec3& position, float size, const glm::vec4& color, float rotation);
 
-    Component* Clone() const override;
-    void Enable() override;
-    void Disable() override;
+    // Método de duplicación
+    Component* Clone() const;
+
+    // Métodos de habilitar/deshabilitar
+    void Enable();
+    void Disable();
+
+    // Inspector para modificar propiedades
+    void DrawInspectorComponent();
 
 private:
-    // Configuración del sistema de partículas
-    float emissionRate; // Partículas generadas por segundo
+    std::vector<Particle> particles;  // Lista de partículas
+    Component_Material* materialComponent;  // Componente de material (textura)
+
+    // Propiedades de las partículas
+    float emissionRate;
     float particleLifetime;
     glm::vec3 particleVelocity;
     float particleSize;
     glm::vec4 particleColor;
 
-    // Datos de las partículas
-    std::vector<Particle> particles;
-    Component_Material* materialComponent;  // Referencia al material del GameObject
-
-    // Métodos internos
-    void EmitParticle();
-    void UpdateParticles(double dt);
-    void RenderParticle(const glm::vec3& position, float size, const glm::vec4& color);
+    // Nuevas opciones de personalización
+    glm::vec3 minVelocity; // Velocidad mínima aleatoria
+    glm::vec3 maxVelocity; // Velocidad máxima aleatoria
+    float minSize;         // Tamaño mínimo aleatorio
+    float maxSize;         // Tamaño máximo aleatorio
+    float rotationSpeed;   // Velocidad de rotación
+    float minRotation;     // Rotación mínima aleatoria
+    float maxRotation;     // Rotación máxima aleatoria
+    glm::vec3 gravity;     // Gravedad personalizada
 };
 
-#endif // COMPONENT_PARTICLESYSTEM_H
+#endif // __COMPONENT_PARTICLESYSTEM_H__
