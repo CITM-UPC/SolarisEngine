@@ -52,8 +52,10 @@ bool App::Start()
     // Crear los objetos con new
     gameObject = importer->Importar("./Assets/BakerHouse.fbx"); // <-- Modelo con 1 textura
     gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
+    gameObject->GetComponent<Component_Transform>()->SetPosition(glm::vec3(-5, 0, 0));
     gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
     gameObject2->GetComponent<Component_Transform>()->SetRotation(-90,0,0);
+    gameObject2->GetComponent<Component_Transform>()->SetPosition(glm::vec3(5, 0, 0));
     
 
 

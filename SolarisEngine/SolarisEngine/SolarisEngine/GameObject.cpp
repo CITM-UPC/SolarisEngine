@@ -1,13 +1,13 @@
 #include "GameObject.h"
 #include "Component.h"
-#include "Component_Transform.h"
+
 #include "App.h"
 #include <iostream>
 
 // Método estático para crear el GameObject e inicializarlo con un Component_Transform
 GameObject* GameObject::Create(const std::string& name) {
     GameObject* gameObject(new GameObject(name));
-    gameObject->AddComponent<Component_Transform>();  // Agrega el componente Transform
+    gameObject->transform = gameObject->AddComponent<Component_Transform>();  // Agrega el componente Transform
     return gameObject;
 }
 

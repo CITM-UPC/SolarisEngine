@@ -65,8 +65,11 @@ void Component_Transform::SetScale(float x, float y, float z) {
 }
 
 void Component_Transform::SetRotation(float pitch, float yaw, float roll) {
-    glm::vec3 eulerAngles(glm::radians(pitch), glm::radians(yaw), glm::radians(roll));
-    rotationQuat = glm::quat(eulerAngles);
+    glm::vec3 internalEulerAngles(glm::radians(pitch), glm::radians(yaw), glm::radians(roll));
+   
+    rotationQuat = glm::quat(internalEulerAngles);
+    eulerRotation = glm::degrees(glm::eulerAngles(rotationQuat));
+
 }
 
 void Component_Transform::SetRotation(const glm::quat& quat) {

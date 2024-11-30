@@ -3,6 +3,7 @@
 #define __GAME_OBJECT_H__
 
 #include "Component.h"
+#include "Component_Transform.h"
 #include "Defs.h"
 #include <string>
 #include <vector>
@@ -69,6 +70,8 @@ public:
     bool enabled;
 
     bool isExpanded = false;
+    Component_Transform* transform;
+
 
 private:
     std::string name;
