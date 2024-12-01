@@ -36,7 +36,7 @@ UID ResourceManager::GenerateNewUID()
     return currentUID;
 }
 
-const Resource* ResourceManager::RequestResource(UID uid) const
+const Resource* ResourceManager::RequestResource(UID uid) const 
 {
     auto it = resources.find(uid);
     if (it != resources.end())

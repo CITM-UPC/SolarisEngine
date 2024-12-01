@@ -52,12 +52,12 @@ public:
 
     
 
-    
+    std::vector<Mesh> meshes;
 
 private:
  
 
-    std::vector<Mesh> meshes;
+    
     int totalVertex = 0;
     GLuint vao;
     Component_Material* material;
@@ -66,4 +66,6 @@ private:
     bool showBoundingBox = false;
     // Métodos auxiliares para definir geometrías de los distintos tipos de mallas
  
+    void SaveMeshes();
+
 };
