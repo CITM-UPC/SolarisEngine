@@ -306,7 +306,6 @@ void PanelProject::RenderContext() {
 
 		ImGui::EndPopup();
 	}
-
 }
 void PanelProject::ShowDeleteConfirmation() {
 
@@ -392,32 +391,6 @@ void PanelProject::ShowBreadcrumbNavigation() {
 		}
 	}
 
-	if (showDeletePopup) {
-		ImGui::OpenPopup("Confirm Delete");  // Abre el popup de confirmación
-	}
-
-	if (ImGui::BeginPopupModal("Confirm Delete", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-		ImGui::Text("Are you sure you want to delete '%s'?", itemToDelete.c_str());
-		ImGui::Separator();
-
-		bool enterPressed = ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter));
-
-		if (ImGui::Button("OK", ImVec2(120, 0)) || enterPressed) {
-			pathToDelete = deletePath / itemToDelete;
-			pendingDelete = true;        // Activa el estado pendiente de eliminación
-			showDeletePopup = false;     // Cierra el popup
-			ImGui::CloseCurrentPopup();
-		}
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Cancel", ImVec2(120, 0))) {
-			showDeletePopup = false;  // Cierra el popup sin eliminar
-			ImGui::CloseCurrentPopup();
-		}
-
-		ImGui::EndPopup();
-	}
 }
 
 void PanelProject::CopyToAssetsFolder(const std::string& filePath, const std::string& destinationFolder) {
