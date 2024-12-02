@@ -368,28 +368,37 @@ void CameraEditor::UpdateMousePicking(int mouseX, int mouseY, int windowWidth, i
     GameObject* closestObject = nullptr;
     float closestDistance = std::numeric_limits<float>::max();
 
+    // Recursivamente buscar en los objetos de la escena y sus hijos
     for (GameObject* gameObject : app->actualScene->GetGameObjects()) {
-        if (auto meshComponent = gameObject->GetComponent<Component_Mesh>()) {
-            auto [boxMin, boxMax] = meshComponent->GetBoundingBoxInWorldSpace();
-
-            // Verificar intersección
-            if (RayIntersectsAABB(ray, boxMin, boxMax)) {
-                // Calcular la distancia desde la cámara
-                float distance = glm::length(boxMin - ray.origin);
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestObject = gameObject;
-                }
-            }
-        }
+        CheckGameObject(ray, gameObject, closestObject, closestDistance);
     }
 
     // Seleccionar el objeto más cercano
     app->actualScene->SelectGameObject(closestObject);
 
-    //DrawRay(ray, 100.0f);
+    // DrawRay(ray, 100.0f);
 }
 
+void CameraEditor::CheckGameObject(const Ray& ray, GameObject* gameObject, GameObject*& closestObject, float& closestDistance) {
+    if (auto meshComponent = gameObject->GetComponent<Component_Mesh>()) {
+        auto [boxMin, boxMax] = meshComponent->GetBoundingBoxInWorldSpace();
+
+        // Verificar intersección
+        if (RayIntersectsAABB(ray, boxMin, boxMax)) {
+            // Calcular la distancia desde la cámara
+            float distance = glm::length(boxMin - ray.origin);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestObject = gameObject;
+            }
+        }
+    }
+
+    // Revisar los objetos hijos del GameObject
+    for (GameObject* child : gameObject->GetChildren()) {
+        CheckGameObject(ray, child, closestObject, closestDistance); // Llamada recursiva
+    }
+}
 
 
 

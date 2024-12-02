@@ -6,6 +6,7 @@
 #include <GL/gl.h>   // Cambiar a OpenGL (quitar GLUT)
 #include <glm/gtc/type_ptr.hpp> // Para glm::value_ptr
 #include "Ray.h"
+#include "App.h"
 
 class App;  // Declaración anticipada para que el compilador conozca la clase App.
 
@@ -27,6 +28,7 @@ public:
     bool RayIntersectsAABB(const Ray& ray, const glm::vec3& boxMin, const glm::vec3& boxMax);
     
     void UpdateMousePicking(int mouseX, int mouseY, int windowWidth, int windowHeight);
+    void CheckGameObject(const Ray& ray, GameObject* gameObject, GameObject*& closestObject, float& closestDistance);
     //glm::vec3 getRayFromMouse(int mouseX, int mouseY);
     //void onMouseClick(int mouseX, int mouseY);
     void updateCameraSpeed();
