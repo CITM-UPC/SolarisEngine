@@ -5,6 +5,7 @@
 #include <glm/gtx/compatibility.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include "Debug.h"
 
 Component_Transform::Component_Transform(GameObject* containerGO)
     : Component(containerGO, ComponentType::Transform),
@@ -12,6 +13,7 @@ Component_Transform::Component_Transform(GameObject* containerGO)
     scale(1.0f, 1.0f, 1.0f),
     rotationQuat(glm::quat()) {
     eulerRotation = glm::degrees(glm::eulerAngles(rotationQuat));
+    localRotationOffset = glm::quat();
 }
 
 Component_Transform::~Component_Transform() {}
@@ -119,36 +121,53 @@ void Component_Transform::SetParent(GameObject* newParent) {
 }
 
 glm::mat4 Component_Transform::GetModelMatrix() const {
+    // Verificar si la posición, rotación o escala contienen valores NaN
+    if (std::isnan(position.x) || std::isnan(position.y) || std::isnan(position.z)) {
+        Debug::Log("NaN detectado en posición.");
+    }
+    if (std::isnan(rotationQuat.x) || std::isnan(rotationQuat.y) || std::isnan(rotationQuat.z) || std::isnan(rotationQuat.w)) {
+        Debug::Log("NaN detectado en rotación.");
+    }
+    if (std::isnan(scale.x) || std::isnan(scale.y) || std::isnan(scale.z)) {
+        Debug::Log("NaN detectado en escala.");
+    }
 
-    if (containerGO->parent) {
-        glm::mat4 parentModelMatrix = glm::mat4(1.0f); // Si no tiene padre, usa la matriz identidad
-        if (containerGO->parent != nullptr) {
-            Component_Transform* parentTransform = containerGO->parent->GetComponent<Component_Transform>();
-            if (parentTransform) {
-                parentModelMatrix = parentTransform->GetModelMatrix();
-            }
+    // Si el objeto tiene un padre, obtener la matriz del padre
+    glm::mat4 parentModelMatrix = glm::mat4(1.0f); // Si no tiene padre, usamos la identidad
+    if (containerGO->parent != nullptr) {
+        Component_Transform* parentTransform = containerGO->parent->GetComponent<Component_Transform>();
+        if (parentTransform) {
+            parentModelMatrix = parentTransform->GetModelMatrix();
         }
+    }
 
-        // Crear las matrices de transformación locales (traslación, rotación, escala) usando el offset
-        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), localPositionOffset + position);
-        glm::mat4 rotationMatrix = glm::mat4_cast(localRotationOffset + rotationQuat);
-        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), localScaleOffset + scale);
+    glm::quat a = localRotationOffset;
 
-        // Multiplicar la matriz del padre con la transformación local (con el offset)
+    if (std::isnan(a.x) || std::isnan(a.y) || std::isnan(a.z) || std::isnan(a.w)) {
+        Debug::Log("NaN detectado en rotación. Usando cuaternión de identidad.");
+        // Si el cuaternión de rotación es NaN, reemplazarlo por el cuaternión de identidad
+        a = glm::quat(1.0f, 0.0f, 0.0f, 0.0f); // Cuaternión de identidad
+    }
+
+
+    // Crear las matrices de transformación locales (traslación, rotación, escala) usando el offset
+    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), localPositionOffset + position);
+    glm::mat4 rotationMatrix = glm::mat4_cast(a + rotationQuat);
+    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), localScaleOffset + scale);
+
+
+
+
+    // Multiplicar la matriz del padre con la transformación local (con el offset)
+    if (containerGO->parent != nullptr) {
         return parentModelMatrix * translationMatrix * rotationMatrix * scaleMatrix;
     }
     else {
         // Si no tiene padre, la matriz global es solo la combinación de su propia transformación local
-        glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);  // usa `position`, no el offset
-        glm::mat4 rotationMatrix = glm::mat4_cast(rotationQuat);  // usa `rotationQuat`, no el offset
-        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);  // usa `scale`, no el offset
-
-        // Matriz global para un objeto sin padre es simplemente la multiplicación de las transformaciones locales
         return translationMatrix * rotationMatrix * scaleMatrix;
     }
-
-    
 }
+
 
 void Component_Transform::ApplyMatrix(const glm::mat4& matrix) {
     // Extraer posición

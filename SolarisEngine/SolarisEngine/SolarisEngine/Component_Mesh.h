@@ -29,7 +29,7 @@ public:
     void DrawComponent() override;
     void DrawInspectorComponent() override;
 
-    void LoadMesh(aiMesh* ai_mesh);
+    void LoadMesh(const aiMesh* ai_mesh);
     void LoadMesh(const aiScene* ai_scene);
 
     void CalculateFaceNormals(Mesh& mesh);

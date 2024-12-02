@@ -227,7 +227,7 @@ void Component_Mesh::DrawInspectorComponent()
 
 }
 
-void Component_Mesh::LoadMesh(aiMesh* ai_mesh) {
+void Component_Mesh::LoadMesh(const aiMesh* ai_mesh) {
 	// Crear una nueva estructura Mesh para almacenar los datos del mesh
 	Mesh mesh;
 
