@@ -333,16 +333,6 @@ void PanelProject::ShowBreadcrumbNavigation() {
 				ImGui::EndDragDropTarget();
 			}
 
-			if (ImGui::BeginDragDropTarget()) {
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_PATH")) {
-					const char* srcPath = static_cast<const char*>(payload->Data);
-					std::filesystem::path destination = pathPart / std::filesystem::path(srcPath).filename();
-
-					std::filesystem::rename(srcPath, destination); // 移动文件
-				}
-				ImGui::EndDragDropTarget();
-			}
-
 			ImGui::SameLine();
 			ImGui::Text(">");
 			ImGui::SameLine();
