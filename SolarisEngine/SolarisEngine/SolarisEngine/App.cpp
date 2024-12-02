@@ -50,24 +50,29 @@ bool App::Start()
     Debug::Log("App::Start called");
 
     // Crear los objetos con new
-    gameObject = importer->Importar("./Assets/BakerHouse.fbx"); // <-- Modelo con 1 textura
-    gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
-    gameObject->GetComponent<Component_Transform>()->SetPosition(glm::vec3(-5, 0, 0));
-    gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
-    gameObject2->GetComponent<Component_Transform>()->SetRotation(-90,0,0);
-    gameObject2->GetComponent<Component_Transform>()->SetPosition(glm::vec3(5, 0, 0));
+    gameObject = importer->ImportarNuevo("./Assets/BakerHouse.fbx"); // <-- Modelo con 1 textura
+    actualScene->AddGameObject(gameObject);
+
+    gameObject = importer->ImportarNuevo("./Assets/Sora.fbx");
+    actualScene->AddGameObject(gameObject);
+
+    //gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
+    //gameObject->GetComponent<Component_Transform>()->SetPosition(glm::vec3(-5, 0, 0));
+    //gameObject2 = importer->Importar("./Assets/Sora.fbx", "./Assets/Mat0.png"); // <-- Modelo que varias texturas
+    //gameObject2->GetComponent<Component_Transform>()->SetRotation(-90,0,0);
+    //gameObject2->GetComponent<Component_Transform>()->SetPosition(glm::vec3(5, 0, 0));
+    //
+
+
     
+    //actualScene->AddGameObject(gameObject2);
 
-
-    actualScene->AddGameObject(gameObject);
-    actualScene->AddGameObject(gameObject2);
-
-    gameObject = importer->Importar("./Assets/Potato.fbx");
-    gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Potato.jpg");
-    gameObject->GetComponent<Component_Transform>()->SetPosition(0, -2, 0);
-    gameObject->AddComponent<Component_BoundingBox>();
-    gameObject->GetComponent<Component_BoundingBox>()->Disable();
-    actualScene->AddGameObject(gameObject);
+    //gameObject = importer->Importar("./Assets/Potato.fbx");
+    //gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Potato.jpg");
+    //gameObject->GetComponent<Component_Transform>()->SetPosition(0, -2, 0);
+    //gameObject->AddComponent<Component_BoundingBox>();
+    //gameObject->GetComponent<Component_BoundingBox>()->Disable();
+    //actualScene->AddGameObject(gameObject);
 
 
     return true;
