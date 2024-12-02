@@ -165,6 +165,9 @@ void MenuBar::Render() {
             if (ImGui::MenuItem("ParticleSystem")) {
                 app->actualScene->GetSelectedGameObject()->AddComponent<Component_ParticleSystem>();
             }
+            if (ImGui::MenuItem("Camera")) {
+                app->actualScene->GetSelectedGameObject()->AddComponent<Component_Camera>();
+            }
 
 
             ImGui::EndMenu();

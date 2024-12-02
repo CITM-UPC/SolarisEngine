@@ -24,6 +24,7 @@
 #include "Component_BoundingBox.h"
 #include "Component_Billboard.h"
 #include "Component_ParticleSystem.h"
+#include "Component_Camera.h"
 #include "ResourceManager.h"
 
 // Classes "globales"
