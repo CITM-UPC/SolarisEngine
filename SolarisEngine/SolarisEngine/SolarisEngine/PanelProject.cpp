@@ -316,15 +316,28 @@ void PanelProject::ShowBreadcrumbNavigation() {
 					// 构建目标路径（面包屑的路径）
 					std::filesystem::path destinationPath = pathPart / fileName;
 
+					// 检查源路径和目标路径是否相同
+					if (sourcePath == destinationPath) {
+						Debug::Log("Cannot move file/folder to the same directory.");
+						return;  // 如果源路径和目标路径相同，则跳过操作
+					}
+
 					try {
-						// 检查源是否存在，执行移动操作
-						if (std::filesystem::exists(sourcePath)) {
-							std::filesystem::rename(sourcePath, destinationPath);
-							Debug::Log("Moved to: ", destinationPath.string());
-						}
-						else {
+						// 检查源是否存在
+						if (!std::filesystem::exists(sourcePath)) {
 							Debug::Log("Source file/folder does not exist: ", sourcePath.string());
+							return;
 						}
+
+						// 如果目标路径已存在，显示错误提示并不做任何操作
+						if (std::filesystem::exists(destinationPath)) {
+							Debug::Log("Target already exists: ", destinationPath.string());
+							return;
+						}
+
+						// 执行移动操作
+						std::filesystem::rename(sourcePath, destinationPath);
+						Debug::Log("Moved to: ", destinationPath.string());
 					}
 					catch (const std::exception& e) {
 						Debug::Log("Error moving file/folder: ", e.what());
@@ -332,6 +345,9 @@ void PanelProject::ShowBreadcrumbNavigation() {
 				}
 				ImGui::EndDragDropTarget();
 			}
+
+
+
 
 			ImGui::SameLine();
 			ImGui::Text(">");
