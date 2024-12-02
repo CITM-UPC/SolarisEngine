@@ -323,16 +323,36 @@ void PanelProject::ShowBreadcrumbNavigation() {
 					}
 
 					try {
-						// 检查源是否存在
+						// 检查源文件夹/文件是否存在
 						if (!std::filesystem::exists(sourcePath)) {
 							Debug::Log("Source file/folder does not exist: ", sourcePath.string());
 							return;
 						}
 
-						// 如果目标路径已存在，显示错误提示并不做任何操作
+						// 如果目标路径已存在
 						if (std::filesystem::exists(destinationPath)) {
-							Debug::Log("Target already exists: ", destinationPath.string());
-							return;
+							// 如果目标路径是当前文件夹，跳过移动
+							if (std::filesystem::is_directory(destinationPath) && destinationPath == currentPath) {
+								Debug::Log("Target is the current directory, skipping move.");
+								return;  // 如果目标是当前文件夹，不做任何操作
+							}
+
+							// 如果目标路径是其他文件夹，且目标已存在相同名称的文件或文件夹
+							if (std::filesystem::is_directory(destinationPath)) {
+								// 添加数字后缀
+								std::filesystem::path uniqueDestinationPath = destinationPath;
+								int counter = 1;
+								while (std::filesystem::exists(uniqueDestinationPath)) {
+									// 获取文件名和扩展名
+									std::string stem = uniqueDestinationPath.stem().string();  // 不包含扩展名的文件名
+									std::string extension = uniqueDestinationPath.extension().string();  // 文件扩展名
+
+									// 给文件名加上后缀 (数字)
+									uniqueDestinationPath = pathPart / (stem + " (" + std::to_string(counter) + ")" + extension);
+									counter++;  // 增加后缀的数字
+								}
+								destinationPath = uniqueDestinationPath;
+							}
 						}
 
 						// 执行移动操作
@@ -345,6 +365,7 @@ void PanelProject::ShowBreadcrumbNavigation() {
 				}
 				ImGui::EndDragDropTarget();
 			}
+
 
 
 
