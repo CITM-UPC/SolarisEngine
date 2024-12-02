@@ -167,7 +167,7 @@ void Component_ParticleSystem::DrawInspectorComponent() {
             if (ImGui::BeginTabItem("Emisión")) {
                 ImGui::DragFloat("Emission Rate", &emissionRate, 0.1f, 0.0f, 100.0f);
                 ImGui::DragFloat("Particle Lifetime", &particleLifetime, 0.1f, 0.1f, 10.0f);
-                ImGui::InputFloat3("Particle Velocity", &particleVelocity[0]);
+                ImGui::DragFloat3("Particle Velocity", &particleVelocity[0]);
                 ImGui::EndTabItem();
             }
 
@@ -180,8 +180,8 @@ void Component_ParticleSystem::DrawInspectorComponent() {
 
                 ImGui::Checkbox("Randomize Velocity", &randomizeVelocity);
                 if (randomizeVelocity) {
-                    ImGui::InputFloat3("Min Velocity", &minVelocity[0]);
-                    ImGui::InputFloat3("Max Velocity", &maxVelocity[0]);
+                    ImGui::DragFloat3("Min Velocity", &minVelocity[0]);
+                    ImGui::DragFloat3("Max Velocity", &maxVelocity[0]);
                 }
 
                 ImGui::Checkbox("Randomize Rotation", &randomizeRotation);

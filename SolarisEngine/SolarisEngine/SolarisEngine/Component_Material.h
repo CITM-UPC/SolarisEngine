@@ -13,7 +13,7 @@
 
 struct Material {
     ILuint textureID;
-    float diffuseColor[3];
+    float diffuseColor[4];
     int textureWidth = 0;
     int textureHeight = 0;
     std::string texturePath;
@@ -22,8 +22,7 @@ struct Material {
 enum class MaterialType {
     Opaque,
     Transparent,
-    Cutout,
-    Custom
+    Cutout
 };
 
 
@@ -33,8 +32,8 @@ public:
     Component_Material(GameObject* containerGO); // Usar puntero crudo
     ~Component_Material();
 
-    // Métodos de configuración de material
-    void SetDiffuseColor(float r, float g, float b);
+    void SetDiffuseColor(float r, float g, float b, float a);
+
     void SetTexture(const std::string& filePath);
 
     ILuint GetTextureID();
@@ -52,7 +51,7 @@ public:
     Component* Clone() const override;
   
 
-    glm::vec3 GetDiffuseColor() const;
+    glm::vec4 GetDiffuseColor() const;
 
 
     
