@@ -282,6 +282,7 @@ bool App::INIT_openGL() {
 
     glewInit();
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glEnable(GL_TEXTURE_2D);
     glClearColor(0.5, 0.5, 0.5, 1.0);
 

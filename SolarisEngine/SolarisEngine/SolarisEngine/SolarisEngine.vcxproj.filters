@@ -51,9 +51,6 @@
     <ClCompile Include="Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CameraEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UIDGen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -89,9 +86,6 @@
     </ClCompile>
     <ClCompile Include="PanelProject.cpp">
       <Filter>Source Files\Panel</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameBuffer.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PanelScene.cpp">
       <Filter>Source Files\Panel</Filter>
@@ -150,6 +144,12 @@
     <ClCompile Include="ResourceTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FrameBuffer.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraEditor.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyWindow.h">
@@ -200,9 +200,6 @@
     <ClInclude Include="PanelProject.h">
       <Filter>Header Files\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="FrameBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PanelScene.h">
       <Filter>Header Files\Panels</Filter>
     </ClInclude>
@@ -211,9 +208,6 @@
     </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraEditor.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Importer.h">
       <Filter>Header Files\Core</Filter>
@@ -262,6 +256,12 @@
     </ClInclude>
     <ClInclude Include="Component_BoundingBox.h">
       <Filter>Header Files\Componentes</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraEditor.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameBuffer.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

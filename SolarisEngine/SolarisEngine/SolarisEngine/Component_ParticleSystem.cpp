@@ -131,7 +131,7 @@ void Component_ParticleSystem::RenderParticle(const glm::vec3& position, float s
     //}
 
     // Coordenadas UV para el cuadrado de la partícula
-    glm::vec2 uv1(0.0f, 0.0f);  // Inferior izquierda
+    glm::vec2 uv1(0.0f, 0.0f);  // Inferior izquierdag
     glm::vec2 uv2(1.0f, 0.0f);  // Inferior derecha
     glm::vec2 uv3(1.0f, 1.0f);  // Superior derecha
     glm::vec2 uv4(0.0f, 1.0f);  // Superior izquierda

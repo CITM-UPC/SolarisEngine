@@ -228,18 +228,58 @@ void Component_Mesh::DrawInspectorComponent()
 }
 
 void Component_Mesh::LoadMesh(aiMesh* ai_mesh) {
-	/* glGenVertexArrays(1, &vao);
-	 glBindVertexArray(vao);
+	// Crear una nueva estructura Mesh para almacenar los datos del mesh
+	Mesh mesh;
 
-	 GLuint vbo;
-	 glGenBuffers(1, &vbo);
-	 glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	 glBufferData(GL_ARRAY_BUFFER, ai_mesh->mNumVertices * sizeof(aiVector3D), ai_mesh->mVertices, GL_STATIC_DRAW);
+	// Recorremos los vértices y los agregamos a la estructura Mesh
+	for (unsigned int i = 0; i < ai_mesh->mNumVertices; ++i) {
+		// Agregar las posiciones de los vértices
+		mesh.vertices.push_back(ai_mesh->mVertices[i].x);
+		mesh.vertices.push_back(ai_mesh->mVertices[i].y);
+		mesh.vertices.push_back(ai_mesh->mVertices[i].z);
 
-	 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	 glEnableVertexAttribArray(0);
+		// Si el mesh tiene normales, agregar las normales
+		if (ai_mesh->HasNormals()) {
+			mesh.normals.push_back(ai_mesh->mNormals[i].x);
+			mesh.normals.push_back(ai_mesh->mNormals[i].y);
+			mesh.normals.push_back(ai_mesh->mNormals[i].z);
+		}
+		else {
+			// Si no tiene normales, puedes calcularlas (esto es opcional si no tienes normales en el modelo)
+			// Aquí puedes agregar código para calcular las normales por triángulo.
+		}
 
-	 this->vao = vao;*/
+		// Si el mesh tiene coordenadas de textura, agregarlas
+		if (ai_mesh->mTextureCoords[0]) {
+			mesh.texCoords.push_back(ai_mesh->mTextureCoords[0][i].x);
+			mesh.texCoords.push_back(ai_mesh->mTextureCoords[0][i].y);
+		}
+		else {
+			// Si no tiene coordenadas de textura, agregar valores predeterminados
+			mesh.texCoords.push_back(0.0f);
+			mesh.texCoords.push_back(0.0f);
+		}
+	}
+
+	// Recorremos las caras (triángulos) y agregamos los índices
+	for (unsigned int i = 0; i < ai_mesh->mNumFaces; ++i) {
+		const aiFace& face = ai_mesh->mFaces[i];
+		for (unsigned int j = 0; j < face.mNumIndices; ++j) {
+			mesh.indices.push_back(face.mIndices[j]);
+		}
+	}
+
+	// Calcular las normales de las caras si es necesario
+	CalculateFaceNormals(mesh);
+
+	// Registro en el log
+	Debug::Log("Mesh cargado con: ", mesh.indices.size(), " índices, ", mesh.vertices.size(), " vértices.");
+
+	// Almacenar el mesh en la lista de meshes del componente
+	if (this) {
+		meshes.push_back(mesh);
+	}
+	
 }
 
 void Component_Mesh::LoadMesh(const aiScene* ai_scene) {
