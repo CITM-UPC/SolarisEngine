@@ -218,6 +218,8 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 		ImGui::End();
 
 
+
+
 		// 设置拖动目标
 		if (ImGui::BeginDragDropTarget()) {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
@@ -273,8 +275,71 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
 }
 
+void PanelProject::ShowBreadcrumbNavigation() {
 
+	std::filesystem::path pathPart;
+	bool showBreadcrumb = false;
 
+	int i = 0;
+	for (const auto& part : currentPath) {
+		i++;
+		if (part == "Assets") {
+			showBreadcrumb = true;
+		}
+
+		if (showBreadcrumb) {
+			pathPart /= part;
+
+			std::string fileName = part.string();
+			std::string buttonLabel = fileName + "##" + std::to_string(i);
+
+			if (ImGui::Button(buttonLabel.c_str())) {
+
+				currentPath = pathPart;
+
+				while (!pathStack.empty() && pathStack.top() != currentPath) {
+					pathStack.pop();
+				}
+				pathStack.push(currentPath);
+				selectedItem = "";
+				break;
+			}
+
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
+					// 提取拖动源的文件名
+					const char* fileName = static_cast<const char*>(payload->Data);
+
+					// 构建源路径（假设 `currentPath` 是当前显示目录）
+					std::filesystem::path sourcePath = currentPath / fileName;
+
+					// 构建目标路径（面包屑的路径）
+					std::filesystem::path destinationPath = pathPart / fileName;
+
+					try {
+						// 检查源是否存在，执行移动操作
+						if (std::filesystem::exists(sourcePath)) {
+							std::filesystem::rename(sourcePath, destinationPath);
+							Debug::Log("Moved to: ", destinationPath.string());
+						}
+						else {
+							Debug::Log("Source file/folder does not exist: ", sourcePath.string());
+						}
+					}
+					catch (const std::exception& e) {
+						Debug::Log("Error moving file/folder: ", e.what());
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			ImGui::SameLine();
+			ImGui::Text(">");
+			ImGui::SameLine();
+		}
+	}
+
+}
 
 void PanelProject::RenderContext() {
 	if (ImGui::BeginPopup("ProjectContextMenuFile")) {
@@ -307,6 +372,8 @@ void PanelProject::RenderContext() {
 		ImGui::EndPopup();
 	}
 }
+
+
 void PanelProject::ShowDeleteConfirmation() {
 
 	if (ImGui::BeginPopupModal("Confirm Delete", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
@@ -330,67 +397,6 @@ void PanelProject::ShowDeleteConfirmation() {
 
 		ImGui::EndPopup();
 	}
-}
-
-
-
-void PanelProject::ShowBreadcrumbNavigation() {
-
-	std::filesystem::path pathPart;
-	bool showBreadcrumb = false;
-
-	int i = 0;
-	for (const auto& part : currentPath) {
-		i++;
-		if (part == "Assets") {
-			showBreadcrumb = true;
-		}
-
-		if (showBreadcrumb) {
-			pathPart /= part;
-
-			std::string fileName = part.string();
-			std::string buttonLabel = fileName + "##" + std::to_string(i);
-
-			if (ImGui::Button(buttonLabel.c_str())) {
-
-				currentPath = pathPart;
-
-				while (!pathStack.empty() && pathStack.top() != currentPath) {
-					pathStack.pop();
-				}
-				pathStack.push(currentPath);
-				selectedItem = "";
-				break;
-			}
-
-			// Add drag and drop support
-			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-				const char* pathStr = pathPart.string().c_str();
-				ImGui::SetDragDropPayload("PATH_PAYLOAD", pathStr, strlen(pathStr) + 1);
-				ImGui::Text("Dragging %s", pathStr);
-				ImGui::EndDragDropSource();
-			}
-
-			if (ImGui::BeginDragDropTarget()) {
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("PATH_PAYLOAD")) {
-					const char* droppedPath = (const char*)payload->Data;
-					std::string destinationFolder = pathPart.string();
-
-					// Call your function to copy the file to the destination folder
-					CopyToAssetsFolder(droppedPath, destinationFolder);
-
-					Debug::Log("File dropped into: ", destinationFolder);
-				}
-				ImGui::EndDragDropTarget();
-			}
-
-			ImGui::SameLine();
-			ImGui::Text(">");
-			ImGui::SameLine();
-		}
-	}
-
 }
 
 void PanelProject::CopyToAssetsFolder(const std::string& filePath, const std::string& destinationFolder) {
