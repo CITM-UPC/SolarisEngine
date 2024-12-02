@@ -1,6 +1,7 @@
 #include "ResourceManager.h"
 #include "ResourceTexture.h"
 #include "ResourceMesh.h"  // Asumiendo que tienes una clase ResourceMesh o similar
+#include "Debug.h"
 
 UID ResourceManager::Find(const char* file_in_assets) const
 {
@@ -66,6 +67,16 @@ void ResourceManager::ReleaseResource(UID uid)
     }
 }
 
+
+
+
+void ResourceManager::AddResource(Resource* resource) {
+    if (resource) {
+        resources[resource->GetUID()] = resource;
+        Debug::Log("Recurso añadido al ResourceManager: UID ", resource->GetUID().uid);
+    }
+}
+
 Resource* ResourceManager::CreateNewResource(const char* assetsFile, Resource::Type type)
 {
     // Aquí puedes implementar lógica para crear diferentes tipos de recursos según el archivo
@@ -79,6 +90,18 @@ Resource* ResourceManager::CreateNewResource(const char* assetsFile, Resource::T
     default:
         return nullptr;
     }
+}
+
+Resource* ResourceManager::Load(UID uid) {
+    auto it = resources.find(uid);
+    if (it != resources.end()) {
+        Resource* resource = it->second;
+        if (!resource->IsLoadedInMemory()) {
+            resource->LoadInMemory();
+        }
+        return resource;
+    }
+    return nullptr;
 }
 
 

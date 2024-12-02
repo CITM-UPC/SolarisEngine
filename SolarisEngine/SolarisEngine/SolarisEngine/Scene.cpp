@@ -343,7 +343,6 @@ void Scene::UpdateGameObjectsRecursively(std::vector<GameObject*> gameObjects, f
     for (GameObject* gameObject : gameObjects) {
         if (gameObject && gameObject->IsEnabled()) {
             gameObject->Update(dt);  // Dibuja el GameObject actual
-
             // Si el GameObject tiene hijos, dibuja los hijos recursivamente
             if (!gameObject->GetChildren().empty()) {
                 DrawGameObjectsRecursively(gameObject->GetChildren());

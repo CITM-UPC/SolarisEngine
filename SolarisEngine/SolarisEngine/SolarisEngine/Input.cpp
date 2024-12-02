@@ -4,6 +4,8 @@
 #include <SDL2/SDL.h>
 #include "Debug.h"
 #include <imgui_internal.h>
+#include "ResourceManager.h"
+#include "ResourceMesh.h"
 
 
 
@@ -384,7 +386,20 @@ void InputEditor::handleDroppedFile(const char* filePath) {
 		std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 		if (extension == "fbx" || extension == "obj") {
 			GameObject* gameObject = app->importer->Importar(droppedFile);
-			app->actualScene->AddGameObject(gameObject);
+			if (gameObject) {
+				app->actualScene->AddGameObject(gameObject);
+
+				// Guardar malla en la carpeta de Libraries
+				auto* componentMesh = gameObject->GetComponent<Component_Mesh>();
+				if (componentMesh) {
+					for (auto& mesh : componentMesh->meshes) {
+						ResourceMesh* resourceMesh = new ResourceMesh(app->resourceManager->GenerateNewUID());
+						resourceMesh->SetMeshData(mesh); // Una función que configura los datos de la malla
+						resourceMesh->SaveMeshes();
+						app->resourceManager->AddResource(resourceMesh); // Registrar la malla en el ResourceManager
+					}
+				}
+			}
 		}
 		else if (app->actualScene->GetSelectedGameObject() &&
 			(extension == "png" || extension == "jpg" || extension == "dds")) {
@@ -400,6 +415,8 @@ void InputEditor::handleDroppedFile(const char* filePath) {
 	else {
 		Debug::Log("File dropped outside any target area: ", filePath);
 	}
+
+
 	//SDL_free((void*)filePath); // 释放SDL分配的文件路径内存
 }
 

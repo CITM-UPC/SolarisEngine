@@ -29,6 +29,7 @@ public:
 	/*virtual void Save(Config& config) const;
 	virtual void Load(const Config& config);*/
 	virtual bool LoadInMemory() = 0;
+	virtual bool IsLoadedInMemory();
 protected:
 	UID uid = UID(0);
 	std::string assetsFile;

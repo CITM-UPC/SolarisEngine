@@ -12,8 +12,11 @@ public:
 	const Resource* RequestResource(UID uid) const;
 	Resource* RequestResource(UID uid);
 	void ReleaseResource(UID uid);
+	void AddResource(Resource* resource);
 private:
+	
 	Resource* CreateNewResource(const char* assetsFile, Resource::Type type);
+	Resource* Load(UID uid);
 private:
 	std::map<UID, Resource*> resources;
 };

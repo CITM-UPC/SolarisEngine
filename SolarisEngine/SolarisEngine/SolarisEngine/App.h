@@ -24,6 +24,7 @@
 #include "Component_BoundingBox.h"
 #include "Component_Billboard.h"
 #include "Component_ParticleSystem.h"
+#include "ResourceManager.h"
 
 // Classes "globales"
 class MyWindow;
@@ -33,6 +34,7 @@ class InputEditor;
 class WindowEditor;
 class TextureLoader;
 class Scene;
+class ResourceManager;
 
 class App
 {
@@ -113,6 +115,7 @@ public:
     InputEditor* inputEditor;
     WindowEditor* windowEditor;
     TextureLoader* textureLoader;
+    ResourceManager* resourceManager;
 
     Scene* actualScene;
 

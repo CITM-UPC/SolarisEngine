@@ -44,3 +44,8 @@ uint Resource::GetReferenceCount() const
 {
     return referenceCount;
 }
+
+bool Resource::IsLoadedInMemory()
+{
+    return false;
+}
