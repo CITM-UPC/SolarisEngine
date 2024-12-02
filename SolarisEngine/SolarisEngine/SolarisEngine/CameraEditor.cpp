@@ -4,6 +4,8 @@
 #include <SDL2/SDL_keyboard.h>
 #include "Ray.h"
 #include "Debug.h"
+#include <SDL2/SDL.h>
+#include "Scene.h"
 
 CameraEditor::CameraEditor(glm::vec3 position, glm::vec3 front, glm::vec3 up)
     : position(position), front(front), up(up), orbiting(false) {
@@ -197,6 +199,22 @@ void CameraEditor::Update() {
     glMatrixMode(GL_MODELVIEW);
     
     glLoadMatrixf(glm::value_ptr(view));
+
+    if (app->inputEditor->mouseLeftIsPressed && app->actualScene->isScenePicked && !app->inputEditor->isCameraMoving)
+    {
+        int mouseX, mouseY;
+        ImVec2 mousePos = app->windowEditor->GetImGuiWindow()->scenePanel->GetMousePos();
+        SDL_GetMouseState(&mouseX, &mouseY);
+        //app->windowEditor->GetImGuiWindow()->scenePanel.
+
+        /*printf("Posición del mouse: X: %d, Y: %d\n", mouseX, mouseY);*/
+
+
+
+
+        UpdateMousePicking(mousePos.x, mousePos.y, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
+        //app->cameraEditor->onMouseClick(mousePos.x, mousePos.y);
+    }
 }
 
 void CameraEditor::MouseWheel(bool zoom) {
@@ -274,53 +292,103 @@ bool CameraEditor::IsInFrustum(const glm::vec3& objectPosition) {
 
 
 
-//glm::vec3 CameraEditor::getRayFromMouse(int mouseX, int mouseY) {
-//    // Obtener la matriz de proyección y vista
-//    glm::mat4 view = getViewMatrix();
-//    glm::mat4 projection = getProjectionMatrix();
-//    glm::mat4 inverseVP = glm::inverse(projection * view);
-//
-//    // Coordenadas normalizadas del mouse
-//    float x = (2.0f * mouseX) / app->windowEditor->GetImGuiWindow()->scenePanel->width - 1.0f;
-//    float y = 1.0f - (2.0f * mouseY) / app->windowEditor->GetImGuiWindow()->scenePanel->height;
-//
-//    glm::vec4 clipCoords(x, y, -1.0f, 1.0f);  // Poner la coordenada Z en -1 para el near plane
-//
-//    // Transformar las coordenadas desde el espacio de clip al espacio de cámara
-//    glm::vec4 eyeCoords = inverseVP * clipCoords;
-//    eyeCoords.z = -1.0f;  // El rayo se origina en el near plane
-//    eyeCoords.w = 0.0f;   // No hay desplazamiento, ya que es un vector de dirección
-//
-//    glm::vec3 rayWorld = glm::vec3(eyeCoords);  // Convertir a coordenada 3D en el mundo
-//
-//
-//    return glm::normalize(rayWorld);  // Normalizar la dirección del rayo
-//}
-//
-//void CameraEditor::onMouseClick(int mouseX, int mouseY) {
-//    // Obtener el rayo
-//    glm::vec3 rayDir = getRayFromMouse(mouseX, mouseY);
-//    glm::vec3 rayOrigin = GetCameraPosition();  // El origen del rayo es la posición de la cámara
-//
-//    Ray ray(rayOrigin, rayDir);
-//
-//    app->actualScene->ray = ray;
-//
-//    //app->actualScene->DrawRay(ray, 100);
-//
-//    // Comprobar la intersección con los objetos en la escena
-//    for (auto& gameObject : app->actualScene->GetGameObjectsList()) {
-//        Component_Mesh* mesh = gameObject->GetComponent<Component_Mesh>();
-//        if (mesh) {
-//            auto [min, max] = mesh->GetBoundingBoxInWorldSpace();
-//            if (app->actualScene->intersectsAABB(rayOrigin, rayDir, min, max)) {
-//                // Aquí puedes gestionar la selección del objeto
-//                app->actualScene->SelectGameObject(gameObject);
-//                break;
-//            }
-//        }
-//    }
-//}
+bool CameraEditor::RayIntersectsAABB(const Ray& ray, const glm::vec3& boxMin, const glm::vec3& boxMax) {
+    float tMin = (boxMin.x - ray.origin.x) / ray.direction.x;
+    float tMax = (boxMax.x - ray.origin.x) / ray.direction.x;
+
+    if (tMin > tMax) std::swap(tMin, tMax);
+
+    float tyMin = (boxMin.y - ray.origin.y) / ray.direction.y;
+    float tyMax = (boxMax.y - ray.origin.y) / ray.direction.y;
+
+    if (tyMin > tyMax) std::swap(tyMin, tyMax);
+
+    if ((tMin > tyMax) || (tyMin > tMax))
+        return false;
+
+    if (tyMin > tMin)
+        tMin = tyMin;
+
+    if (tyMax < tMax)
+        tMax = tyMax;
+
+    float tzMin = (boxMin.z - ray.origin.z) / ray.direction.z;
+    float tzMax = (boxMax.z - ray.origin.z) / ray.direction.z;
+
+    if (tzMin > tzMax) std::swap(tzMin, tzMax);
+
+    if ((tMin > tzMax) || (tzMin > tMax))
+        return false;
+
+    return true;
+}
+
+Ray GetMouseRay(int mouseX, int mouseY, int windowWidth, int windowHeight, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const glm::vec3& cameraPosition) {
+    // Normalizar coordenadas del mouse a [-1, 1]
+
+
+    /*No mirar*/
+    mouseX -= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.x;
+    mouseX -= 6;
+    mouseY -= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.y;
+    mouseY -= 25;
+
+    float x = (2.0f * mouseX) / windowWidth - 1.0f;
+    float y = 1.0f - (2.0f * mouseY) / windowHeight;
+
+
+
+    // Invertir las matrices de proyección y vista
+    glm::mat4 invProjection = glm::inverse(projectionMatrix);
+    glm::mat4 invView = glm::inverse(viewMatrix);
+
+    // Near y Far en espacio NDC
+    glm::vec4 screenPosNear(x, y, -1.0f, 1.0f);
+    glm::vec4 screenPosFar(x, y, 1.0f, 1.0f);
+
+    // Transformar a espacio mundial
+    glm::vec4 nearPointWorld = invView * (invProjection * screenPosNear);
+    glm::vec4 farPointWorld = invView * (invProjection * screenPosFar);
+
+    // Homogeneizar
+    nearPointWorld /= nearPointWorld.w;
+    farPointWorld /= farPointWorld.w;
+
+    // Calcular dirección del rayo
+    glm::vec3 rayDir = glm::normalize(glm::vec3(farPointWorld) - glm::vec3(nearPointWorld));
+
+    // Crear el rayo
+    return Ray(cameraPosition, rayDir);
+}
+
+void CameraEditor::UpdateMousePicking(int mouseX, int mouseY, int windowWidth, int windowHeight) {
+    // Crear el rayo desde el mouse
+    Ray ray = GetMouseRay(mouseX, mouseY, windowWidth, windowHeight, app->cameraEditor->getProjectionMatrix(), app->cameraEditor->getViewMatrix(), app->cameraEditor->position);
+
+    GameObject* closestObject = nullptr;
+    float closestDistance = std::numeric_limits<float>::max();
+
+    for (GameObject* gameObject : app->actualScene->GetGameObjects()) {
+        if (auto meshComponent = gameObject->GetComponent<Component_Mesh>()) {
+            auto [boxMin, boxMax] = meshComponent->GetBoundingBoxInWorldSpace();
+
+            // Verificar intersección
+            if (RayIntersectsAABB(ray, boxMin, boxMax)) {
+                // Calcular la distancia desde la cámara
+                float distance = glm::length(boxMin - ray.origin);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestObject = gameObject;
+                }
+            }
+        }
+    }
+
+    // Seleccionar el objeto más cercano
+    app->actualScene->SelectGameObject(closestObject);
+
+    //DrawRay(ray, 100.0f);
+}
 
 
 

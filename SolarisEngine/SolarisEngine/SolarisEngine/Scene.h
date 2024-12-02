@@ -50,6 +50,8 @@ public:
 
     bool intersectsAABB(const glm::vec3& rayOrigin, const glm::vec3& rayDir, const glm::vec3& aabbMin, const glm::vec3& aabbMax);
 
+    std::vector<GameObject*> GetGameObjects();
+
     bool isScenePicked = false;
 
     Ray ray = Ray(glm::vec3(0,0,0), glm::vec3(0, 0, 0));

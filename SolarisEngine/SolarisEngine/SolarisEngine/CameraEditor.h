@@ -5,6 +5,7 @@
 #include <GL/glew.h> // Incluir GLEW antes de OpenGL
 #include <GL/gl.h>   // Cambiar a OpenGL (quitar GLUT)
 #include <glm/gtc/type_ptr.hpp> // Para glm::value_ptr
+#include "Ray.h"
 
 class App;  // Declaración anticipada para que el compilador conozca la clase App.
 
@@ -22,6 +23,10 @@ public:
     void MouseWheel(bool zoom);
     void GetCameraFrustum();
     bool IsInFrustum(const glm::vec3& objectPosition);
+
+    bool RayIntersectsAABB(const Ray& ray, const glm::vec3& boxMin, const glm::vec3& boxMax);
+    
+    void UpdateMousePicking(int mouseX, int mouseY, int windowWidth, int windowHeight);
     //glm::vec3 getRayFromMouse(int mouseX, int mouseY);
     //void onMouseClick(int mouseX, int mouseY);
     void updateCameraSpeed();
