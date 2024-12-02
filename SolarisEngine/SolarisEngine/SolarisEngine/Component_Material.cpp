@@ -87,59 +87,52 @@ void Component_Material::Update(double dt) {
 }
 
 void Component_Material::DrawComponent() {
-    if (!enabled) return;
+    //if (!enabled) return;
 
-    // Si la textura no es la de cuadros, se dibuja la textura del material
-    if (material->textureID != 0 && !showCheckerTexture) {
-        glBindTexture(GL_TEXTURE_2D, material->textureID);  // Usa la textura cargada
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        glColor3f(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
-    }
-    else {
-        glBindTexture(GL_TEXTURE_2D, textureCheckersID);  // Usa la textura de cuadros
-        glColor3f(1.0f, 0.0f, 1.0f); // Color rosa para la textura de cuadros
-    }
+    //// Si la textura no es la de cuadros, se dibuja la textura del material
+    //if (material->textureID != 0 && !showCheckerTexture) {
+    //    glBindTexture(GL_TEXTURE_2D, material->textureID);  // Usa la textura cargada
+    //    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    //    glColor3f(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
+    //}
+    //else {
+    //    glBindTexture(GL_TEXTURE_2D, textureCheckersID);  // Usa la textura de cuadros
+    //    glColor3f(1.0f, 0.0f, 1.0f); // Color rosa para la textura de cuadros
+    //}
 }
 
 void Component_Material::DrawInspectorComponent() {
 
-
- 
-
-
     if (ImGui::CollapsingHeader(u8"\ue08F Material")) {
-           
         if (ImGui::Checkbox("Enable Material", &enabled)) {
-            if (enabled) {
-                Enable();
-            }
-            else {
-                Disable();
-            }
+            enabled ? Enable() : Disable();
+        }
+
+        // Selector para el tipo de material
+        const char* materialTypes[] = { "Opaque", "Transparent", "Cutout", "Custom" };
+        int currentType = static_cast<int>(materialType);
+        if (ImGui::Combo("Material Type", &currentType, materialTypes, IM_ARRAYSIZE(materialTypes))) {
+            materialType = static_cast<MaterialType>(currentType);
+        }
+
+        if (materialType == MaterialType::Cutout) {
+            ImGui::SliderFloat("Alpha Test", &alphaTest, 0.0f, 1.0f);
         }
 
         // Editor de color
         ImGui::ColorEdit3("Diffuse Color", material->diffuseColor);
-        SetDiffuseColor(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
 
-        // Mostrar la textura si está cargada
+        // Textura
         if (GetTextureID() != 0) {
-
             ImGui::TextWrapped("Path: %s", material->texturePath.c_str());
             ImGui::Text("Size: %dx%d", material->textureWidth, material->textureHeight);
-        
-
-            ImGui::Text("Texture:");
-            // Renderizar la textura
             ImGui::Image((void*)(intptr_t)GetTextureID(), ImVec2(256, 256));
         }
         else {
             ImGui::Text("No texture loaded.");
         }
 
-        // Checkbox para activar la textura de cuadros
         ImGui::Checkbox("Use Checker Texture", &showCheckerTexture);
-    
     }
 
     
@@ -148,16 +141,49 @@ void Component_Material::DrawInspectorComponent() {
 void Component_Material::DrawTexture()
 {
     if (enabled) {
-        // Si hay una textura, activarla
-        if (material->textureID != 0 && !showCheckerTexture) {
+
+        glEnable(GL_TEXTURE_2D);
+        if (showCheckerTexture) {
+            glBindTexture(GL_TEXTURE_2D, textureCheckersID);
+        }
+        else if (material->textureID != 0) {
             glBindTexture(GL_TEXTURE_2D, material->textureID);  // Usa la textura cargada
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+            
+
+
+
+
+            switch (materialType) {
+                case MaterialType::Opaque:
+                    glDisable(GL_BLEND);
+                    glDisable(GL_ALPHA_TEST);
+                    break;
+
+                case MaterialType::Transparent:
+                    glEnable(GL_BLEND);
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    glDisable(GL_ALPHA_TEST);
+                    break;
+
+                case MaterialType::Cutout:
+                    glEnable(GL_ALPHA_TEST);
+                    glAlphaFunc(GL_GREATER, alphaTest); // Descartar píxeles según alpha
+                    glDisable(GL_BLEND);
+                    break;
+
+                case MaterialType::Custom:
+                    // Aquí puedes implementar comportamientos específicos si los necesitas
+                    break;  
+            }
+
             glColor3f(material->diffuseColor[0], material->diffuseColor[1], material->diffuseColor[2]);
+
+
+
         }
-        else {
-            glBindTexture(GL_TEXTURE_2D, textureCheckersID);
-            glColor3f(1.0f, 0.0f, 1.0f); // Color rosa para la textura de cuadros
-        }
+
+
     }
     else {
         glBindTexture(GL_TEXTURE_2D, 0);

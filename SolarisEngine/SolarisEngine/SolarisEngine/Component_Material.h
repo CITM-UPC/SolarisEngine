@@ -19,6 +19,13 @@ struct Material {
     std::string texturePath;
 };
 
+enum class MaterialType {
+    Opaque,
+    Transparent,
+    Cutout,
+    Custom
+};
+
 
 class Component_Material : public Component {
 public:
@@ -60,6 +67,9 @@ private:
     //ILuint textureID;      // ID de la textura de DevIL
     ILuint textureCheckersID;      // ID de la textura de DevIL
     Material* material = nullptr;
+
+    MaterialType materialType = MaterialType::Opaque;
+    float alphaTest = 0.5f; // Usado para "Cutout"
 };
 
 #endif // !__COMPONENT_MATERIAL_H__

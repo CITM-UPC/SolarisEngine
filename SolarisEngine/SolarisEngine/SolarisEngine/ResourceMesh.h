@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Resource.h"
+#include "Component_Mesh.h"
 
 class ResourceMesh : public Resource
 {
