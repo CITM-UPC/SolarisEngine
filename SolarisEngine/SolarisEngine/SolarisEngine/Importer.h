@@ -29,11 +29,15 @@ public:
     void Draw(GameObject* gameObject); // Cambiado a puntero crudo
     GameObject* Importar(const std::string& modelPath); // Cambiado a puntero crudo
     GameObject* Importar(const std::string& modelPath, const std::string& texturePath); // Cambiado a puntero crudo
-
+    GameObject* ImportarNuevo(const std::string& modelPath);
+    void ImportarChilds(aiNode* node, const aiScene* scene, GameObject* parent);
+    glm::mat4 AssimpToGLM(const aiMatrix4x4& mat);
     unsigned int LoadTexture(const std::string& texturePath); // Declaración de LoadTexture
 
 private:
     Importer();
+
+  
 
     void LoadMaterials(const aiScene* scene);
     void ProcessMeshes(const aiScene* scene);

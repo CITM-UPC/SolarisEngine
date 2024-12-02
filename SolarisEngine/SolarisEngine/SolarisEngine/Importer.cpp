@@ -27,6 +27,88 @@ Importer::Importer() {
     
 }
 
+
+GameObject* Importer::ImportarNuevo(const std::string& modelPath) {
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_FlipUVs);
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+        std::cerr << "Error al cargar el modelo: " << importer.GetErrorString() << std::endl;
+        return nullptr;
+    }
+
+    // Crear el GameObject raíz
+    GameObject* newGameObject = GameObject::Create(scene->GetShortFilename(modelPath.c_str()));
+
+    // Asegúrate de que el componente Transform esté presente
+    if (!newGameObject->GetComponent<Component_Transform>()) {
+        newGameObject->AddComponent<Component_Transform>();
+    }
+
+    // Asegúrate de que el GameObject raíz tenga un componente de malla
+    for (unsigned int i = 0; i < scene->mRootNode->mNumMeshes; ++i) {
+        const aiMesh* aiMesh = scene->mMeshes[scene->mRootNode->mMeshes[i]];
+        Component_Mesh* meshComponent = newGameObject->GetComponent<Component_Mesh>();
+        if (!meshComponent) {
+            meshComponent = newGameObject->AddComponent<Component_Mesh>();
+        }
+        meshComponent->LoadMesh(aiMesh);
+    }
+
+    // Importar los hijos de la raíz
+    ImportarChilds(scene->mRootNode, scene, newGameObject);
+
+    return newGameObject;
+}
+
+void Importer::ImportarChilds(aiNode* node, const aiScene* scene, GameObject* parent) {
+    // Crear un GameObject para este nodo
+    GameObject* newGameObject = GameObject::Create(node->mName.C_Str());
+    //parent->AddChild(newGameObject);
+    newGameObject->SetParent(parent);
+
+    // Asegurarse de que el componente Transform esté presente en el GameObject
+    if (!newGameObject->GetComponent<Component_Transform>()) {
+        newGameObject->AddComponent<Component_Transform>();
+    }
+
+    // Aplicar la transformación del nodo al GameObject
+    aiMatrix4x4 aiTransform = node->mTransformation;
+    glm::mat4 transform = AssimpToGLM(aiTransform);
+    glm::vec3 scale = glm::vec3(transform[0][0], transform[1][1], transform[2][2]);
+    Debug::Log("Escala del nodo ", node->mName.C_Str(), ": ", scale.x, " ", scale.y, " ", scale.z);
+    //newGameObject->GetComponent<Component_Transform>()->ApplyMatrix(transform);
+
+    // Cargar las mallas asociadas a este nodo
+    for (unsigned int i = 0; i < node->mNumMeshes; ++i) {
+        const aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
+        Component_Mesh* meshComponent = newGameObject->GetComponent<Component_Mesh>();
+        if (meshComponent) {
+            meshComponent->LoadMesh(aiMesh);
+        }
+        else {
+            meshComponent = newGameObject->AddComponent<Component_Mesh>();
+            meshComponent->LoadMesh(aiMesh);
+        }
+    }
+
+    // Recursión para procesar los hijos de este nodo
+    for (unsigned int i = 0; i < node->mNumChildren; ++i) {
+        ImportarChilds(node->mChildren[i], scene, newGameObject); // Llamada recursiva para los hijos
+    }
+}
+
+glm::mat4 Importer::AssimpToGLM(const aiMatrix4x4& mat) {
+    glm::mat4 glmMat(
+        mat.a1, mat.a2, mat.a3, mat.a4,
+        mat.b1, mat.b2, mat.b3, mat.b4,
+        mat.c1, mat.c2, mat.c3, mat.c4,
+        mat.d1, mat.d2, mat.d3, mat.d4
+    );
+    return glmMat;
+}
+
+
+
 GameObject* Importer::Importar(const std::string& modelPath) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_FlipUVs);
