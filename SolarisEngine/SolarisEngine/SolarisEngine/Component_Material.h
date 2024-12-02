@@ -45,7 +45,8 @@ public:
     void DrawComponent() override;
     void DrawInspectorComponent() override;
 
-    void DrawTexture();
+    void Bind();
+    void UnBind();
 
    
     Component* Clone() const override;
@@ -58,7 +59,7 @@ public:
     bool showCheckerTexture = false; // Para habilitar la textura de cuadros
 
 private:
-
+    void DrawTexture();
     void CreateCheckerPattern();
 
     // Propiedades del material

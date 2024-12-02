@@ -128,6 +128,16 @@ void Component_Material::DrawInspectorComponent() {
 
 }
 
+void Component_Material::Bind()
+{
+	DrawTexture();
+}
+
+void Component_Material::UnBind()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void Component_Material::DrawTexture()
 {
 	if (enabled) {

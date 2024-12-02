@@ -76,7 +76,7 @@ void Component_ParticleSystem::UpdateParticles(double dt) {
         particle.rotation += particle.rotationSpeed * static_cast<float>(dt); // Actualiza la rotación
 
         // Cambiar la opacidad de la partícula basado en su vida
-        particle.color.a = 1.0f - (particle.life / particle.maxLife);  // De 1 (totalmente visible) a 0 (desaparece)
+        //particle.color.a = 1.0f - (particle.life / particle.maxLife);  // De 1 (totalmente visible) a 0 (desaparece)
 
         // Desaparecer si ha terminado su vida
         if (particle.life >= particle.maxLife) {
@@ -104,7 +104,7 @@ void Component_ParticleSystem::Update(double dt) {
 void Component_ParticleSystem::DrawComponent() {
     if (materialComponent && materialComponent->GetTextureID() != 0) {
 
-        materialComponent->DrawTexture();
+        materialComponent->Bind();
         // Si existe el componente de material y tiene una textura cargada
         //glBindTexture(GL_TEXTURE_2D, materialComponent->GetTextureID());  // Usar la textura del material
     }
@@ -114,8 +114,14 @@ void Component_ParticleSystem::DrawComponent() {
     }
 
     for (const auto& particle : particles) {
-        RenderParticle(particle.position, particle.size, particle.color, particle.rotation);
+
+        glm::vec4 color = particleColor;
+        color.a = 1.0f - (particle.life / particle.maxLife);
+
+        RenderParticle(particle.position, particle.size, color, particle.rotation);
     }
+
+    if (materialComponent) { materialComponent->UnBind();}
 }
 
 void Component_ParticleSystem::RenderParticle(const glm::vec3& position, float size, const glm::vec4& color, float rotation) {

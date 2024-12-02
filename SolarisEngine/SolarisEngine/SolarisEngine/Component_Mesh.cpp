@@ -32,7 +32,7 @@ void Component_Mesh::DrawComponent() {
 
 	if (containerGO->GetComponent<Component_Material>()) {
 		material = containerGO->GetComponent<Component_Material>(); 
-		material->DrawTexture();
+		material->Bind();
 
 	}
 	else {
@@ -171,6 +171,8 @@ void Component_Mesh::DrawComponent() {
 			glEnd();
 		}
 	}
+
+	if (material) { material->UnBind(); }
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glPopMatrix(); // Restablecer la matriz despu�s de dibujar
