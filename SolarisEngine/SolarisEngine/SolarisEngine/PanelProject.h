@@ -33,6 +33,7 @@ private:
     void ShowFileSystemTree(const std::filesystem::path& path); // Recursive method to display file system
     void ShowBreadcrumbNavigation();
     void DropTarget(std::filesystem::path entryPath);
+    void ShowFileName(float textMaxWidth, std::string fileName, int maxItemsPerRow);
 
     ImTextureID textureID;
     std::string projectPath; // Path to the project directory
