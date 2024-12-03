@@ -275,10 +275,6 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 				app->cameraEditor->UpdateMousePicking(mousePos.x, mousePos.y, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
 				//app->cameraEditor->onMouseClick(mousePos.x, mousePos.y);
 			}
-			else
-			{
-				app->actualScene->selectedGameObject = nullptr;
-			}
 			
 			mouseLeftIsPressed = true;
 		}
