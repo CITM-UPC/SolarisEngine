@@ -34,6 +34,8 @@ private:
     void ShowBreadcrumbNavigation();
     void DropTarget(std::filesystem::path entryPath);
     void ShowFileName(float textMaxWidth, std::string fileName, int maxItemsPerRow);
+    void file_handling(std::filesystem::path& entryPath, std::string& lastClickedItem,
+        float doubleClickTime, bool isDirectory, float& lastClickTime, std::string fileName);
 
     ImTextureID textureID;
     std::string projectPath; // Path to the project directory
