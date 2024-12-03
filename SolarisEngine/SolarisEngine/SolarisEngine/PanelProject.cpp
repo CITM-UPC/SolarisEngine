@@ -84,8 +84,6 @@ void PanelProject::Render() {
 }
 
 void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
-	const float iconSize = 64.0f;
-	const float padding = 20.0f;
 	const float textMaxWidth = iconSize;
 	const float itemTotalWidth = iconSize + padding;
 
@@ -93,8 +91,8 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 	int maxItemsPerRow = static_cast<int>(panelWidth / itemTotalWidth);
 	if (maxItemsPerRow < 1) maxItemsPerRow = 1;
 
-	int itemsInRow = 0;
-	int i = 0;
+	itemsInRow = 0;
+	i = 0;
 
 	static std::string lastClickedItem;
 	static float lastClickTime = 0.0f;
@@ -184,55 +182,7 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 			ImGui::EndDragDropSource();
 		}
 
-		ImGui::Begin("Scene");
-
-		ImVec2 windowPos = ImGui::GetWindowPos();
-		ImVec2 availableRegion = ImGui::GetContentRegionAvail();
-
-		// 手动计算矩形区域
-		ImVec2 rectMin = windowPos;
-		ImVec2 rectMax = ImVec2(windowPos.x + availableRegion.x + 20, windowPos.y + availableRegion.y + 50);
-
-		// 定义拖放区域
-		ImRect dropRect(rectMin, rectMax);
-
-		// 使用自定义拖放目标
-		if (ImGui::BeginDragDropTargetCustom(dropRect, ImGui::GetID("SceneDragDropTarget"))) {
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
-				const char* payloadFileName = static_cast<const char*>(payload->Data);
-				std::filesystem::path draggedFilePath = currentPath / payloadFileName;
-
-				printf("File '%s' dropped into Scene Panel\n", payloadFileName);
-				app->inputEditor->handleDroppedFile(draggedFilePath.string().c_str());
-				/*if (draggedFilePath.extension() == ".fbx") {
-					GameObject* gameObject = app->importer->Importar(draggedFilePath.string());
-					app->actualScene->AddGameObject(gameObject);
-				}
-				else {
-					std::cerr << "Only .fbx files can be imported into the scene." << std::endl;
-				}*/
-			}
-			ImGui::EndDragDropTarget();
-		}
-
-		ImGui::End();
-
-
-
-
-		// 设置拖动目标
-		if (ImGui::BeginDragDropTarget()) {
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
-				const char* payloadFileName = static_cast<const char*>(payload->Data);
-				std::filesystem::path srcPath = currentPath / payloadFileName;
-				std::filesystem::path destPath = entryPath / payloadFileName;
-				std::filesystem::rename(srcPath, destPath);
-			}
-			ImGui::EndDragDropTarget();
-		}
-
-
-		ImGui::PopStyleColor();
+		DropTarget(entryPath);
 
 		// File name
 		ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + textMaxWidth);
@@ -274,6 +224,10 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 	}
 
 }
+
+
+
+
 
 void PanelProject::ShowBreadcrumbNavigation() {
 
@@ -377,6 +331,62 @@ void PanelProject::ShowBreadcrumbNavigation() {
 	}
 
 }
+
+void PanelProject::DropTarget(std::filesystem::path entryPath)
+{
+
+	ImGui::Begin("Scene");
+
+	ImVec2 windowPos = ImGui::GetWindowPos();
+	ImVec2 availableRegion = ImGui::GetContentRegionAvail();
+
+	// 手动计算矩形区域
+	ImVec2 rectMin = windowPos;
+	ImVec2 rectMax = ImVec2(windowPos.x + availableRegion.x + 20, windowPos.y + availableRegion.y + 50);
+
+	// 定义拖放区域
+	ImRect dropRect(rectMin, rectMax);
+
+	// 使用自定义拖放目标
+	if (ImGui::BeginDragDropTargetCustom(dropRect, ImGui::GetID("SceneDragDropTarget"))) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
+			const char* payloadFileName = static_cast<const char*>(payload->Data);
+			std::filesystem::path draggedFilePath = currentPath / payloadFileName;
+
+			printf("File '%s' dropped into Scene Panel\n", payloadFileName);
+			app->inputEditor->handleDroppedFile(draggedFilePath.string().c_str());
+			/*if (draggedFilePath.extension() == ".fbx") {
+				GameObject* gameObject = app->importer->Importar(draggedFilePath.string());
+				app->actualScene->AddGameObject(gameObject);
+			}
+			else {
+				std::cerr << "Only .fbx files can be imported into the scene." << std::endl;
+			}*/
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::End();
+
+
+
+
+	// 设置拖动目标
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
+			const char* payloadFileName = static_cast<const char*>(payload->Data);
+			std::filesystem::path srcPath = currentPath / payloadFileName;
+			std::filesystem::path destPath = entryPath / payloadFileName;
+			std::filesystem::rename(srcPath, destPath);
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+
+	ImGui::PopStyleColor();
+}
+
+
 
 void PanelProject::RenderContext() {
 	if (ImGui::BeginPopup("ProjectContextMenuFile")) {

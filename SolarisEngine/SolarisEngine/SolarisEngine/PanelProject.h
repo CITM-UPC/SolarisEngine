@@ -32,6 +32,7 @@ public:
 private:
     void ShowFileSystemTree(const std::filesystem::path& path); // Recursive method to display file system
     void ShowBreadcrumbNavigation();
+    void DropTarget(std::filesystem::path entryPath);
 
     ImTextureID textureID;
     std::string projectPath; // Path to the project directory
@@ -66,6 +67,13 @@ private:
         {".go", "gameObject"}
     };
 
+
+
+    const float iconSize = 64.0f;
+    const float padding = 20.0f;
+    int itemsInRow = 0;
+    int i = 0;
+   
 
 
 };
