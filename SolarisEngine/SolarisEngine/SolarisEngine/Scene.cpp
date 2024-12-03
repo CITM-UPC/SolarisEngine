@@ -55,7 +55,42 @@ void Scene::RemoveGameObject(GameObject* gameObject) {
 
 void Scene::SelectGameObject(GameObject* gameObject)
 {
-    selectedGameObject = gameObject;
+    
+        selectedGameObject = gameObject; 
+    
+    
+}
+void Scene::SelectGameObjectInScene(GameObject* gameObject)
+{
+    if (gameObject != nullptr)
+    {
+        if (IsChildOfSelected(gameObject)) {
+            selectedGameObject = gameObject; // Selecciona el hijo si el padre está seleccionado.
+        }
+        else {
+            selectedGameObject = GetRootParent(gameObject); // Selecciona el ancestro raíz si no.
+        }
+    }
+    
+}
+
+// Verifica si el objeto es descendiente del seleccionado
+bool Scene::IsChildOfSelected(GameObject* gameObject)
+{
+    if (gameObject->parent == nullptr) {
+        return false; // No tiene padre.
+    }
+    if (gameObject->parent == selectedGameObject) {
+        return true; // Su padre es el seleccionado.
+    }
+    return IsChildOfSelected(gameObject->parent); // Sigue verificando en la jerarquía.
+}
+
+GameObject* Scene::GetRootParent(GameObject* gameObject) {
+    if (gameObject->parent == nullptr) {
+        return gameObject; // Este objeto es el raíz.
+    }
+    return GetRootParent(gameObject->parent); // Recurre hacia el padre.
 }
 
 //void Scene::SelectGameObject(uint index)

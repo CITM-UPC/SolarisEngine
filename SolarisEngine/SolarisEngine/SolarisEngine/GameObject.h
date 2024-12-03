@@ -57,6 +57,7 @@ public:
     std::vector<GameObject*> GetChildren();
     void SetParent(GameObject* parent);
     void RemoveParent();
+    
     uint32_t GetUID() { return UID; }
 
 private:

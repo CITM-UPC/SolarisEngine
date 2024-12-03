@@ -29,6 +29,7 @@ public:
     
     void UpdateMousePicking(int mouseX, int mouseY, int windowWidth, int windowHeight);
     void CheckGameObject(const Ray& ray, GameObject* gameObject, GameObject*& closestObject, float& closestDistance);
+    void DrawRay(const Ray& ray, float length);
     //glm::vec3 getRayFromMouse(int mouseX, int mouseY);
     //void onMouseClick(int mouseX, int mouseY);
     void updateCameraSpeed();

@@ -202,18 +202,7 @@ void CameraEditor::Update() {
 
     if (app->inputEditor->mouseLeftIsPressed && app->actualScene->isScenePicked && !app->inputEditor->isCameraMoving)
     {
-        int mouseX, mouseY;
-        ImVec2 mousePos = app->windowEditor->GetImGuiWindow()->scenePanel->GetMousePos();
-        SDL_GetMouseState(&mouseX, &mouseY);
-        //app->windowEditor->GetImGuiWindow()->scenePanel.
-
-        /*printf("Posición del mouse: X: %d, Y: %d\n", mouseX, mouseY);*/
-
-
-
-
-        UpdateMousePicking(mousePos.x, mousePos.y, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
-        //app->cameraEditor->onMouseClick(mousePos.x, mousePos.y);
+        
     }
 }
 
@@ -374,9 +363,9 @@ void CameraEditor::UpdateMousePicking(int mouseX, int mouseY, int windowWidth, i
     }
 
     // Seleccionar el objeto más cercano
-    app->actualScene->SelectGameObject(closestObject);
+    app->actualScene->SelectGameObjectInScene(closestObject);
 
-    // DrawRay(ray, 100.0f);
+     /*DrawRay(ray, 100.0f);*/
 }
 
 void CameraEditor::CheckGameObject(const Ray& ray, GameObject* gameObject, GameObject*& closestObject, float& closestDistance) {
@@ -398,6 +387,30 @@ void CameraEditor::CheckGameObject(const Ray& ray, GameObject* gameObject, GameO
     for (GameObject* child : gameObject->GetChildren()) {
         CheckGameObject(ray, child, closestObject, closestDistance); // Llamada recursiva
     }
+}
+
+void CameraEditor::DrawRay(const Ray& ray, float length) {
+    glm::vec3 endPoint = ray.origin + ray.direction * length;
+
+
+
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 0.0f); // Rojo para el rayo
+
+    // Dibuja el rayo
+    glBegin(GL_LINES);
+    glVertex3f(ray.origin.x, ray.origin.y, ray.origin.z);
+    glVertex3f(endPoint.x, endPoint.y, endPoint.z);
+    glEnd();
+
+    // Dibuja el punto de origen
+    glPointSize(5.0f);
+    glBegin(GL_POINTS);
+    glVertex3f(ray.origin.x, ray.origin.y, ray.origin.z);
+    glVertex3f(endPoint.x, endPoint.y, endPoint.z);
+    glEnd();
+
+    glPopMatrix();
 }
 
 

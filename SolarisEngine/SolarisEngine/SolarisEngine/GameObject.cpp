@@ -180,3 +180,5 @@ void GameObject::RemoveParent() {
         app->actualScene->AddGameObject(this); //Metemos el objeto al root de la escena
     }
 }
+
+

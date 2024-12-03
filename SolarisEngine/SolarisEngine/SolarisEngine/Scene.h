@@ -22,6 +22,9 @@ public:
     void RemoveGameObject(GameObject* gameObject);
 
     void SelectGameObject(GameObject* gameObject);
+    void SelectGameObjectInScene(GameObject* gameObject);
+    bool IsChildOfSelected(GameObject* gameObject);
+    GameObject* GetRootParent(GameObject* gameObject);
     /*void SelectGameObject(uint index);*/
 
     GameObject* GetSelectedGameObject();
