@@ -135,7 +135,7 @@ void Component_Mesh::DrawComponent() {
 			}
 
 			// Dibujar la caja delimitadora
-			glColor3f(1.0f, 0.0f, 0.0f); // Rojo para la Bounding Box
+			glColor3f(1.0f, 1.0f, 0.0f); // Amarillo para la Bounding Box
 			glBegin(GL_LINES);
 			// Dibujar las aristas de la caja delimitadora
 			glVertex3f(min.x, min.y, min.z);
@@ -169,7 +169,12 @@ void Component_Mesh::DrawComponent() {
 			glVertex3f(max.x, min.y, min.z);
 
 			glEnd();
+
+			// Restablecer color a blanco para evitar efectos no deseados
+			glColor3f(1.0f, 1.0f, 1.0f);
 		}
+
+
 	}
 
 	if (material) { material->UnBind(); }
