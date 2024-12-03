@@ -71,6 +71,10 @@ void Scene::SelectGameObjectInScene(GameObject* gameObject)
             selectedGameObject = GetRootParent(gameObject); // Selecciona el ancestro raíz si no.
         }
     }
+    else
+    {
+        selectedGameObject = gameObject;
+    }
     
 }
 

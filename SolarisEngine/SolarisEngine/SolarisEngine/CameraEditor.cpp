@@ -363,6 +363,7 @@ void CameraEditor::UpdateMousePicking(int mouseX, int mouseY, int windowWidth, i
     }
 
     // Seleccionar el objeto más cercano
+    
     app->actualScene->SelectGameObjectInScene(closestObject);
 
      /*DrawRay(ray, 100.0f);*/
