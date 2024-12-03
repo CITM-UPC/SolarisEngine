@@ -35,6 +35,7 @@ public:
     void SetDiffuseColor(float r, float g, float b, float a);
 
     void SetTexture(const std::string& filePath);
+    void SetTexture(uint id);
 
     ILuint GetTextureID();
 

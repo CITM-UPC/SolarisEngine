@@ -51,6 +51,26 @@ void Component_Material::SetTexture(const std::string& filePath) {
 	}
 }
 
+void Component_Material::SetTexture(uint id)
+{
+
+	if (!material) {
+		material = new Material();
+	}
+
+
+	material->textureID = id;
+
+	if (material->textureID == 0) {
+		
+	}
+	else {
+		material->texturePath = "Internal Path"; // Guarda la ruta de la textura
+		EditorSaveLoad::SaveTextureDevIL(material, "test.dds");
+
+	}
+}
+
 ILuint Component_Material::GetTextureID() {
 
 

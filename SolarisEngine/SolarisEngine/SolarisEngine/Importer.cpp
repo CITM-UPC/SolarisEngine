@@ -1,6 +1,7 @@
 #include "Importer.h"
 #include "GameObject.h"
 #include "Component_Mesh.h" // Asegúrate de que tienes esta clase definida
+#include "Component_Material.h" // Asegúrate de que tienes esta clase definida
 #include <memory> // Para std::shared_ptr
 #include <filesystem>
 #include "App.h"
@@ -44,26 +45,40 @@ GameObject* Importer::ImportarNuevo(const std::string& modelPath) {
         newGameObject->AddComponent<Component_Transform>();
     }
 
-    // Asegúrate de que el GameObject raíz tenga un componente de malla
+    // Importar las mallas y los materiales
     for (unsigned int i = 0; i < scene->mRootNode->mNumMeshes; ++i) {
         const aiMesh* aiMesh = scene->mMeshes[scene->mRootNode->mMeshes[i]];
+
+        // Crear o obtener el componente de malla
         Component_Mesh* meshComponent = newGameObject->GetComponent<Component_Mesh>();
         if (!meshComponent) {
             meshComponent = newGameObject->AddComponent<Component_Mesh>();
         }
         meshComponent->LoadMesh(aiMesh);
+
+        // Obtener el material asociado a esta malla
+        aiMaterial* material = scene->mMaterials[aiMesh->mMaterialIndex];
+
+        // Crear o obtener el componente de material
+        Component_Material* materialComponent = newGameObject->GetComponent<Component_Material>();
+        if (!materialComponent) {
+            materialComponent = newGameObject->AddComponent<Component_Material>();
+        }
+
+        // Cargar texturas y propiedades del material
+        LoadTexturesFromMaterial(material, materialComponent, scene, modelPath);
+        LoadMaterialProperties(material, materialComponent);
     }
 
-    // Importar los hijos de la raíz
-    ImportarChilds(scene->mRootNode, scene, newGameObject);
+    // Importar los hijos del nodo raíz
+    ImportarChilds(scene->mRootNode, scene, newGameObject, modelPath);
 
     return newGameObject;
 }
 
-void Importer::ImportarChilds(aiNode* node, const aiScene* scene, GameObject* parent) {
+void Importer::ImportarChilds(aiNode* node, const aiScene* scene, GameObject* parent, const std::string& modelPath) {
     // Crear un GameObject para este nodo
     GameObject* newGameObject = GameObject::Create(node->mName.C_Str());
-    //parent->AddChild(newGameObject);
     newGameObject->SetParent(parent);
 
     // Asegurarse de que el componente Transform esté presente en el GameObject
@@ -71,30 +86,120 @@ void Importer::ImportarChilds(aiNode* node, const aiScene* scene, GameObject* pa
         newGameObject->AddComponent<Component_Transform>();
     }
 
-    // Aplicar la transformación del nodo al GameObject
-    aiMatrix4x4 aiTransform = node->mTransformation;
-    glm::mat4 transform = AssimpToGLM(aiTransform);
-    glm::vec3 scale = glm::vec3(transform[0][0], transform[1][1], transform[2][2]);
-    Debug::Log("Escala del nodo ", node->mName.C_Str(), ": ", scale.x, " ", scale.y, " ", scale.z);
-    //newGameObject->GetComponent<Component_Transform>()->ApplyMatrix(transform);
-
-    // Cargar las mallas asociadas a este nodo
+    // Cargar las mallas y los materiales del nodo
     for (unsigned int i = 0; i < node->mNumMeshes; ++i) {
         const aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
+
+        // Crear o obtener el componente de malla
         Component_Mesh* meshComponent = newGameObject->GetComponent<Component_Mesh>();
-        if (meshComponent) {
-            meshComponent->LoadMesh(aiMesh);
-        }
-        else {
+        if (!meshComponent) {
             meshComponent = newGameObject->AddComponent<Component_Mesh>();
-            meshComponent->LoadMesh(aiMesh);
         }
+        meshComponent->LoadMesh(aiMesh);
+
+        // Obtener el material asociado a esta malla
+        aiMaterial* material = scene->mMaterials[aiMesh->mMaterialIndex];
+
+        // Crear o obtener el componente de material
+        Component_Material* materialComponent = newGameObject->GetComponent<Component_Material>();
+        if (!materialComponent) {
+            materialComponent = newGameObject->AddComponent<Component_Material>();
+        }
+
+        // Cargar texturas y propiedades del material
+        LoadTexturesFromMaterial(material, materialComponent, scene, modelPath);
+        LoadMaterialProperties(material, materialComponent);
     }
 
     // Recursión para procesar los hijos de este nodo
     for (unsigned int i = 0; i < node->mNumChildren; ++i) {
-        ImportarChilds(node->mChildren[i], scene, newGameObject); // Llamada recursiva para los hijos
+        ImportarChilds(node->mChildren[i], scene, newGameObject, modelPath); // Llamada recursiva para los hijos
     }
+}
+
+void Importer::LoadTexturesFromMaterial(aiMaterial* material, Component_Material* materialComponent, const aiScene* scene, const std::string& modelPath) {
+    aiString texturePath;
+
+    // Obtener la ruta del directorio donde se encuentra el archivo FBX
+    std::string scenePath = GetScenePath(modelPath);
+
+    // Obtener la ruta de la textura difusa (si existe)
+    if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+        material->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texturePath);
+
+        // Si la textura tiene un path vacío, es probable que sea una textura embebida
+        if (texturePath.length == 0) {
+            // Aquí verificamos si la textura está incrustada
+            const aiTexture* embeddedTexture = scene->GetEmbeddedTexture(texturePath.C_Str());
+
+            if (embeddedTexture) {
+                // La textura está incrustada, puedes procesarla aquí
+                LoadEmbeddedTexture((aiTexture*)embeddedTexture, materialComponent);
+            }
+            else {
+                std::cerr << "Error: No se pudo obtener la textura incrustada." << std::endl;
+            }
+        }
+        else {
+            // Si la ruta no está vacía, es una textura externa
+            std::string textureFilePath = texturePath.C_Str();
+
+            // Si la textura tiene una ruta relativa, combinamos con la ruta del archivo FBX
+            if (textureFilePath[0] != '/' && textureFilePath[1] != ':') { // Si no es una ruta absoluta
+                textureFilePath = scenePath + "/" + textureFilePath;
+            }
+
+            materialComponent->SetTexture(textureFilePath);  // Aquí debes utilizar la ruta completa de la textura
+        }
+    }
+}
+
+std::string Importer::GetScenePath(const std::string& modelPath) {
+    fs::path p(modelPath);
+    return p.parent_path().string();  // Devuelve el directorio donde se encuentra el archivo FBX
+}
+
+void Importer::LoadEmbeddedTexture(aiTexture* embeddedTexture, Component_Material* materialComponent) {
+    // El contenido de la textura embebida está en embeddedTexture->pcData
+    // Debes convertir los datos de la textura a un formato que puedas usar (por ejemplo, con una librería como stb_image o DevIL)
+
+    if (embeddedTexture->mHeight == 0) {
+        // Si la altura es 0, significa que es una imagen 2D
+        GLuint textureID = 0;
+
+        // Usamos stb_image para decodificar los datos de la textura embebida
+        int width, height, channels;
+        unsigned char* data = stbi_load_from_memory(reinterpret_cast<const unsigned char*>(embeddedTexture->pcData), embeddedTexture->mWidth, &width, &height, &channels, 0);
+
+        if (data) {
+            glGenTextures(1, &textureID);
+            glBindTexture(GL_TEXTURE_2D, textureID);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+            stbi_image_free(data);
+
+            // Asignamos la textura al componente de material
+            materialComponent->SetTexture(textureID);
+        }
+        else {
+            std::cerr << "Error al cargar la textura embebida." << std::endl;
+        }
+    }
+}
+void Importer::LoadMaterialProperties(aiMaterial* material, Component_Material* materialComponent) {
+    aiColor4D diffuseColor;
+    if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor)) {
+        materialComponent->SetDiffuseColor(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a);
+        materialComponent->SetDiffuseColor(1, 1, 1, 1);
+    }
+
+    // También puedes cargar otras propiedades como el color especular, si lo deseas
+    aiColor4D specularColor;
+    if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, specularColor)) {
+        // Si tienes soporte para color especular, puedes agregarlo aquí
+    }
+
+    // Si tienes más propiedades (como reflectividad, opacidad, etc.), puedes extraerlas de la misma manera
 }
 
 glm::mat4 Importer::AssimpToGLM(const aiMatrix4x4& mat) {

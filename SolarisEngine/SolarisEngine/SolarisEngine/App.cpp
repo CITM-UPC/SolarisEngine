@@ -50,10 +50,10 @@ bool App::Start()
     Debug::Log("App::Start called");
 
     // Crear los objetos con new
-    gameObject = importer->ImportarNuevo("./Assets/BakerHouse.fbx"); // <-- Modelo con 1 textura
+    gameObject = importer->ImportarNuevo("./Assets/Entrega1/BakerHouse.fbx"); // <-- Modelo con 1 textura
     actualScene->AddGameObject(gameObject);
 
-    gameObject = importer->ImportarNuevo("./Assets/Sora.fbx");
+    gameObject = importer->ImportarNuevo("./Assets/Entrega1/Sora.fbx");
     actualScene->AddGameObject(gameObject);
 
     //gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
