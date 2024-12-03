@@ -260,20 +260,27 @@ bool InputEditor::processEvents(const SDL_Event& event) {
 
 	case SDL_MOUSEBUTTONDOWN:
 		if (event.button.button == SDL_BUTTON_LEFT) {
+			if (app->actualScene->isScenePicked && !app->inputEditor->isCameraMoving)
+			{
+				int mouseX, mouseY;
+				ImVec2 mousePos = app->windowEditor->GetImGuiWindow()->scenePanel->GetMousePos();
+				SDL_GetMouseState(&mouseX, &mouseY);
+				//app->windowEditor->GetImGuiWindow()->scenePanel.
+
+				/*printf("Posición del mouse: X: %d, Y: %d\n", mouseX, mouseY);*/
+
+
+
+
+				app->cameraEditor->UpdateMousePicking(mousePos.x, mousePos.y, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
+				//app->cameraEditor->onMouseClick(mousePos.x, mousePos.y);
+			}
+			else
+			{
+				app->actualScene->selectedGameObject = nullptr;
+			}
+			
 			mouseLeftIsPressed = true;
-			int mouseX, mouseY;
-			ImVec2 mousePos = app->windowEditor->GetImGuiWindow()->scenePanel->GetMousePos();
-			SDL_GetMouseState(&mouseX, &mouseY);
-			//app->windowEditor->GetImGuiWindow()->scenePanel.
-
-			/*printf("Posición del mouse: X: %d, Y: %d\n", mouseX, mouseY);*/
-
-
-
-
-			app->cameraEditor->UpdateMousePicking(mousePos.x, mousePos.y, app->windowEditor->GetImGuiWindow()->scenePanel->width, app->windowEditor->GetImGuiWindow()->scenePanel->height);
-			//app->cameraEditor->onMouseClick(mousePos.x, mousePos.y);
-
 		}
 		if (event.button.button == SDL_BUTTON_RIGHT) {
 			mouseRightIsPressed = true;

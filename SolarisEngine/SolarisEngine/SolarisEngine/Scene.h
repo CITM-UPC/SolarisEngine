@@ -59,9 +59,11 @@ public:
 
     Ray ray = Ray(glm::vec3(0,0,0), glm::vec3(0, 0, 0));
 
+    GameObject* selectedGameObject;
+
 private:
     std::vector<GameObject*> gameObjects; // Lista de GameObjects en la jerarquía
-    GameObject* selectedGameObject; // Lista de GameObjects en la jerarquía
+    // Lista de GameObjects en la jerarquía
 
     GameObject* copiedGameObject;
     /*GameObject* GetGameObjectAtRayIntersection(const Ray& ray);*/
