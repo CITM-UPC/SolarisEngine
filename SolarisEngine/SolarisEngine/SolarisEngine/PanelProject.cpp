@@ -42,7 +42,7 @@ void PanelProject::Render() {
 
 	ImGui::Begin("Project Explorer");
 
-	projectExplorerPos = ImGui::GetWindowPos(); 
+	projectExplorerPos = ImGui::GetWindowPos();
 	projectExplorerSize = ImGui::GetWindowSize();
 	// breadnavigation
 	ImGui::BeginChild("BreadcrumbNavigation", ImVec2(0, 20), false, ImGuiWindowFlags_NoScrollbar);
@@ -183,36 +183,8 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 		}
 
 		DropTarget(entryPath);
-
-		// File name
-		ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + textMaxWidth);
-		float textWidth = ImGui::CalcTextSize(fileName.c_str()).x;
-		if (textWidth > textMaxWidth) {
-			fileName = fileName.substr(0, 10) + "...";
-		}
-
-		float centeredTextPos = ImGui::GetCursorPosX() + (iconSize - std::min(textWidth, textMaxWidth)) / 2;
-		ImGui::SetCursorPosX(centeredTextPos);
-		ImGui::Text("%s", fileName.c_str());
-		ImGui::PopTextWrapPos();
-		ImGui::EndGroup();
-
-		itemsInRow++;
-		if (itemsInRow >= maxItemsPerRow) {
-			ImGui::NewLine();
-			itemsInRow = 0;
-		}
-		else {
-			ImGui::SameLine(0, padding);
-		}
+		ShowFileName(textMaxWidth, fileName	, maxItemsPerRow);
 	}
-
-	//// Detect right-click on empty space
-	//if (ImGui::IsMouseClicked(1) && !ImGui::IsAnyItemHovered()) {
-	//	selectedItem = "";
-	//	ImGui::OpenPopup("ProjectContextMenuEmpty");
-	//}
-
 	// Deselect item on left-click outside any items
 	if (ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
 		selectedItem = "";
@@ -384,6 +356,32 @@ void PanelProject::DropTarget(std::filesystem::path entryPath)
 
 
 	ImGui::PopStyleColor();
+}
+
+void PanelProject::ShowFileName(float textMaxWidth, std::string fileName, int maxItemsPerRow)
+{
+	// File name
+	ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + textMaxWidth);
+	float textWidth = ImGui::CalcTextSize(fileName.c_str()).x;
+	if (textWidth > textMaxWidth) {
+		fileName = fileName.substr(0, 10) + "...";
+	}
+
+	float centeredTextPos = ImGui::GetCursorPosX() + (iconSize - std::min(textWidth, textMaxWidth)) / 2;
+	ImGui::SetCursorPosX(centeredTextPos);
+	ImGui::Text("%s", fileName.c_str());
+	ImGui::PopTextWrapPos();
+	ImGui::EndGroup();
+
+	itemsInRow++;
+	if (itemsInRow >= maxItemsPerRow) {
+		ImGui::NewLine();
+		itemsInRow = 0;
+	}
+	else {
+		ImGui::SameLine(0, padding);
+	}
+
 }
 
 
