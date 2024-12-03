@@ -111,40 +111,40 @@ void MenuBar::Render() {
             }
             if (ImGui::BeginMenu("Primitivos")) {
                 if (ImGui::MenuItem("Plane")) {
-                    auto newGO = GameObject::Create("Plane");
-                    auto mesh = newGO->AddComponent<Component_Mesh>();
-                    mesh->GeneratePlaneMesh();
-                    app->actualScene->AddGameObject(newGO);
+                    //auto newGO = GameObject::Create("Plane");
+                    //auto mesh = newGO->AddComponent<Component_Mesh>();
+                    ////mesh->GeneratePlaneMesh();
+                    ////app->actualScene->AddGameObject(newGO);
                 }
                 if (ImGui::MenuItem("Cube")) {
-                    auto newGO = GameObject::Create("Cube");
+                  /*  auto newGO = GameObject::Create("Cube");
                     auto mesh = newGO->AddComponent<Component_Mesh>();
                     mesh->GenerateCubeMesh();
-                    app->actualScene->AddGameObject(newGO);
+                    app->actualScene->AddGameObject(newGO);*/
                 }
                 if (ImGui::MenuItem("Triangle")) {
-                    auto newGO = GameObject::Create("Triangle");
-                    auto mesh = newGO->AddComponent<Component_Mesh>();
-                    mesh->GenerateTriangleMesh();
-                    app->actualScene->AddGameObject(newGO);
+                    //auto newGO = GameObject::Create("Triangle");
+                    //auto mesh = newGO->AddComponent<Component_Mesh>();
+                    //mesh->GenerateTriangleMesh();
+                    //app->actualScene->AddGameObject(newGO);
                 }
                 if (ImGui::MenuItem("Sphere")) {
-                    auto newGO = GameObject::Create("Sphere");
+                  /*  auto newGO = GameObject::Create("Sphere");
                     auto mesh = newGO->AddComponent<Component_Mesh>();
                     mesh->GenerateSphereMesh();
-                    app->actualScene->AddGameObject(newGO);
+                    app->actualScene->AddGameObject(newGO);*/
                 }
                 if (ImGui::MenuItem("Capsule")) {
-                    auto newGO = GameObject::Create("Capsule");
+                   /* auto newGO = GameObject::Create("Capsule");
                     auto mesh = newGO->AddComponent<Component_Mesh>();
                     mesh->GenerateCapsuleMesh();
-                    app->actualScene->AddGameObject(newGO);
+                    app->actualScene->AddGameObject(newGO);*/
                 }
                 if (ImGui::MenuItem("Cylinder")) {
-                    auto newGO = GameObject::Create("Cylinder");
+                   /* auto newGO = GameObject::Create("Cylinder");
                     auto mesh = newGO->AddComponent<Component_Mesh>();
                     mesh->GenerateCylinderMesh();
-                    app->actualScene->AddGameObject(newGO);
+                    app->actualScene->AddGameObject(newGO);*/
                 }
                 ImGui::EndMenu();
             }

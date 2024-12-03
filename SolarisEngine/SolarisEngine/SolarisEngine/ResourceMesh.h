@@ -1,26 +1,31 @@
-#ifndef RESOURCEMESH_H
-#define RESOURCEMESH_H
+#ifndef RESOURCE_MESH_H
+#define RESOURCE_MESH_H
 
+#include "Resource.h"
+#include <vector>
 #include <string>
-#include <cereal/types/string.hpp>
-#include <cereal/archives/json.hpp>
 
-class ResourceMesh {
+class ResourceMesh : public Resource {
 public:
-    ResourceMesh() = default;
-    ResourceMesh(const std::string& path, int vertexCount, int indexCount);
+    // Constructor y destructor
+    ResourceMesh(std::string uid);
+    ~ResourceMesh() override;
 
-    // Métodos para serializar en formato de meta
-    template <class Archive>
-    void serialize(Archive& ar);
+    // Métodos de carga y descarga de memoria
+    bool LoadToMemory() override;
+    void UnloadFromMemory() override;
 
-    // Métodos adicionales para cargar o procesar la malla
-    void loadMesh();
+    std::vector<float> vertices;        // 1 vértice = {x, y, z, nx, ny, nz, u, v}
+    std::vector<float> texCoords;      // Coordenadas de textura para cada vértice {u, v}
+    std::vector<unsigned int> indices; // Índices de la malla
+    std::vector<float> normals;        // Normales de vértice
+    std::vector<float> faceNormals;    // Normales por cara
 
 private:
-    std::string path;
-    int vertex_count = 0;
-    int index_count = 0;
+    // Función auxiliar para cargar malla desde la biblioteca
+    bool LoadMeshFromLibrary();
+
+
 };
 
-#endif // RESOURCEMESH_H
+#endif // RESOURCE_MESH_H

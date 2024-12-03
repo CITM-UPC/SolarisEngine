@@ -1,22 +1,29 @@
-#pragma once
-#include "UIDGen.h"
-#include "Resource.h"
-#include <map>
+#ifndef RESOURCE_MANAGER_H
+#define RESOURCE_MANAGER_H
 
-class ResourceManager
-{
+#include <unordered_map>
+#include <string>
+#include "ResourcesData.h"
+#include "DataImporter.h"
+#include "Resource.h"
+#include "ResourceMesh.h"  // Asegúrate de incluir otras clases de recursos (como ResourceTexture, etc.)
+
+class ResourceManager {
 public:
-	UID Find(const char* file_in_assets) const;
-	UID ImportFile(const char* new_file_in_assets);
-	UID GenerateNewUID();
-	const Resource* RequestResource(UID uid) const;
-	Resource* RequestResource(UID uid);
-	void ReleaseResource(UID uid);
-	void AddResource(Resource* resource);
+    ResourceManager();
+    ~ResourceManager();
+
+    // Solicitar un recurso por UID
+    Resource* RequestResource(const std::string& uid, Resource::Type resourceType);
+
+    // Liberar un recurso por UID
+    void ReleaseResource(const std::string& uid);
+
+    // Verificar si un recurso está cargado
+    bool IsResourceLoaded(const std::string& uid) const;
+
 private:
-	
-	Resource* CreateNewResource(const char* assetsFile, Resource::Type type);
-	Resource* Load(UID uid);
-private:
-	std::map<UID, Resource*> resources;
+    std::unordered_map<std::string, Resource*> resources;  // Mapa de recursos cargados
 };
+
+#endif // RESOURCE_MANAGER_H

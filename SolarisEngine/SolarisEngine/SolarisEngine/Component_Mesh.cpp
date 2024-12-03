@@ -9,7 +9,14 @@
 Component_Mesh::Component_Mesh(GameObject* containerGO)  // Cambiado a puntero crudo
 	: Component(containerGO, ComponentType::Mesh), vao(0), material(nullptr) {
 	// Intenta obtener el componente de material del GameObject
+
+
+
+
 	material = containerGO->GetComponent<Component_Material>();
+
+
+
 }
 
 Component_Mesh::~Component_Mesh() {}
@@ -60,16 +67,16 @@ void Component_Mesh::DrawComponent() {
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	for (const auto& mesh : meshes) {
-		glVertexPointer(3, GL_FLOAT, 0, mesh.vertices.data());
+		glVertexPointer(3, GL_FLOAT, 0, mesh->vertices.data());
 
-		if (!mesh.texCoords.empty() && material && material->GetTextureID() != 0) {
+		if (!mesh->texCoords.empty() && material && material->GetTextureID() != 0) {
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glTexCoordPointer(2, GL_FLOAT, 0, mesh.texCoords.data());
+			glTexCoordPointer(2, GL_FLOAT, 0,  mesh->texCoords.data());
 		}
 
-		glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, mesh.indices.data());
+		glDrawElements(GL_TRIANGLES,  mesh->indices.size(), GL_UNSIGNED_INT,  mesh->indices.data());
 
-		if (!mesh.texCoords.empty() && material && material->GetTextureID() != 0) {
+		if (! mesh->texCoords.empty() && material && material->GetTextureID() != 0) {
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
 
@@ -77,18 +84,18 @@ void Component_Mesh::DrawComponent() {
 		if (showVertexNormals) {
 			glColor3f(0.0f, 1.0f, 0.0f); // Verde para las normales
 			glBegin(GL_LINES);
-			for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
-				glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
+			for (size_t i = 0; i <  mesh->vertices.size(); i += 3) {
+				glm::vec3 v( mesh->vertices[i],  mesh->vertices[i + 1],  mesh->vertices[i + 2]);
 				glm::vec3 n;
-				if (mesh.normals.size() > 0) {
-					n = glm::vec3(mesh.normals[i], mesh.normals[i + 1], mesh.normals[i + 2]);
+				if ( mesh->normals.size() > 0) {
+					n = glm::vec3( mesh->normals[i],  mesh->normals[i + 1],  mesh->normals[i + 2]);
 				}
 				else {
-					n = glm::vec3(mesh.faceNormals[i], mesh.faceNormals[i + 1], mesh.faceNormals[i + 2]);
+					n = glm::vec3( mesh->faceNormals[i],  mesh->faceNormals[i + 1],  mesh->faceNormals[i + 2]);
 				}
 
 
-				//glm::vec3 n(mesh.normals[i], mesh.normals[i + 1], mesh.normals[i + 2]);
+				//glm::vec3 n( mesh->normals[i],  mesh->normals[i + 1],  mesh->normals[i + 2]);
 				glm::vec3 end = v + n * 0.1f; // Escala de la l�nea
 				glVertex3fv(glm::value_ptr(v));
 				glVertex3fv(glm::value_ptr(end));
@@ -103,12 +110,12 @@ void Component_Mesh::DrawComponent() {
 		if (showFaceNormals) {
 			glColor3f(1.0f, 0.0f, 0.0f); // Rojo para las normales de caras
 			glBegin(GL_LINES);
-			for (size_t i = 0; i < mesh.indices.size(); i += 3) {
-				glm::vec3 v0(mesh.vertices[mesh.indices[i] * 3], mesh.vertices[mesh.indices[i] * 3 + 1], mesh.vertices[mesh.indices[i] * 3 + 2]);
-				glm::vec3 v1(mesh.vertices[mesh.indices[i + 1] * 3], mesh.vertices[mesh.indices[i + 1] * 3 + 1], mesh.vertices[mesh.indices[i + 1] * 3 + 2]);
-				glm::vec3 v2(mesh.vertices[mesh.indices[i + 2] * 3], mesh.vertices[mesh.indices[i + 2] * 3 + 1], mesh.vertices[mesh.indices[i + 2] * 3 + 2]);
+			for (size_t i = 0; i <  mesh->indices.size(); i += 3) {
+				glm::vec3 v0( mesh->vertices[ mesh->indices[i] * 3],  mesh->vertices[ mesh->indices[i] * 3 + 1],  mesh->vertices[ mesh->indices[i] * 3 + 2]);
+				glm::vec3 v1( mesh->vertices[ mesh->indices[i + 1] * 3],  mesh->vertices[ mesh->indices[i + 1] * 3 + 1],  mesh->vertices[ mesh->indices[i + 1] * 3 + 2]);
+				glm::vec3 v2( mesh->vertices[ mesh->indices[i + 2] * 3],  mesh->vertices[ mesh->indices[i + 2] * 3 + 1],  mesh->vertices[ mesh->indices[i + 2] * 3 + 2]);
 				glm::vec3 center = (v0 + v1 + v2) / 3.0f;
-				glm::vec3 n(mesh.faceNormals[i], mesh.faceNormals[i + 1], mesh.faceNormals[i + 2]);
+				glm::vec3 n( mesh->faceNormals[i],  mesh->faceNormals[i + 1],  mesh->faceNormals[i + 2]);
 				glm::vec3 end = center + n * 0.1f;
 				glVertex3fv(glm::value_ptr(center));
 				glVertex3fv(glm::value_ptr(end));
@@ -123,8 +130,8 @@ void Component_Mesh::DrawComponent() {
 		// Mostrar la Bounding Box si est� activado
 		if (showBoundingBox) {
 			glm::vec3 min, max;
-			for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
-				glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
+			for (size_t i = 0; i <  mesh->vertices.size(); i += 3) {
+				glm::vec3 v( mesh->vertices[i],  mesh->vertices[i + 1],  mesh->vertices[i + 2]);
 				if (i == 0) {
 					min = max = v;
 				}
@@ -204,10 +211,10 @@ void Component_Mesh::DrawInspectorComponent()
 
 				if (ImGui::TreeNode(meshLabel.c_str())) {
 					// Mostrar información específica del mesh
-					ImGui::Text("Vertices: %zu", meshes[i].vertices.size() / 3);
-					ImGui::Text("Indices: %zu", meshes[i].indices.size());
-					ImGui::Text("Normals: %zu", meshes[i].normals.size() / 3);
-					ImGui::Text("TexCoords: %zu", meshes[i].texCoords.size() / 2);
+					ImGui::Text("Vertices: %zu", meshes[i]->vertices.size() / 3);
+					ImGui::Text("Indices: %zu", meshes[i]->indices.size());
+					ImGui::Text("Normals: %zu", meshes[i]->normals.size() / 3);
+					ImGui::Text("TexCoords: %zu", meshes[i]->texCoords.size() / 2);
 
 					ImGui::TreePop();
 				}
@@ -229,111 +236,133 @@ void Component_Mesh::DrawInspectorComponent()
 
 void Component_Mesh::LoadMesh(const aiMesh* ai_mesh) {
 	// Crear una nueva estructura Mesh para almacenar los datos del mesh
-	Mesh mesh;
+	//Mesh mesh;
 
-	// Recorremos los vértices y los agregamos a la estructura Mesh
-	for (unsigned int i = 0; i < ai_mesh->mNumVertices; ++i) {
-		// Agregar las posiciones de los vértices
-		mesh.vertices.push_back(ai_mesh->mVertices[i].x);
-		mesh.vertices.push_back(ai_mesh->mVertices[i].y);
-		mesh.vertices.push_back(ai_mesh->mVertices[i].z);
+	//// Recorremos los vértices y los agregamos a la estructura Mesh
+	//for (unsigned int i = 0; i < ai_mesh->mNumVertices; ++i) {
+	//	// Agregar las posiciones de los vértices
+	//	mesh.vertices.push_back(ai_mesh->mVertices[i].x);
+	//	mesh.vertices.push_back(ai_mesh->mVertices[i].y);
+	//	mesh.vertices.push_back(ai_mesh->mVertices[i].z);
 
-		// Si el mesh tiene normales, agregar las normales
-		if (ai_mesh->HasNormals()) {
-			mesh.normals.push_back(ai_mesh->mNormals[i].x);
-			mesh.normals.push_back(ai_mesh->mNormals[i].y);
-			mesh.normals.push_back(ai_mesh->mNormals[i].z);
-		}
-		else {
-			// Si no tiene normales, puedes calcularlas (esto es opcional si no tienes normales en el modelo)
-			// Aquí puedes agregar código para calcular las normales por triángulo.
-		}
+	//	// Si el mesh tiene normales, agregar las normales
+	//	if (ai_mesh->HasNormals()) {
+	//		mesh.normals.push_back(ai_mesh->mNormals[i].x);
+	//		mesh.normals.push_back(ai_mesh->mNormals[i].y);
+	//		mesh.normals.push_back(ai_mesh->mNormals[i].z);
+	//	}
+	//	else {
+	//		// Si no tiene normales, puedes calcularlas (esto es opcional si no tienes normales en el modelo)
+	//		// Aquí puedes agregar código para calcular las normales por triángulo.
+	//	}
 
-		// Si el mesh tiene coordenadas de textura, agregarlas
-		if (ai_mesh->mTextureCoords[0]) {
-			mesh.texCoords.push_back(ai_mesh->mTextureCoords[0][i].x);
-			mesh.texCoords.push_back(ai_mesh->mTextureCoords[0][i].y);
-		}
-		else {
-			// Si no tiene coordenadas de textura, agregar valores predeterminados
-			mesh.texCoords.push_back(0.0f);
-			mesh.texCoords.push_back(0.0f);
-		}
-	}
+	//	// Si el mesh tiene coordenadas de textura, agregarlas
+	//	if (ai_mesh->mTextureCoords[0]) {
+	//		mesh.texCoords.push_back(ai_mesh->mTextureCoords[0][i].x);
+	//		mesh.texCoords.push_back(ai_mesh->mTextureCoords[0][i].y);
+	//	}
+	//	else {
+	//		// Si no tiene coordenadas de textura, agregar valores predeterminados
+	//		mesh.texCoords.push_back(0.0f);
+	//		mesh.texCoords.push_back(0.0f);
+	//	}
+	//}
 
-	// Recorremos las caras (triángulos) y agregamos los índices
-	for (unsigned int i = 0; i < ai_mesh->mNumFaces; ++i) {
-		const aiFace& face = ai_mesh->mFaces[i];
-		for (unsigned int j = 0; j < face.mNumIndices; ++j) {
-			mesh.indices.push_back(face.mIndices[j]);
-		}
-	}
+	//// Recorremos las caras (triángulos) y agregamos los índices
+	//for (unsigned int i = 0; i < ai_mesh->mNumFaces; ++i) {
+	//	const aiFace& face = ai_mesh->mFaces[i];
+	//	for (unsigned int j = 0; j < face.mNumIndices; ++j) {
+	//		mesh.indices.push_back(face.mIndices[j]);
+	//	}
+	//}
 
-	// Calcular las normales de las caras si es necesario
-	CalculateFaceNormals(mesh);
+	//// Calcular las normales de las caras si es necesario
+	//CalculateFaceNormals(mesh);
 
-	// Registro en el log
-	Debug::Log("Mesh cargado con: ", mesh.indices.size(), " índices, ", mesh.vertices.size(), " vértices.");
+	//// Registro en el log
+	//Debug::Log("Mesh cargado con: ", mesh.indices.size(), " índices, ", mesh.vertices.size(), " vértices.");
 
-	// Almacenar el mesh en la lista de meshes del componente
-	if (this) {
-		meshes.push_back(mesh);
-	}
+	//// Almacenar el mesh en la lista de meshes del componente
+	//if (this) {
+	//	meshes.push_back(mesh);
+	//}
 	
 }
 
 void Component_Mesh::LoadMesh(const aiScene* ai_scene) {
-	for (unsigned int i = 0; i < ai_scene->mNumMeshes; ++i) {
-		Mesh mesh;
-		const aiMesh* aiMesh = ai_scene->mMeshes[i];
+	//for (unsigned int i = 0; i < ai_scene->mNumMeshes; ++i) {
+	//	Mesh mesh;
+	//	const aiMesh* aiMesh = ai_scene->mMeshes[i];
 
-		for (unsigned int j = 0; j < aiMesh->mNumVertices; ++j) {
-			mesh.vertices.push_back(aiMesh->mVertices[j].x);
-			mesh.vertices.push_back(aiMesh->mVertices[j].y);
-			mesh.vertices.push_back(aiMesh->mVertices[j].z);
-
-
-			if (aiMesh->HasNormals()) { // Copia las normales si existen
-				mesh.normals.push_back(aiMesh->mNormals[j].x);
-				mesh.normals.push_back(aiMesh->mNormals[j].y);
-				mesh.normals.push_back(aiMesh->mNormals[j].z);
-			}
-			else {
-				// Calcula las normales si no est�n disponibles en el modelo
-				// C�digo para calcular las normales por tri�ngulo
-			}
+	//	for (unsigned int j = 0; j < aiMesh->mNumVertices; ++j) {
+	//		mesh.vertices.push_back(aiMesh->mVertices[j].x);
+	//		mesh.vertices.push_back(aiMesh->mVertices[j].y);
+	//		mesh.vertices.push_back(aiMesh->mVertices[j].z);
 
 
-			if (aiMesh->mTextureCoords[0]) {
-				mesh.texCoords.push_back(aiMesh->mTextureCoords[0][j].x);
-				mesh.texCoords.push_back(aiMesh->mTextureCoords[0][j].y);
-			}
-			else {
-				mesh.texCoords.push_back(0.0f);
-				mesh.texCoords.push_back(0.0f);
-			}
-		}
+	//		if (aiMesh->HasNormals()) { // Copia las normales si existen
+	//			mesh.normals.push_back(aiMesh->mNormals[j].x);
+	//			mesh.normals.push_back(aiMesh->mNormals[j].y);
+	//			mesh.normals.push_back(aiMesh->mNormals[j].z);
+	//		}
+	//		else {
+	//			// Calcula las normales si no est�n disponibles en el modelo
+	//			// C�digo para calcular las normales por tri�ngulo
+	//		}
 
-		for (unsigned int j = 0; j < aiMesh->mNumFaces; ++j) {
-			const aiFace& face = aiMesh->mFaces[j];
-			for (unsigned int k = 0; k < face.mNumIndices; ++k) {
-				mesh.indices.push_back(face.mIndices[k]);
-			}
-		}
 
-		CalculateFaceNormals(mesh);
+	//		if (aiMesh->mTextureCoords[0]) {
+	//			mesh.texCoords.push_back(aiMesh->mTextureCoords[0][j].x);
+	//			mesh.texCoords.push_back(aiMesh->mTextureCoords[0][j].y);
+	//		}
+	//		else {
+	//			mesh.texCoords.push_back(0.0f);
+	//			mesh.texCoords.push_back(0.0f);
+	//		}
+	//	}
 
-		Debug::Log("	Mesh ", i, "cargado con : ", mesh.indices.size(), " indices, ", mesh.vertices.size(), " vertices.");
-		totalVertex += mesh.vertices.size();
+	//	for (unsigned int j = 0; j < aiMesh->mNumFaces; ++j) {
+	//		const aiFace& face = aiMesh->mFaces[j];
+	//		for (unsigned int k = 0; k < face.mNumIndices; ++k) {
+	//			mesh.indices.push_back(face.mIndices[k]);
+	//		}
+	//	}
 
-		meshes.push_back(mesh);
-	}
+	//	CalculateFaceNormals(mesh);
 
-	Debug::Log("	Meshes del objecto cargado. Total de meshes: ", meshes.size());
+	//	Debug::Log("	Mesh ", i, "cargado con : ", mesh.indices.size(), " indices, ", mesh.vertices.size(), " vertices.");
+	//	totalVertex += mesh.vertices.size();
+
+	//	meshes.push_back(mesh);
+	//}
+
+	//Debug::Log("	Meshes del objecto cargado. Total de meshes: ", meshes.size());
 
 }
 
-void Component_Mesh::CalculateFaceNormals(Mesh& mesh) {
+void Component_Mesh::LoadMesh(std::string meshHash)
+{
+	Resource* resource = app->resourceManager->RequestResource(meshHash, Resource::Type::MESH);
+
+	if (resource) {
+		ResourceMesh* meshResource = dynamic_cast<ResourceMesh*>(resource);
+
+		// Ahora que tenemos el recurso cargado en memoria, se puede acceder a sus datos
+		if (meshResource) {
+			// Este recurso ya tiene los datos cargados en memoria, solo debemos asignarlos a este componente
+			meshes.push_back(meshResource);
+
+			// También es útil, en el futuro, tener un seguimiento de cuántas referencias están activas
+			Debug::Log("Recurso Mesh cargado, número de vértices: ", meshResource->vertices.size());
+		}
+	}
+	else {
+		Debug::Log("No se pudo cargar el recurso del mesh con UID: ", meshHash);
+	}
+
+}
+
+void Component_Mesh::CalculateFaceNormals(ResourceMesh& mesh) {
 	mesh.faceNormals.clear();
 	for (size_t i = 0; i < mesh.indices.size(); i += 3) {
 		// Obt�n los tres �ndices del tri�ngulo
@@ -350,332 +379,332 @@ void Component_Mesh::CalculateFaceNormals(Mesh& mesh) {
 		mesh.faceNormals.push_back(normal.z);
 	}
 }
-
-void Component_Mesh::GenerateCubeMesh() {
-	Mesh cubeMesh;
-	cubeMesh.vertices = {
-		//  (Frente)
-		-0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,
-
-		//  (Atr��s)
-		-0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,
-
-		//  (Izquierda)
-		-0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f,
-
-		//  (Derecha)
-		 0.5f, -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f,
-
-		 //  (Arriba)
-		 -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,
-
-		 //  (Abajo)
-		 -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,
-	};
-
-	cubeMesh.indices = {
-		//  (Frente)
-		0, 1, 2, 2, 3, 0,
-
-		//  (Atr��s)
-		4, 5, 6, 6, 7, 4,
-
-		//  (Izquierda)
-		8, 9, 10, 10, 11, 8,
-
-		//  (Derecha)
-		12, 13, 14, 14, 15, 12,
-
-		//  (Arriba)
-		16, 17, 18, 18, 19, 16,
-
-		//  (Abajo)
-		20, 21, 22, 22, 23, 20,
-	};
-
-	cubeMesh.texCoords = {
-		// Frente
-		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
-		// Atrás
-		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
-		// Izquierda
-		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
-		// Derecha
-		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
-		// Arriba
-		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
-		// Abajo
-		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
-	};
-
-	CalculateFaceNormals(cubeMesh);
-
-
-
-	meshes.push_back(cubeMesh);
-}
-
-
-void Component_Mesh::GenerateSphereMesh() {
-	Mesh sphereMesh;
-	const int sectorCount = 36;
-	const int stackCount = 18;
-	const float radius = 0.5f;
-	for (int i = 0; i <= stackCount; ++i) {
-		float stackAngle = M_PI / 2 - i * M_PI / stackCount;
-		float xy = radius * cosf(stackAngle);
-		float z = radius * sinf(stackAngle);
-		for (int j = 0; j <= sectorCount; ++j) {
-			float sectorAngle = j * 2 * M_PI / sectorCount;
-			float x = xy * cosf(sectorAngle);
-			float y = xy * sinf(sectorAngle);
-			sphereMesh.vertices.push_back(x);
-			sphereMesh.vertices.push_back(y);
-			sphereMesh.vertices.push_back(z);
-		}
-	}
-	for (int i = 0; i < stackCount; ++i) {
-		for (int j = 0; j < sectorCount; ++j) {
-			int first = (i * (sectorCount + 1)) + j;
-			int second = first + sectorCount + 1;
-			sphereMesh.indices.push_back(first);
-			sphereMesh.indices.push_back(second);
-			sphereMesh.indices.push_back(first + 1);
-			sphereMesh.indices.push_back(second);
-			sphereMesh.indices.push_back(second + 1);
-			sphereMesh.indices.push_back(first + 1);
-		}
-	}
-
-
-	for (int i = 0; i <= stackCount; ++i) {
-		for (int j = 0; j <= sectorCount; ++j) {
-			float u = (float)j / sectorCount; // Coordenada horizontal (longitud)
-			float v = (float)i / stackCount; // Coordenada vertical (latitud)
-			sphereMesh.texCoords.push_back(u);
-			sphereMesh.texCoords.push_back(v);
-		}
-	}
-
-	CalculateFaceNormals(sphereMesh);
-
-	meshes.push_back(sphereMesh);
-}
-
-void Component_Mesh::GeneratePlaneMesh() {
-	Mesh planeMesh;
-	planeMesh.vertices = { -0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.5f };
-	planeMesh.indices = { 0, 1, 2, 2, 3, 0 };
-
-	planeMesh.texCoords = {
-	0.0f, 0.0f,  // Vértice 1
-	1.0f, 0.0f,  // Vértice 2
-	1.0f, 1.0f,  // Vértice 3
-	0.0f, 1.0f   // Vértice 4
-	};
-
-	CalculateFaceNormals(planeMesh);
-
-
-	meshes.push_back(planeMesh);
-}
-
-void Component_Mesh::GenerateTriangleMesh() {
-	Mesh triangleMesh;
-
-	// ����
-	triangleMesh.vertices = {
-		0.0f, 0.5f, 0.0f,  // A
-	   -0.5f, -0.5f, 0.5f, // B
-		0.5f, -0.5f, 0.5f, // C
-	   -0.5f, -0.5f, -0.5f,// D
-		0.5f, -0.5f, -0.5f // E
-	};
-
-	// ����
-	triangleMesh.indices = {
-		0, 1, 2,  // ABC
-		0, 3, 1,  // ADE
-		0, 4, 3,  // ABE
-		0, 2, 4,  // ACE
-		1, 3, 4,  // BDE
-		1, 4, 2   // BCE
-	};
-
-
-	// Coordenadas UV
-	triangleMesh.texCoords = {
-		// Coordenadas para el vértice superior (compartido)
-		0.5f, 1.0f,  // A (vértice superior)
-
-		// Coordenadas para la base cuadrada (comparten vértices)
-		0.0f, 0.0f,  // B (inferior izquierda)
-		1.0f, 0.0f,  // C (inferior derecha)
-		1.0f, 1.0f,  // D (superior derecha)
-		0.0f, 1.0f   // E (superior izquierda)
-	};
-
-	CalculateFaceNormals(triangleMesh);
-
-
-	meshes.push_back(triangleMesh);
-}
-
-
-void Component_Mesh::GenerateCapsuleMesh() {
-	Mesh capsuleMesh;
-	const int slices = 36;
-	const int stacks = 18;
-	const float radius = 0.5f;
-	const float height = 1.0f;
-	const float halfHeight = height / 2.0f;
-
-	// Generate vertices
-	for (int i = 0; i <= stacks; ++i) {
-		float phi = i * M_PI / stacks - M_PI_2; // From -90 to 90 degrees
-		for (int j = 0; j <= slices; ++j) {
-			float theta = j * 2.0f * M_PI / slices; // From 0 to 360 degrees
-
-			float x = radius * cos(phi) * cos(theta);
-			float y = radius * sin(phi);
-			float z = radius * cos(phi) * sin(theta);
-
-			if (phi >= 0) {
-				y += halfHeight; // Top hemisphere
-			}
-			else {
-				y -= halfHeight; // Bottom hemisphere
-			}
-
-			capsuleMesh.vertices.push_back(x);
-			capsuleMesh.vertices.push_back(y);
-			capsuleMesh.vertices.push_back(z);
-		}
-	}
-
-	// Generate indices
-	for (int i = 0; i < stacks; ++i) {
-		for (int j = 0; j < slices; ++j) {
-			int first = (i * (slices + 1)) + j;
-			int second = first + slices + 1;
-
-			capsuleMesh.indices.push_back(first);
-			capsuleMesh.indices.push_back(second);
-			capsuleMesh.indices.push_back(first + 1);
-
-			capsuleMesh.indices.push_back(second);
-			capsuleMesh.indices.push_back(second + 1);
-			capsuleMesh.indices.push_back(first + 1);
-		}
-	}
-
-
-	for (int i = 0; i <= stacks; ++i) {
-		for (int j = 0; j <= slices; ++j) {
-			float u = (float)j / slices;
-			float v = (float)i / stacks;
-			capsuleMesh.texCoords.push_back(u);
-			capsuleMesh.texCoords.push_back(v);
-		}
-	}
-
-	CalculateFaceNormals(capsuleMesh);
-
-	meshes.push_back(capsuleMesh);
-}
-
-
-
-
-void Component_Mesh::GenerateCylinderMesh() {
-	Mesh cylinderMesh;
-	const int slices = 36;
-	const float radius = 0.5f;
-	const float height = 1.0f;
-
-	// Generar vértices y coordenadas UV para el cuerpo del cilindro
-	for (int i = 0; i <= slices; ++i) {
-		float angle = i * 2.0f * M_PI / slices;
-		float x = radius * cos(angle);
-		float z = radius * sin(angle);
-		float u = (float)i / slices;
-
-		// Vértices del cuerpo
-		cylinderMesh.vertices.push_back(x);
-		cylinderMesh.vertices.push_back(-0.5f * height);
-		cylinderMesh.vertices.push_back(z);
-		cylinderMesh.texCoords.push_back(u); // Coordenada U
-		cylinderMesh.texCoords.push_back(0.0f); // Coordenada V
-
-		cylinderMesh.vertices.push_back(x);
-		cylinderMesh.vertices.push_back(0.5f * height);
-		cylinderMesh.vertices.push_back(z);
-		cylinderMesh.texCoords.push_back(u); // Coordenada U
-		cylinderMesh.texCoords.push_back(1.0f); // Coordenada V
-	}
-
-	// Centro de las tapas (vértices adicionales)
-	cylinderMesh.vertices.push_back(0.0f);
-	cylinderMesh.vertices.push_back(-0.5f * height);
-	cylinderMesh.vertices.push_back(0.0f);
-	cylinderMesh.texCoords.push_back(0.5f); // Coordenada U
-	cylinderMesh.texCoords.push_back(0.5f); // Coordenada V
-
-	cylinderMesh.vertices.push_back(0.0f);
-	cylinderMesh.vertices.push_back(0.5f * height);
-	cylinderMesh.vertices.push_back(0.0f);
-	cylinderMesh.texCoords.push_back(0.5f); // Coordenada U
-	cylinderMesh.texCoords.push_back(0.5f); // Coordenada V
-
-	// Generar índices para el cuerpo del cilindro
-	for (int i = 0; i < slices; ++i) {
-		int bottom1 = 2 * i;
-		int bottom2 = 2 * ((i + 1) % slices);
-		int top1 = bottom1 + 1;
-		int top2 = bottom2 + 1;
-
-		// Lados del cilindro
-		cylinderMesh.indices.push_back(bottom1);
-		cylinderMesh.indices.push_back(bottom2);
-		cylinderMesh.indices.push_back(top1);
-
-		cylinderMesh.indices.push_back(top1);
-		cylinderMesh.indices.push_back(bottom2);
-		cylinderMesh.indices.push_back(top2);
-
-		// Tapa inferior
-		cylinderMesh.indices.push_back(bottom1);
-		cylinderMesh.indices.push_back(bottom2);
-		cylinderMesh.indices.push_back(2 * slices);
-
-		// Tapa superior
-		cylinderMesh.indices.push_back(top1);
-		cylinderMesh.indices.push_back(2 * slices + 1);
-		cylinderMesh.indices.push_back(top2);
-	}
-
-	// Coordenadas UV para las tapas
-	for (int i = 0; i < slices; ++i) {
-		float angle = i * 2.0f * M_PI / slices;
-		float x = radius * cos(angle);
-		float z = radius * sin(angle);
-		float u = (x / radius + 1.0f) * 0.5f;
-		float v = (z / radius + 1.0f) * 0.5f;
-
-		// UV para la tapa inferior
-		cylinderMesh.texCoords.push_back(u);
-		cylinderMesh.texCoords.push_back(v);
-
-		// UV para la tapa superior
-		cylinderMesh.texCoords.push_back(u);
-		cylinderMesh.texCoords.push_back(v);
-	}
-
-	CalculateFaceNormals(cylinderMesh);
-
-	// Guardar el cilindro
-	meshes.push_back(cylinderMesh);
-}
+//
+//void Component_Mesh::GenerateCubeMesh() {
+//	Mesh cubeMesh;
+//	cubeMesh.vertices = {
+//		//  (Frente)
+//		-0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,
+//
+//		//  (Atr��s)
+//		-0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,
+//
+//		//  (Izquierda)
+//		-0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f,
+//
+//		//  (Derecha)
+//		 0.5f, -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f,
+//
+//		 //  (Arriba)
+//		 -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,
+//
+//		 //  (Abajo)
+//		 -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,
+//	};
+//
+//	cubeMesh.indices = {
+//		//  (Frente)
+//		0, 1, 2, 2, 3, 0,
+//
+//		//  (Atr��s)
+//		4, 5, 6, 6, 7, 4,
+//
+//		//  (Izquierda)
+//		8, 9, 10, 10, 11, 8,
+//
+//		//  (Derecha)
+//		12, 13, 14, 14, 15, 12,
+//
+//		//  (Arriba)
+//		16, 17, 18, 18, 19, 16,
+//
+//		//  (Abajo)
+//		20, 21, 22, 22, 23, 20,
+//	};
+//
+//	cubeMesh.texCoords = {
+//		// Frente
+//		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+//		// Atrás
+//		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+//		// Izquierda
+//		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+//		// Derecha
+//		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+//		// Arriba
+//		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+//		// Abajo
+//		0.0f, 0.0f,  1.0f, 0.0f,  1.0f, 1.0f,  0.0f, 1.0f,
+//	};
+//
+//	CalculateFaceNormals(cubeMesh);
+//
+//
+//
+//	meshes.push_back(cubeMesh);
+//}
+//
+//
+//void Component_Mesh::GenerateSphereMesh() {
+//	Mesh sphereMesh;
+//	const int sectorCount = 36;
+//	const int stackCount = 18;
+//	const float radius = 0.5f;
+//	for (int i = 0; i <= stackCount; ++i) {
+//		float stackAngle = M_PI / 2 - i * M_PI / stackCount;
+//		float xy = radius * cosf(stackAngle);
+//		float z = radius * sinf(stackAngle);
+//		for (int j = 0; j <= sectorCount; ++j) {
+//			float sectorAngle = j * 2 * M_PI / sectorCount;
+//			float x = xy * cosf(sectorAngle);
+//			float y = xy * sinf(sectorAngle);
+//			sphereMesh.vertices.push_back(x);
+//			sphereMesh.vertices.push_back(y);
+//			sphereMesh.vertices.push_back(z);
+//		}
+//	}
+//	for (int i = 0; i < stackCount; ++i) {
+//		for (int j = 0; j < sectorCount; ++j) {
+//			int first = (i * (sectorCount + 1)) + j;
+//			int second = first + sectorCount + 1;
+//			sphereMesh.indices.push_back(first);
+//			sphereMesh.indices.push_back(second);
+//			sphereMesh.indices.push_back(first + 1);
+//			sphereMesh.indices.push_back(second);
+//			sphereMesh.indices.push_back(second + 1);
+//			sphereMesh.indices.push_back(first + 1);
+//		}
+//	}
+//
+//
+//	for (int i = 0; i <= stackCount; ++i) {
+//		for (int j = 0; j <= sectorCount; ++j) {
+//			float u = (float)j / sectorCount; // Coordenada horizontal (longitud)
+//			float v = (float)i / stackCount; // Coordenada vertical (latitud)
+//			sphereMesh.texCoords.push_back(u);
+//			sphereMesh.texCoords.push_back(v);
+//		}
+//	}
+//
+//	CalculateFaceNormals(sphereMesh);
+//
+//	meshes.push_back(sphereMesh);
+//}
+//
+//void Component_Mesh::GeneratePlaneMesh() {
+//	Mesh planeMesh;
+//	planeMesh.vertices = { -0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.5f };
+//	planeMesh.indices = { 0, 1, 2, 2, 3, 0 };
+//
+//	planeMesh.texCoords = {
+//	0.0f, 0.0f,  // Vértice 1
+//	1.0f, 0.0f,  // Vértice 2
+//	1.0f, 1.0f,  // Vértice 3
+//	0.0f, 1.0f   // Vértice 4
+//	};
+//
+//	CalculateFaceNormals(planeMesh);
+//
+//
+//	meshes.push_back(planeMesh);
+//}
+//
+//void Component_Mesh::GenerateTriangleMesh() {
+//	Mesh triangleMesh;
+//
+//	// ����
+//	triangleMesh.vertices = {
+//		0.0f, 0.5f, 0.0f,  // A
+//	   -0.5f, -0.5f, 0.5f, // B
+//		0.5f, -0.5f, 0.5f, // C
+//	   -0.5f, -0.5f, -0.5f,// D
+//		0.5f, -0.5f, -0.5f // E
+//	};
+//
+//	// ����
+//	triangleMesh.indices = {
+//		0, 1, 2,  // ABC
+//		0, 3, 1,  // ADE
+//		0, 4, 3,  // ABE
+//		0, 2, 4,  // ACE
+//		1, 3, 4,  // BDE
+//		1, 4, 2   // BCE
+//	};
+//
+//
+//	// Coordenadas UV
+//	triangleMesh.texCoords = {
+//		// Coordenadas para el vértice superior (compartido)
+//		0.5f, 1.0f,  // A (vértice superior)
+//
+//		// Coordenadas para la base cuadrada (comparten vértices)
+//		0.0f, 0.0f,  // B (inferior izquierda)
+//		1.0f, 0.0f,  // C (inferior derecha)
+//		1.0f, 1.0f,  // D (superior derecha)
+//		0.0f, 1.0f   // E (superior izquierda)
+//	};
+//
+//	CalculateFaceNormals(triangleMesh);
+//
+//
+//	meshes.push_back(triangleMesh);
+//}
+//
+//
+//void Component_Mesh::GenerateCapsuleMesh() {
+//	Mesh capsuleMesh;
+//	const int slices = 36;
+//	const int stacks = 18;
+//	const float radius = 0.5f;
+//	const float height = 1.0f;
+//	const float halfHeight = height / 2.0f;
+//
+//	// Generate vertices
+//	for (int i = 0; i <= stacks; ++i) {
+//		float phi = i * M_PI / stacks - M_PI_2; // From -90 to 90 degrees
+//		for (int j = 0; j <= slices; ++j) {
+//			float theta = j * 2.0f * M_PI / slices; // From 0 to 360 degrees
+//
+//			float x = radius * cos(phi) * cos(theta);
+//			float y = radius * sin(phi);
+//			float z = radius * cos(phi) * sin(theta);
+//
+//			if (phi >= 0) {
+//				y += halfHeight; // Top hemisphere
+//			}
+//			else {
+//				y -= halfHeight; // Bottom hemisphere
+//			}
+//
+//			capsuleMesh.vertices.push_back(x);
+//			capsuleMesh.vertices.push_back(y);
+//			capsuleMesh.vertices.push_back(z);
+//		}
+//	}
+//
+//	// Generate indices
+//	for (int i = 0; i < stacks; ++i) {
+//		for (int j = 0; j < slices; ++j) {
+//			int first = (i * (slices + 1)) + j;
+//			int second = first + slices + 1;
+//
+//			capsuleMesh.indices.push_back(first);
+//			capsuleMesh.indices.push_back(second);
+//			capsuleMesh.indices.push_back(first + 1);
+//
+//			capsuleMesh.indices.push_back(second);
+//			capsuleMesh.indices.push_back(second + 1);
+//			capsuleMesh.indices.push_back(first + 1);
+//		}
+//	}
+//
+//
+//	for (int i = 0; i <= stacks; ++i) {
+//		for (int j = 0; j <= slices; ++j) {
+//			float u = (float)j / slices;
+//			float v = (float)i / stacks;
+//			capsuleMesh.texCoords.push_back(u);
+//			capsuleMesh.texCoords.push_back(v);
+//		}
+//	}
+//
+//	CalculateFaceNormals(capsuleMesh);
+//
+//	meshes.push_back(capsuleMesh);
+//}
+//
+//
+//
+//
+//void Component_Mesh::GenerateCylinderMesh() {
+//	Mesh cylinderMesh;
+//	const int slices = 36;
+//	const float radius = 0.5f;
+//	const float height = 1.0f;
+//
+//	// Generar vértices y coordenadas UV para el cuerpo del cilindro
+//	for (int i = 0; i <= slices; ++i) {
+//		float angle = i * 2.0f * M_PI / slices;
+//		float x = radius * cos(angle);
+//		float z = radius * sin(angle);
+//		float u = (float)i / slices;
+//
+//		// Vértices del cuerpo
+//		cylinderMesh.vertices.push_back(x);
+//		cylinderMesh.vertices.push_back(-0.5f * height);
+//		cylinderMesh.vertices.push_back(z);
+//		cylinderMesh.texCoords.push_back(u); // Coordenada U
+//		cylinderMesh.texCoords.push_back(0.0f); // Coordenada V
+//
+//		cylinderMesh.vertices.push_back(x);
+//		cylinderMesh.vertices.push_back(0.5f * height);
+//		cylinderMesh.vertices.push_back(z);
+//		cylinderMesh.texCoords.push_back(u); // Coordenada U
+//		cylinderMesh.texCoords.push_back(1.0f); // Coordenada V
+//	}
+//
+//	// Centro de las tapas (vértices adicionales)
+//	cylinderMesh.vertices.push_back(0.0f);
+//	cylinderMesh.vertices.push_back(-0.5f * height);
+//	cylinderMesh.vertices.push_back(0.0f);
+//	cylinderMesh.texCoords.push_back(0.5f); // Coordenada U
+//	cylinderMesh.texCoords.push_back(0.5f); // Coordenada V
+//
+//	cylinderMesh.vertices.push_back(0.0f);
+//	cylinderMesh.vertices.push_back(0.5f * height);
+//	cylinderMesh.vertices.push_back(0.0f);
+//	cylinderMesh.texCoords.push_back(0.5f); // Coordenada U
+//	cylinderMesh.texCoords.push_back(0.5f); // Coordenada V
+//
+//	// Generar índices para el cuerpo del cilindro
+//	for (int i = 0; i < slices; ++i) {
+//		int bottom1 = 2 * i;
+//		int bottom2 = 2 * ((i + 1) % slices);
+//		int top1 = bottom1 + 1;
+//		int top2 = bottom2 + 1;
+//
+//		// Lados del cilindro
+//		cylinderMesh.indices.push_back(bottom1);
+//		cylinderMesh.indices.push_back(bottom2);
+//		cylinderMesh.indices.push_back(top1);
+//
+//		cylinderMesh.indices.push_back(top1);
+//		cylinderMesh.indices.push_back(bottom2);
+//		cylinderMesh.indices.push_back(top2);
+//
+//		// Tapa inferior
+//		cylinderMesh.indices.push_back(bottom1);
+//		cylinderMesh.indices.push_back(bottom2);
+//		cylinderMesh.indices.push_back(2 * slices);
+//
+//		// Tapa superior
+//		cylinderMesh.indices.push_back(top1);
+//		cylinderMesh.indices.push_back(2 * slices + 1);
+//		cylinderMesh.indices.push_back(top2);
+//	}
+//
+//	// Coordenadas UV para las tapas
+//	for (int i = 0; i < slices; ++i) {
+//		float angle = i * 2.0f * M_PI / slices;
+//		float x = radius * cos(angle);
+//		float z = radius * sin(angle);
+//		float u = (x / radius + 1.0f) * 0.5f;
+//		float v = (z / radius + 1.0f) * 0.5f;
+//
+//		// UV para la tapa inferior
+//		cylinderMesh.texCoords.push_back(u);
+//		cylinderMesh.texCoords.push_back(v);
+//
+//		// UV para la tapa superior
+//		cylinderMesh.texCoords.push_back(u);
+//		cylinderMesh.texCoords.push_back(v);
+//	}
+//
+//	CalculateFaceNormals(cylinderMesh);
+//
+//	// Guardar el cilindro
+//	meshes.push_back(cylinderMesh);
+//}
 
 
 glm::vec3 Component_Mesh::CalculateMeshSize() {
@@ -688,8 +717,8 @@ glm::vec3 Component_Mesh::CalculateMeshSize() {
 
 	for (const auto& mesh : meshes) {
 		// Asumiendo que 'mesh.vertices' es un vector plano que contiene las coordenadas de los v�rtices
-		for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
-			glm::vec3 vertex(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
+		for (size_t i = 0; i < mesh->vertices.size(); i += 3) {
+			glm::vec3 vertex(mesh->vertices[i], mesh->vertices[i + 1], mesh->vertices[i + 2]);
 
 			// Encontrar los l�mites m�nimos y m�ximos en cada eje
 			minBounds = glm::min(minBounds, vertex);
@@ -720,8 +749,8 @@ std::pair<glm::vec3, glm::vec3> Component_Mesh::GetBoundingBoxInWorldSpace() con
 
 	// Iterar a través de todas las mallas para encontrar los límites mínimos y máximos
 	for (const auto& mesh : meshes) {
-		for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
-			glm::vec3 vertex(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
+		for (size_t i = 0; i < mesh->vertices.size(); i += 3) {
+			glm::vec3 vertex(mesh->vertices[i], mesh->vertices[i + 1], mesh->vertices[i + 2]);
 			minLocal = glm::min(minLocal, vertex);
 			maxLocal = glm::max(maxLocal, vertex);
 		}
