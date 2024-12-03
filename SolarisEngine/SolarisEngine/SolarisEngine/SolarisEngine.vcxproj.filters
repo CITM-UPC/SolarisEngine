@@ -141,9 +141,6 @@
     <ClCompile Include="Component_ParticleSystem.cpp">
       <Filter>Source Files\Componentes</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceTexture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FrameBuffer.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
@@ -152,6 +149,12 @@
     </ClCompile>
     <ClCompile Include="Component_Camera.cpp">
       <Filter>Source Files\Componentes</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceTexture.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="MetaData.cpp">
+      <Filter>Source Files\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -267,6 +270,9 @@
       <Filter>Header Files\Componentes</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="MetaData.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
   </ItemGroup>

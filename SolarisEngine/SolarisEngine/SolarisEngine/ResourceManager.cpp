@@ -80,16 +80,17 @@ void ResourceManager::AddResource(Resource* resource) {
 Resource* ResourceManager::CreateNewResource(const char* assetsFile, Resource::Type type)
 {
     // Aquí puedes implementar lógica para crear diferentes tipos de recursos según el archivo
-    switch (type)
-    {
-    case Resource::mesh:
-        return new ResourceMesh(GenerateNewUID());
-    case Resource::texture:
-        return new ResourceTexture(GenerateNewUID());
-        // Agregar casos para otros tipos de recursos (mesh, audio, etc.)
-    default:
-        return nullptr;
-    }
+    //switch (type)
+    //{
+    //case Resource::mesh:
+    //    return new ResourceMesh(GenerateNewUID());
+    //case Resource::texture:
+    //    return new ResourceTexture(GenerateNewUID());
+    //    // Agregar casos para otros tipos de recursos (mesh, audio, etc.)
+    //default:
+    //    return nullptr;
+    //}
+    return nullptr;
 }
 
 Resource* ResourceManager::Load(UID uid) {

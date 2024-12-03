@@ -142,6 +142,7 @@
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="EditorSaveLoad.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
+    <ClCompile Include="MetaData.cpp" />
     <ClCompile Include="PanelConsola.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="EditorSaveLoad.h" />
     <ClInclude Include="FrameBuffer.h" />
+    <ClInclude Include="MetaData.h" />
     <ClInclude Include="PanelConsola.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Defs.h" />

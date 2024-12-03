@@ -1,36 +1,26 @@
-#pragma once
+#ifndef RESOURCEMESH_H
+#define RESOURCEMESH_H
 
-#include "Resource.h"
-#include "Component_Mesh.h"
+#include <string>
+#include <cereal/types/string.hpp>
+#include <cereal/archives/json.hpp>
 
-class ResourceMesh : public Resource
-{
-
-
-
+class ResourceMesh {
 public:
-	ResourceMesh(UID id); virtual
-		~ResourceMesh();
-	void SetMeshData(const Mesh& mesh);
-	bool LoadInMemory()
-		override;
-	void LoadMeshes(const std::string& filePath, Mesh& mesh);
-	void SaveMeshes();
-	void LoadFromLibrary(const std::string& filePath);
+    ResourceMesh() = default;
+    ResourceMesh(const std::string& path, int vertexCount, int indexCount);
 
-	bool IsLoadedInMemory() override;
-	/*void Save(Config& config) const override;
-	void Load(const Config& config) override;*/
+    // Métodos para serializar en formato de meta
+    template <class Archive>
+    void serialize(Archive& ar);
 
-	void SetTransformRotation(const vec3& rotation);
-	void SetImportScale(float scale);
+    // Métodos adicionales para cargar o procesar la malla
+    void loadMesh();
 
-	vec3 GetTransformRotation() const;
-	float GetImportScale() const;
-public:
-	Mesh meshData;
-	vec3 transformRotation;
-	float importScale;
-	bool isLoaded = false;
-
+private:
+    std::string path;
+    int vertex_count = 0;
+    int index_count = 0;
 };
+
+#endif // RESOURCEMESH_H
