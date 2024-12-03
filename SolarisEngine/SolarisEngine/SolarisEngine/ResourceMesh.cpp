@@ -52,6 +52,7 @@ bool ResourceMesh::LoadMeshFromLibrary() {
 	indices = meshData.indices;
 	normals = meshData.normals;
 	faceNormals = meshData.faceNormals;
+	texCoords = meshData.texCoords;
 
 
 	// Simula la carga del mesh desde la biblioteca (Library/).

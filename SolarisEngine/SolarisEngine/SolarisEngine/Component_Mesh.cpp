@@ -351,6 +351,7 @@ void Component_Mesh::LoadMesh(std::string meshHash)
 		if (meshResource) {
 			// Este recurso ya tiene los datos cargados en memoria, solo debemos asignarlos a este componente
 			meshes.push_back(meshResource);
+			hashes.push_back(meshHash);
 
 			// También es útil, en el futuro, tener un seguimiento de cuántas referencias están activas
 			Debug::Log("Recurso Mesh cargado, número de vértices: ", meshResource->vertices.size());
