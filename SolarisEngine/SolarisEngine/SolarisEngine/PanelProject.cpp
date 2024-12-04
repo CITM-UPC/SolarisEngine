@@ -109,20 +109,7 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
 		ImGui::BeginGroup();
 
-		// Determine icon
-		void* icon;
-		if (isDirectory) {
-			icon = icons["folder"]; // Folder
-		}
-		else {
-			std::string extension = entryPath.extension().string();
-			if (iconTypes.find(extension) != iconTypes.end()) {
-				icon = icons[iconTypes[extension]]; // Icon based on type
-			}
-			else {
-				icon = icons["unknown"]; // Other
-			}
-		}
+		ShowIcon(isDirectory, entryPath);
 
 		// Transparent background
 		ImGui::PushStyleColor(ImGuiCol_Button, isSelected ? ImVec4(0.0f, 0.0f, 1.0f, 0.5f) : ImVec4(0, 0, 0, 0));
@@ -197,7 +184,24 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
 }
 
+void PanelProject::ShowIcon(bool isDirectory, std::filesystem::path entryPath)
+{
 
+	// Determine icon
+
+	if (isDirectory) {
+		icon = icons["folder"]; // Folder
+	}
+	else {
+		std::string extension = entryPath.extension().string();
+		if (iconTypes.find(extension) != iconTypes.end()) {
+			icon = icons[iconTypes[extension]]; // Icon based on type
+		}
+		else {
+			icon = icons["unknown"]; // Other
+		}
+	}
+}
 
 
 
@@ -383,6 +387,8 @@ void PanelProject::ShowFileName(float textMaxWidth, std::string fileName, int ma
 	}
 
 }
+
+
 
 
 
