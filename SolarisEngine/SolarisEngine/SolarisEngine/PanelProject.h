@@ -33,7 +33,7 @@ private:
     void ShowFileSystemTree(const std::filesystem::path& path); // Recursive method to display file system
     void ShowBreadcrumbNavigation();
     void DropTarget(std::filesystem::path entryPath);
-    void ShowFileName(float textMaxWidth, std::string fileName, int maxItemsPerRow);
+    void ShowFileName(float textMaxWidth, std::string fileName, int maxItemsPerRow,bool isRenaming, std::string renameTarget);
     void ShowIcon(bool isDirectory, std::filesystem::path entryPat);
     void file_handling(std::filesystem::path& entryPath, std::string& lastClickedItem,
         float doubleClickTime, bool isDirectory, float& lastClickTime, std::string fileName);
