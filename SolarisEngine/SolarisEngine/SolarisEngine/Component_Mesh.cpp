@@ -29,32 +29,27 @@ void Component_Mesh::Update(double dt) {
 void Component_Mesh::DrawComponent() {
 	if (!enabled) return;
 
-
 	if (containerGO->GetComponent<Component_Material>()) {
-		material = containerGO->GetComponent<Component_Material>(); 
+		material = containerGO->GetComponent<Component_Material>();
 		material->Bind();
-
 	}
 	else {
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glColor3f(1.0f, 0.0f, 1.0f); // Color rosa si no hay material
 	}
 
-
-
 	// Obtener el GameObject contenedor
 	auto transform = containerGO->GetComponent<Component_Transform>();
 	if (!transform) {
-		std::cerr << "Error: No se pudo obtener el componente de transformaci�n." << std::endl;
+		std::cerr << "Error: No se pudo obtener el componente de transformación." << std::endl;
 		return;
 	}
 	glm::mat4 modelMatrix = transform->GetModelMatrix();
 
-	// Aplicar la matriz de transformaci�n en el modelo
+	// Aplicar la matriz de transformación en el modelo
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glMultMatrixf(glm::value_ptr(modelMatrix));
-
 
 	// Dibujo de la malla usando OpenGL
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -73,7 +68,7 @@ void Component_Mesh::DrawComponent() {
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
 
-		// Mostrar normales de v�rtices
+		// Mostrar normales de vértices
 		if (showVertexNormals) {
 			glColor3f(0.0f, 1.0f, 0.0f); // Verde para las normales
 			glBegin(GL_LINES);
@@ -87,9 +82,7 @@ void Component_Mesh::DrawComponent() {
 					n = glm::vec3(mesh.faceNormals[i], mesh.faceNormals[i + 1], mesh.faceNormals[i + 2]);
 				}
 
-
-				//glm::vec3 n(mesh.normals[i], mesh.normals[i + 1], mesh.normals[i + 2]);
-				glm::vec3 end = v + n * 0.1f; // Escala de la l�nea
+				glm::vec3 end = v + n * 0.1f; // Escala de la línea
 				glVertex3fv(glm::value_ptr(v));
 				glVertex3fv(glm::value_ptr(end));
 			}
@@ -117,71 +110,95 @@ void Component_Mesh::DrawComponent() {
 			if (material) {
 				glColor3f(material->GetDiffuseColor().r, material->GetDiffuseColor().g, material->GetDiffuseColor().b);
 			}
-			
 		}
 
-		// Mostrar la Bounding Box si est� activado
+		// Mostrar la Bounding Box si está activado
 		if (showBoundingBox) {
-			glm::vec3 min, max;
+			glm::vec3 globalMin, globalMax;
+			bool firstVertex = true;
+
+			// Calcular los valores mínimo y máximo de la Bounding Box global
 			for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
 				glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
-				if (i == 0) {
-					min = max = v;
+
+				if (firstVertex) {
+					globalMin = globalMax = v;
+					firstVertex = false;
 				}
 				else {
-					min = glm::min(min, v);
-					max = glm::max(max, v);
+					globalMin = glm::min(globalMin, v);
+					globalMax = glm::max(globalMax, v);
 				}
 			}
 
-			// Dibujar la caja delimitadora
+			// Definir los 8 vértices de la Bounding Box
+			glm::vec3 boundingBoxVertices[8] = {
+				glm::vec3(globalMin.x, globalMin.y, globalMin.z),
+				glm::vec3(globalMax.x, globalMin.y, globalMin.z),
+				glm::vec3(globalMin.x, globalMax.y, globalMin.z),
+				glm::vec3(globalMax.x, globalMax.y, globalMin.z),
+				glm::vec3(globalMin.x, globalMin.y, globalMax.z),
+				glm::vec3(globalMax.x, globalMin.y, globalMax.z),
+				glm::vec3(globalMin.x, globalMax.y, globalMax.z),
+				glm::vec3(globalMax.x, globalMax.y, globalMax.z)
+			};
+
+			// Dibujar las aristas de la Bounding Box
 			glColor3f(1.0f, 1.0f, 0.0f); // Amarillo para la Bounding Box
 			glBegin(GL_LINES);
-			// Dibujar las aristas de la caja delimitadora
-			glVertex3f(min.x, min.y, min.z);
-			glVertex3f(max.x, min.y, min.z);
 
-			glVertex3f(min.x, min.y, min.z);
-			glVertex3f(min.x, max.y, min.z);
+			// Conectar los vértices de la Bounding Box
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[0]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[1]));
 
-			glVertex3f(min.x, min.y, min.z);
-			glVertex3f(min.x, min.y, max.z);
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[0]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[2]));
 
-			glVertex3f(max.x, max.y, max.z);
-			glVertex3f(min.x, max.y, max.z);
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[0]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[4]));
 
-			glVertex3f(max.x, max.y, max.z);
-			glVertex3f(max.x, min.y, max.z);
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[1]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[3]));
 
-			glVertex3f(max.x, max.y, max.z);
-			glVertex3f(max.x, max.y, min.z);
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[1]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[5]));
 
-			glVertex3f(min.x, max.y, min.z);
-			glVertex3f(max.x, max.y, min.z);
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[2]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[3]));
 
-			glVertex3f(min.x, min.y, max.z);
-			glVertex3f(max.x, min.y, max.z);
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[2]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[6]));
 
-			glVertex3f(min.x, max.y, max.z);
-			glVertex3f(min.x, max.y, min.z);
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[3]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[7]));
 
-			glVertex3f(max.x, min.y, max.z);
-			glVertex3f(max.x, min.y, min.z);
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[4]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[5]));
+
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[4]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[6]));
+
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[5]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[7]));
+
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[6]));
+			glVertex3fv(glm::value_ptr(boundingBoxVertices[7]));
 
 			glEnd();
 
-			// Restablecer color a blanco para evitar efectos no deseados
+			// Restablecer color
 			glColor3f(1.0f, 1.0f, 1.0f);
 		}
-
-
 	}
 
-	if (material) { material->UnBind(); }
+	if (material) {
+		material->UnBind();
+	}
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glPopMatrix(); // Restablecer la matriz despu�s de dibujar
+	glPopMatrix(); // Restablecer la matriz después de dibujar
 }
+
 
 void Component_Mesh::DrawInspectorComponent()
 {
