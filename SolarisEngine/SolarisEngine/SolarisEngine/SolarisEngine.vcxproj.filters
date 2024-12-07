@@ -40,6 +40,18 @@
     <Filter Include="Header Files\Resources">
       <UniqueIdentifier>{f8ce46fe-e569-49ae-8a40-2e604f882f6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Misc">
+      <UniqueIdentifier>{7f2bc0eb-a3c2-46f9-85c8-d8feb5f6ca98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Misc">
+      <UniqueIdentifier>{fafdcc31-33ff-495a-a209-bfd43d806994}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Importers">
+      <UniqueIdentifier>{dab72145-33c6-4d7f-be06-a8ff5f32c495}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Importers">
+      <UniqueIdentifier>{ea55194b-345c-47a9-a54e-e29f17568c15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyWindow.cpp">
@@ -141,9 +153,6 @@
     <ClCompile Include="Component_ParticleSystem.cpp">
       <Filter>Source Files\Componentes</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceTexture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FrameBuffer.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
@@ -152,6 +161,21 @@
     </ClCompile>
     <ClCompile Include="Component_Camera.cpp">
       <Filter>Source Files\Componentes</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceTexture.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="MetaData.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="IdentifierGenerator.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshImporter.cpp">
+      <Filter>Source Files\Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="DataImporter.cpp">
+      <Filter>Source Files\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -267,6 +291,21 @@
       <Filter>Header Files\Componentes</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="MetaData.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="IdentifierGenerator.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourcesData.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshImporter.h">
+      <Filter>Header Files\Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="DataImporter.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
   </ItemGroup>

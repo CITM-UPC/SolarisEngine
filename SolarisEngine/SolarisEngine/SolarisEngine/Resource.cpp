@@ -1,51 +1,44 @@
 #include "Resource.h"
-#include <iostream>
 
-Resource::Resource(UID uid, Resource::Type type)
-    : uid(uid), type(type)
-{
-}
+Resource::Resource(std::string uid, Type type)
+    : UID(uid), type(type), loadedToMemory(false), referenceCount(0) {}
 
 Resource::~Resource() {}
 
-Resource::Type Resource::GetType() const
-{
+std::string Resource::GetUID() const {
+    return UID;
+}
+
+Resource::Type Resource::GetType() const {
     return type;
 }
 
-UID Resource::GetUID() const
-{
-    return uid;
+const std::string& Resource::GetAssetFile() const {
+    return assetFile;
 }
 
-const char* Resource::GetAssetFile() const
-{
-    return assetsFile.c_str();
+const std::string& Resource::GetLibraryFile() const {
+    return libraryFile;
 }
 
-const char* Resource::GetLibraryFile() const
-{
-    return Libraryile.c_str();
+bool Resource::IsLoadedToMemory() const {
+    return loadedToMemory;
 }
 
-bool Resource::IsLoadedToMemory() const
-{
-    // Aquí puedes agregar lógica para saber si el recurso está cargado en memoria
-    return false;  // Por ahora, siempre retorna false como ejemplo
-}
-
-bool Resource::LoadToMemory()
-{
-    // Lógica para cargar a memoria si es necesario
-    return false;  // Por ahora, retorna false como ejemplo
-}
-
-uint Resource::GetReferenceCount() const
-{
+uint Resource::GetReferenceCount() const {
     return referenceCount;
 }
 
-bool Resource::IsLoadedInMemory()
-{
-    return false;
+void Resource::IncrementReferenceCount() {
+    ++referenceCount;
+}
+
+void Resource::DecrementReferenceCount() {
+    if (referenceCount > 0) {
+        --referenceCount;
+    }
+}
+
+void Resource::UnloadFromMemory() {
+    loadedToMemory = false;
 }

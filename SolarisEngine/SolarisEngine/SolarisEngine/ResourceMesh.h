@@ -1,36 +1,31 @@
-#pragma once
+#ifndef RESOURCE_MESH_H
+#define RESOURCE_MESH_H
 
 #include "Resource.h"
-#include "Component_Mesh.h"
+#include <vector>
+#include <string>
 
-class ResourceMesh : public Resource
-{
-
-
-
+class ResourceMesh : public Resource {
 public:
-	ResourceMesh(UID id); virtual
-		~ResourceMesh();
-	void SetMeshData(const Mesh& mesh);
-	bool LoadInMemory()
-		override;
-	void LoadMeshes(const std::string& filePath, Mesh& mesh);
-	void SaveMeshes();
-	void LoadFromLibrary(const std::string& filePath);
+    // Constructor y destructor
+    ResourceMesh(std::string uid);
+    ~ResourceMesh() override;
 
-	bool IsLoadedInMemory() override;
-	/*void Save(Config& config) const override;
-	void Load(const Config& config) override;*/
+    // Métodos de carga y descarga de memoria
+    bool LoadToMemory() override;
+    void UnloadFromMemory() override;
 
-	void SetTransformRotation(const vec3& rotation);
-	void SetImportScale(float scale);
+    std::vector<float> vertices;        // 1 vértice = {x, y, z, nx, ny, nz, u, v}
+    std::vector<float> texCoords;      // Coordenadas de textura para cada vértice {u, v}
+    std::vector<unsigned int> indices; // Índices de la malla
+    std::vector<float> normals;        // Normales de vértice
+    std::vector<float> faceNormals;    // Normales por cara
 
-	vec3 GetTransformRotation() const;
-	float GetImportScale() const;
-public:
-	Mesh meshData;
-	vec3 transformRotation;
-	float importScale;
-	bool isLoaded = false;
+private:
+    // Función auxiliar para cargar malla desde la biblioteca
+    bool LoadMeshFromLibrary();
+
 
 };
+
+#endif // RESOURCE_MESH_H

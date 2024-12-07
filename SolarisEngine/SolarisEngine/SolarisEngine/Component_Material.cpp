@@ -46,7 +46,7 @@ void Component_Material::SetTexture(const std::string& filePath) {
 	}
 	else {
 		material->texturePath = filePath; // Guarda la ruta de la textura
-		EditorSaveLoad::SaveTextureDevIL(material, "test.dds");
+		//EditorSaveLoad::SaveTextureDevIL(material, "test.dds");
 
 	}
 }
@@ -66,7 +66,7 @@ void Component_Material::SetTexture(uint id)
 	}
 	else {
 		material->texturePath = "Internal Path"; // Guarda la ruta de la textura
-		EditorSaveLoad::SaveTextureDevIL(material, "test.dds");
+		//EditorSaveLoad::SaveTextureDevIL(material, "test.dds");
 
 	}
 }

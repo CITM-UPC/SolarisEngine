@@ -8,32 +8,47 @@ class Resource
 public:
 
 	enum Type {
-		texture,
-		mesh, audio,
-		scene, bone,
-		animation,
-		unknown
+		UNKNOWN = 0,
+		TEXTURE,
+		MATERIAL,
+		SPRITE,
+		MESH,
+		AUDIO,
+		SCENE,
+		BONE,
+		ANIMATION
 	};
 
 
 
-	Resource(UID uid, Resource::Type type);
+	Resource(std::string uid, Resource::Type type);
 	virtual ~Resource();
-	Resource::Type GetType() const; UID
-		GetUID() const;
-	const char* GetAssetFile() const; const
-		char* GetLibraryFile() const; bool
-		IsLoadedToMemory() const;
-	bool LoadToMemory();
+
+	std::string GetUID() const;
+
+	Resource::Type GetType() const;
+	
+	const std::string& GetAssetFile() const;
+	const std::string& GetLibraryFile() const;
+
+	bool IsLoadedToMemory() const;
+	virtual bool LoadToMemory() = 0; // Cada tipus de recurs implementa la seva càrrega
+	virtual void UnloadFromMemory();
+
 	uint GetReferenceCount() const;
-	/*virtual void Save(Config& config) const;
-	virtual void Load(const Config& config);*/
-	virtual bool LoadInMemory() = 0;
-	virtual bool IsLoadedInMemory();
+	void IncrementReferenceCount();
+	void DecrementReferenceCount();
+
+
+
 protected:
-	UID uid = UID(0);
-	std::string assetsFile;
-	std::string Libraryile;
-	Type type = unknown;
-	uint referenceCount = 0;
+	std::string UID;
+	Type type = Type::UNKNOWN;
+
+
+	std::string assetFile;  // Ruta a la carpeta Assets
+	std::string libraryFile; // Ruta a la carpeta Library
+	
+	bool loadedToMemory;
+	uint referenceCount;
 };

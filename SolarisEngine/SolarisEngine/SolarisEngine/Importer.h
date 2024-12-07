@@ -13,7 +13,9 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Component_Material.h"
+#include "ResourceMesh.h"
 #include "Defs.h"
+#include "ResourcesData.h"
 
 
 class Importer {
@@ -48,6 +50,11 @@ private:
   
 
     void LoadMaterials(const aiScene* scene);
+    void ExportMeshToFile(const std::string& filePath, const MeshData& meshData);
+    MeshData ImportMeshFromFile(const std::string& filePath);
+
+    std::string GetNodeFullPath(const aiNode* node);
+
     void ProcessMeshes(const aiScene* scene);
     GLuint GetTextureIdForModel(const std::string& modelName);
 

@@ -1,107 +1,86 @@
 #include "ResourceManager.h"
-#include "ResourceTexture.h"
-#include "ResourceMesh.h"  // Asumiendo que tienes una clase ResourceMesh o similar
-#include "Debug.h"
+#include "ResourceMesh.h"
+#include "ResourceTexture.h"  // Asegúrate de incluir todas las clases de recursos correspondientes
+#include <iostream>
 
-UID ResourceManager::Find(const char* file_in_assets) const
-{
-    for (const auto& entry : resources)
-    {
-        if (entry.second->GetAssetFile() == file_in_assets)
-        {
-            return entry.first;
+ResourceManager::ResourceManager() {}
+
+ResourceManager::~ResourceManager() {
+    // Al destruir el gestor, liberar todos los recursos cargados
+    for (auto& pair : resources) {
+        if (pair.second != nullptr) {
+            pair.second->UnloadFromMemory();  // Llamada para descargar el recurso
+            delete pair.second;              // Liberar memoria
         }
     }
-    return UID(0); // Retorna un UID vacío si no se encuentra
 }
 
-UID ResourceManager::ImportFile(const char* new_file_in_assets)
-{
-    // Crear un nuevo recurso dependiendo del tipo de archivo
-    Resource::Type type = Resource::unknown; // Aquí podrías agregar lógica para determinar el tipo
-    Resource* newResource = CreateNewResource(new_file_in_assets, type);
-
-    if (newResource)
-    {
-        UID newUID = newResource->GetUID();
-        resources[newUID] = newResource;
-        return newUID;
-    }
-
-    return UID(0); // Si no se pudo crear, devolver un UID vacío
-}
-
-UID ResourceManager::GenerateNewUID()
-{
-    UID currentUID = UID(UIDGen::GenerateRandomUint32());  // Comenzamos desde 1
-    return currentUID;
-}
-
-const Resource* ResourceManager::RequestResource(UID uid) const 
-{
-    auto it = resources.find(uid);
-    if (it != resources.end())
-    {
-        return it->second;
-    }
-    return nullptr;
-}
-
-Resource* ResourceManager::RequestResource(UID uid)
-{
-    auto it = resources.find(uid);
-    if (it != resources.end())                  
-    {
-        return it->second;
-    }
-    return nullptr;
-}
-
-void ResourceManager::ReleaseResource(UID uid)
-{
-    auto it = resources.find(uid);
-    if (it != resources.end())
-    {
-        delete it->second;
-        resources.erase(it);
-    }
-}
-
-
-
-
-void ResourceManager::AddResource(Resource* resource) {
-    if (resource) {
-        resources[resource->GetUID()] = resource;
-        Debug::Log("Recurso añadido al ResourceManager: UID ", resource->GetUID().uid);
-    }
-}
-
-Resource* ResourceManager::CreateNewResource(const char* assetsFile, Resource::Type type)
-{
-    // Aquí puedes implementar lógica para crear diferentes tipos de recursos según el archivo
-    switch (type)
-    {
-    case Resource::mesh:
-        return new ResourceMesh(GenerateNewUID());
-    case Resource::texture:
-        return new ResourceTexture(GenerateNewUID());
-        // Agregar casos para otros tipos de recursos (mesh, audio, etc.)
-    default:
-        return nullptr;
-    }
-}
-
-Resource* ResourceManager::Load(UID uid) {
+Resource* ResourceManager::RequestResource(const std::string& uid, Resource::Type resourceType) {
+    // Comprobar si el recurso ya está cargado
     auto it = resources.find(uid);
     if (it != resources.end()) {
-        Resource* resource = it->second;
-        if (!resource->IsLoadedInMemory()) {
-            resource->LoadInMemory();
-        }
-        return resource;
+        it->second->LoadToMemory();              // Carga en memoria
+        it->second->IncrementReferenceCount();  // Aumentar la referencia
+        return it->second;
     }
+
+    // Si no está cargado, crearlo y cargarlo
+    Resource* newResource = nullptr;
+
+    switch (resourceType)
+    {
+    case Resource::UNKNOWN:
+        break;
+    case Resource::TEXTURE:
+        break;
+    case Resource::MATERIAL:
+        break;
+    case Resource::SPRITE:
+        break;
+    case Resource::MESH:
+        newResource = new ResourceMesh(uid);
+        break;
+    case Resource::AUDIO:
+        break;
+    case Resource::SCENE:
+        break;
+    case Resource::BONE:
+        break;
+    case Resource::ANIMATION:
+        break;
+    default:
+        newResource = nullptr;
+        break;
+    }
+
+      // Aquí sería necesario crear el tipo correcto
+    if (newResource && newResource->LoadToMemory()) {
+        resources[uid] = newResource;
+        resources[uid]->IncrementReferenceCount();
+        return newResource;
+    }
+
+    // Si hubo un error al cargar
+    std::cerr << "Error al cargar el recurso: " << uid << std::endl;
+    delete newResource;
     return nullptr;
 }
 
+void ResourceManager::ReleaseResource(const std::string& uid) {
+    auto it = resources.find(uid);
+    if (it != resources.end()) {
+        it->second->DecrementReferenceCount();
+        if (it->second->GetReferenceCount() == 0) {
+            it->second->UnloadFromMemory();
+            delete it->second;
+            resources.erase(it);
+        }
+    }
+    else {
+        std::cerr << "Recurso no encontrado para liberar: " << uid << std::endl;
+    }
+}
 
+bool ResourceManager::IsResourceLoaded(const std::string& uid) const {
+    return resources.find(uid) != resources.end();
+}

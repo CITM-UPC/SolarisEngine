@@ -6,9 +6,14 @@
 #include <filesystem>
 #include "App.h"
 #include "sstream"
+#include <fstream> 
+
 #include "Debug.h"
+#include "DataImporter.h"
+#include "IdentifierGenerator.h"
 
 namespace fs = std::filesystem;
+
 
 Importer::Importer() {
     std::cout << "Inicializando directorios..." << std::endl;
@@ -54,6 +59,16 @@ GameObject* Importer::ImportarNuevo(const std::string& modelPath) {
         if (!meshComponent) {
             meshComponent = newGameObject->AddComponent<Component_Mesh>();
         }
+
+
+        //CACA
+        MeshData meshData;
+        DataImporter::TransformData(aiMesh, meshData);
+        std::string modelHash = IdentifierGenerator::GenerateHash(modelPath);
+        std::string meshPath = (fs::path(MESHES_DIR) / modelHash / ".mesh").string();
+        DataImporter::ExportData(meshPath, meshData);
+
+
         meshComponent->LoadMesh(aiMesh);
 
         // Obtener el material asociado a esta malla
@@ -70,8 +85,13 @@ GameObject* Importer::ImportarNuevo(const std::string& modelPath) {
         LoadMaterialProperties(material, materialComponent);
     }
 
+
+    for (unsigned int i = 0; i < scene->mRootNode->mNumChildren; ++i) {
+        ImportarChilds(scene->mRootNode->mChildren[i], scene, newGameObject, modelPath); // Llamada recursiva para los hijos
+    }
+
     // Importar los hijos del nodo raíz
-    ImportarChilds(scene->mRootNode, scene, newGameObject, modelPath);
+    //ImportarChilds(scene->mRootNode, scene, newGameObject, modelPath);
 
     return newGameObject;
 }
@@ -95,7 +115,21 @@ void Importer::ImportarChilds(aiNode* node, const aiScene* scene, GameObject* pa
         if (!meshComponent) {
             meshComponent = newGameObject->AddComponent<Component_Mesh>();
         }
-        meshComponent->LoadMesh(aiMesh);
+
+
+
+
+        MeshData meshData;
+        DataImporter::TransformData(aiMesh, meshData);
+
+        
+
+        std::string modelHash = IdentifierGenerator::GenerateHash(modelPath + GetNodeFullPath(node) + std::to_string(i));
+        std::string modelHashFile = modelHash + ".mesh";
+        std::string meshPath = (fs::path(MESHES_DIR) / modelHashFile).string();
+        DataImporter::ExportData(meshPath, meshData);
+        //meshComponent->LoadMesh(aiMesh);
+        meshComponent->LoadMesh(modelHash);
 
         // Obtener el material asociado a esta malla
         aiMaterial* material = scene->mMaterials[aiMesh->mMaterialIndex];
@@ -313,30 +347,89 @@ void Importer::LoadMaterials(const aiScene* scene) {
     }
 }
 
-void Importer::Draw(GameObject* gameObject) {
-    if (gameObject) {
-        gameObject->Draw(); // Llama al método Draw del GameObject
-    }
-    else {
-        std::cerr << "El GameObject es nulo, no se puede dibujar." << std::endl;
-    }
-}
+void Importer::ExportMeshToFile(const std::string& filePath, const MeshData& meshData) {
+    std::ofstream file(filePath, std::ios::binary);
 
-void Importer::Draw(const std::string& modelName) {
-    auto it = vaos.find(modelName);
-    if (it == vaos.end()) {
-        std::cerr << "Modelo no encontrado: " << modelName << std::endl;
+    // Asegurarse de que el archivo se abrió correctamente
+    if (!file.is_open()) {
+        std::cerr << "Error al abrir el archivo para escribir: " << filePath << std::endl;
         return;
     }
 
-    GLuint vao = it->second; // Obtener el VAO
-    glBindVertexArray(vao);
+    // Escribir el número de vértices
+    uint32_t numVertices = meshData.vertices.size() / 3;  // Cada vértice tiene 3 componentes (x, y, z)
+    file.write(reinterpret_cast<const char*>(&numVertices), sizeof(numVertices));
 
-    // Aquí asumiendo que tienes un método para obtener el número de índices
-    // glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
+    // Escribir los vértices
+    file.write(reinterpret_cast<const char*>(meshData.vertices.data()), meshData.vertices.size() * sizeof(float));
 
-    std::cout << "Dibujando modelo: " << modelName << std::endl;
-    std::stringstream ss;
-    ss << "Dibujando modelo: " << modelName << std::endl;
-    app->windowEditor->GetImGuiWindow()->consolaPanel->AddLog(ss.str());
+    // Escribir las normales
+    file.write(reinterpret_cast<const char*>(meshData.normals.data()), meshData.normals.size() * sizeof(float));
+
+    // Escribir las coordenadas de textura
+    file.write(reinterpret_cast<const char*>(meshData.texCoords.data()), meshData.texCoords.size() * sizeof(float));
+
+    // Escribir los índices
+    uint32_t numIndices = meshData.indices.size();
+    file.write(reinterpret_cast<const char*>(&numIndices), sizeof(numIndices));
+    file.write(reinterpret_cast<const char*>(meshData.indices.data()), meshData.indices.size() * sizeof(unsigned int));
+
+    file.close();
 }
+
+
+MeshData Importer::ImportMeshFromFile(const std::string& filePath) {
+    std::ifstream file(filePath, std::ios::binary);
+
+    if (!file.is_open()) {
+        std::cerr << "Error al abrir el archivo para leer: " << filePath << std::endl;
+        return MeshData(); // Devuelve una malla vacía si no se puede abrir el archivo
+    }
+
+    MeshData meshData;
+
+    // Leer el número de vértices
+    uint32_t numVertices;
+    file.read(reinterpret_cast<char*>(&numVertices), sizeof(numVertices));
+
+    // Leer los vértices
+    meshData.vertices.resize(numVertices * 3); // 3 componentes por vértice (x, y, z)
+    file.read(reinterpret_cast<char*>(meshData.vertices.data()), meshData.vertices.size() * sizeof(float));
+
+    // Leer las normales
+    meshData.normals.resize(numVertices * 3); // Asumimos que hay una normal por vértice
+    file.read(reinterpret_cast<char*>(meshData.normals.data()), meshData.normals.size() * sizeof(float));
+
+    // Leer las coordenadas de textura
+    meshData.texCoords.resize(numVertices * 2); // Asumimos que hay una coordenada UV por vértice
+    file.read(reinterpret_cast<char*>(meshData.texCoords.data()), meshData.texCoords.size() * sizeof(float));
+
+    // Leer los índices
+    uint32_t numIndices;
+    file.read(reinterpret_cast<char*>(&numIndices), sizeof(numIndices));
+    meshData.indices.resize(numIndices);
+    file.read(reinterpret_cast<char*>(meshData.indices.data()), meshData.indices.size() * sizeof(unsigned int));
+
+    file.close();
+
+    return meshData;
+}
+
+std::string Importer::GetNodeFullPath(const aiNode* node) {
+    if (!node) {
+        return "";  // Manejo de nodos nulos.
+    }
+
+    std::string fullPath = node->mName.C_Str();
+
+    // Recorrer hacia el nodo padre para construir la ruta completa.
+    const aiNode* current = node->mParent;
+    while (current) {
+        fullPath = current->mName.C_Str() + std::string("/") + fullPath;
+        current = current->mParent;
+    }
+
+    return fullPath;
+}
+
+

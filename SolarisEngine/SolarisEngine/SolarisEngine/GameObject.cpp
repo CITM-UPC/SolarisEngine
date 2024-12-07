@@ -131,7 +131,19 @@ GameObject* GameObject::Duplicate() const {
 // Método para añadir un hijo (implementación simple)
 void GameObject::AddChild(GameObject* child) {
     if (child) {
-        children.push_back(child);
+
+        bool hijoDuplicado = false;
+        for (auto* existingChild : children) {
+            if (existingChild == child) {
+                hijoDuplicado = true;
+                break;
+            }
+        }
+
+        if (!hijoDuplicado) {
+            children.push_back(child);
+        }
+        
         if (child->parent != this) {
             child->SetParent(this);
         }
