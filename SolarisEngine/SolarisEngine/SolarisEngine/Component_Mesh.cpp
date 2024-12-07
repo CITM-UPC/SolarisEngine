@@ -52,14 +52,14 @@ void Component_Mesh::DrawComponent() {
 	const glm::vec3& size = transform->GetScale();
 	glm::vec3 objectPosition = transform->GetPosition();
 	//std::cout << "Object Position: " << objectPosition.x << ", " << objectPosition.y << ", " << objectPosition.z << std::endl;
-	app->cameraEditor->GetCameraFrustum();
+	//app->cameraEditor->GetCameraFrustum();
 
-	// Verificar si el objeto está en el frustrum de la cámara activa
-	if (!app->cameraEditor || !app->cameraEditor->IsInFrustum(objectPosition, modelMatrix)) {
-		printf("un objeto no se esta dibujando");
-		Debug::Log("un objeto no se esta dibujando");
-		return; // No dibujar si no está en el frustrum
-	}
+	//// Verificar si el objeto está en el frustrum de la cámara activa
+	//if (!app->cameraEditor || !app->cameraEditor->IsInFrustum(objectPosition, modelMatrix)) {
+	//	printf("un objeto no se esta dibujando");
+	//	Debug::Log("un objeto no se esta dibujando");
+	//	return; // No dibujar si no está en el frustrum
+	//}
 
 	if (containerGO->GetComponent<Component_Material>()) {
 		material = containerGO->GetComponent<Component_Material>();
@@ -138,8 +138,8 @@ void Component_Mesh::DrawComponent() {
 
 		if (showBoundingBox) {
 			glm::vec3 min, max;
-			for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
-				glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
+			for (size_t i = 0; i < mesh->vertices.size(); i += 3) {
+				glm::vec3 v(mesh->vertices[i], mesh->vertices[i + 1], mesh->vertices[i + 2]);
 				if (i == 0) {
 					min = max = v;
 				}
