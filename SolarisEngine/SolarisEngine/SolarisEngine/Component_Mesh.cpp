@@ -129,8 +129,8 @@ void Component_Mesh::DrawComponent() {
 			bool firstVertex = true;
 
 			// Calcular los valores mínimo y máximo de la Bounding Box global
-			for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
-				glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
+			for (size_t i = 0; i < mesh->vertices.size(); i += 3) {
+				glm::vec3 v(mesh->vertices[i], mesh->vertices[i + 1], mesh->vertices[i + 2]);
 
 				if (firstVertex) {
 					globalMin = globalMax = v;
