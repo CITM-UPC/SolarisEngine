@@ -123,13 +123,13 @@ void Component_Transform::SetParent(GameObject* newParent) {
 glm::mat4 Component_Transform::GetModelMatrix() const {
     // Verificar si la posición, rotación o escala contienen valores NaN
     if (std::isnan(position.x) || std::isnan(position.y) || std::isnan(position.z)) {
-        Debug::Log("NaN detectado en posición.");
+        //Debug::Log("NaN detectado en posición.");
     }
     if (std::isnan(rotationQuat.x) || std::isnan(rotationQuat.y) || std::isnan(rotationQuat.z) || std::isnan(rotationQuat.w)) {
-        Debug::Log("NaN detectado en rotación.");
+        //Debug::Log("NaN detectado en rotación.");
     }
     if (std::isnan(scale.x) || std::isnan(scale.y) || std::isnan(scale.z)) {
-        Debug::Log("NaN detectado en escala.");
+        //Debug::Log("NaN detectado en escala.");
     }
 
     // Si el objeto tiene un padre, obtener la matriz del padre
@@ -144,7 +144,7 @@ glm::mat4 Component_Transform::GetModelMatrix() const {
     glm::quat a = localRotationOffset;
 
     if (std::isnan(a.x) || std::isnan(a.y) || std::isnan(a.z) || std::isnan(a.w)) {
-        Debug::Log("NaN detectado en rotación. Usando cuaternión de identidad.");
+        //Debug::Log("NaN detectado en rotación. Usando cuaternión de identidad.");
         // Si el cuaternión de rotación es NaN, reemplazarlo por el cuaternión de identidad
         a = glm::quat(1.0f, 0.0f, 0.0f, 0.0f); // Cuaternión de identidad
     }

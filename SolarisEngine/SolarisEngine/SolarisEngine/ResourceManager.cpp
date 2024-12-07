@@ -56,6 +56,7 @@ Resource* ResourceManager::RequestResource(const std::string& uid, Resource::Typ
       // Aquí sería necesario crear el tipo correcto
     if (newResource && newResource->LoadToMemory()) {
         resources[uid] = newResource;
+        resources[uid]->IncrementReferenceCount();
         return newResource;
     }
 

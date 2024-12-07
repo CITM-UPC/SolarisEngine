@@ -19,7 +19,11 @@ Component_Mesh::Component_Mesh(GameObject* containerGO)  // Cambiado a puntero c
 
 }
 
-Component_Mesh::~Component_Mesh() {}
+Component_Mesh::~Component_Mesh() {
+	for (const auto& mesh : meshes) {
+		mesh->DecrementReferenceCount();
+	}
+}
 
 void Component_Mesh::Enable() {
 	enabled = true;
@@ -207,7 +211,7 @@ void Component_Mesh::DrawInspectorComponent()
 
 			for (size_t i = 0; i < meshes.size(); ++i) {
 				// Identificar cada mesh
-				std::string meshLabel = "Mesh " + std::to_string(i);
+				std::string meshLabel = "Mesh " + std::to_string(i) + " - RC: " + std::to_string(meshes[i]->GetReferenceCount());
 
 				if (ImGui::TreeNode(meshLabel.c_str())) {
 					// Mostrar información específica del mesh
@@ -222,15 +226,8 @@ void Component_Mesh::DrawInspectorComponent()
 
 			ImGui::EndChild(); // Finalizar el contenedor de scroll
 			ImGui::TreePop();  // Finalizar el árbol de "Meshes"
-
-
-
-
 		}
 	}
-
-
-
 
 }
 
@@ -735,7 +732,13 @@ glm::vec3 Component_Mesh::CalculateMeshSize() {
 }
 
 Component* Component_Mesh::Clone() const {
-	return new Component_Mesh(*this); // Crea una copia usando el constructor de copia
+
+	Component_Mesh* newComponentMesh = new Component_Mesh(*this);
+	for (const auto& mesh : newComponentMesh->meshes) {
+		mesh->IncrementReferenceCount();
+	}
+
+	return newComponentMesh; // Crea una copia usando el constructor de copia
 }
 
 std::pair<glm::vec3, glm::vec3> Component_Mesh::GetBoundingBoxInWorldSpace() const {

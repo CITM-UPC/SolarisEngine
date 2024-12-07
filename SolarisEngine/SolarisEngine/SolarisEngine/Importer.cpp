@@ -85,8 +85,13 @@ GameObject* Importer::ImportarNuevo(const std::string& modelPath) {
         LoadMaterialProperties(material, materialComponent);
     }
 
+
+    for (unsigned int i = 0; i < scene->mRootNode->mNumChildren; ++i) {
+        ImportarChilds(scene->mRootNode->mChildren[i], scene, newGameObject, modelPath); // Llamada recursiva para los hijos
+    }
+
     // Importar los hijos del nodo raíz
-    ImportarChilds(scene->mRootNode, scene, newGameObject, modelPath);
+    //ImportarChilds(scene->mRootNode, scene, newGameObject, modelPath);
 
     return newGameObject;
 }
