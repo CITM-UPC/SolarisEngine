@@ -23,7 +23,11 @@ public:
     void Update();
     void MouseWheel(bool zoom);
     void GetCameraFrustum();
-    bool IsInFrustum(const glm::vec3& objectPosition);
+    bool IsInFrustum(const glm::vec3& objectPosition, const glm::mat4& modelMatrix);
+    /*bool IsInFrustum(const glm::vec3& objectPosition, const glm::vec3& objectSize);*/
+    //bool IsInFrustum(const glm::vec3& objectPosition);
+
+    bool CheckVertexAgainstFrustum(const glm::vec3& vertex);
 
     bool RayIntersectsAABB(const Ray& ray, const glm::vec3& boxMin, const glm::vec3& boxMax);
     

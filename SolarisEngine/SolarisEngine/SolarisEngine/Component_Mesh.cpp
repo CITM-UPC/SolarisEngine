@@ -29,6 +29,27 @@ void Component_Mesh::Update(double dt) {
 void Component_Mesh::DrawComponent() {
 	if (!enabled) return;
 
+	// Obtener el GameObject contenedor
+	auto transform = containerGO->GetComponent<Component_Transform>();
+	if (!transform) {
+		std::cerr << "Error: No se pudo obtener el componente de transformación." << std::endl;
+		return;
+	}
+
+	// Obtener la matriz de modelo y calcular la posición del objeto
+	glm::mat4 modelMatrix = transform->GetModelMatrix();
+	const glm::vec3& size = transform->GetScale();
+	glm::vec3 objectPosition = transform->GetPosition();
+	//std::cout << "Object Position: " << objectPosition.x << ", " << objectPosition.y << ", " << objectPosition.z << std::endl;
+	app->cameraEditor->GetCameraFrustum();
+
+	// Verificar si el objeto está en el frustrum de la cámara activa
+	if (!app->cameraEditor || !app->cameraEditor->IsInFrustum(objectPosition, modelMatrix)) {
+		printf("un objeto no se esta dibujando");
+		Debug::Log("un objeto no se esta dibujando");
+		return; // No dibujar si no está en el frustrum
+	}
+
 	if (containerGO->GetComponent<Component_Material>()) {
 		material = containerGO->GetComponent<Component_Material>();
 		material->Bind();
@@ -37,14 +58,6 @@ void Component_Mesh::DrawComponent() {
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glColor3f(1.0f, 0.0f, 1.0f); // Color rosa si no hay material
 	}
-
-	// Obtener el GameObject contenedor
-	auto transform = containerGO->GetComponent<Component_Transform>();
-	if (!transform) {
-		std::cerr << "Error: No se pudo obtener el componente de transformación." << std::endl;
-		return;
-	}
-	glm::mat4 modelMatrix = transform->GetModelMatrix();
 
 	// Aplicar la matriz de transformación en el modelo
 	glMatrixMode(GL_MODELVIEW);
@@ -74,14 +87,9 @@ void Component_Mesh::DrawComponent() {
 			glBegin(GL_LINES);
 			for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
 				glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
-				glm::vec3 n;
-				if (mesh.normals.size() > 0) {
-					n = glm::vec3(mesh.normals[i], mesh.normals[i + 1], mesh.normals[i + 2]);
-				}
-				else {
-					n = glm::vec3(mesh.faceNormals[i], mesh.faceNormals[i + 1], mesh.faceNormals[i + 2]);
-				}
-
+				glm::vec3 n = (mesh.normals.size() > 0)
+					? glm::vec3(mesh.normals[i], mesh.normals[i + 1], mesh.normals[i + 2])
+					: glm::vec3(mesh.faceNormals[i], mesh.faceNormals[i + 1], mesh.faceNormals[i + 2]);
 				glm::vec3 end = v + n * 0.1f; // Escala de la línea
 				glVertex3fv(glm::value_ptr(v));
 				glVertex3fv(glm::value_ptr(end));
@@ -112,92 +120,69 @@ void Component_Mesh::DrawComponent() {
 			}
 		}
 
-		// Mostrar la Bounding Box si está activado
 		if (showBoundingBox) {
-			glm::vec3 globalMin, globalMax;
-			bool firstVertex = true;
-
-			// Calcular los valores mínimo y máximo de la Bounding Box global
+			glm::vec3 min, max;
 			for (size_t i = 0; i < mesh.vertices.size(); i += 3) {
 				glm::vec3 v(mesh.vertices[i], mesh.vertices[i + 1], mesh.vertices[i + 2]);
-
-				if (firstVertex) {
-					globalMin = globalMax = v;
-					firstVertex = false;
+				if (i == 0) {
+					min = max = v;
 				}
 				else {
-					globalMin = glm::min(globalMin, v);
-					globalMax = glm::max(globalMax, v);
+					min = glm::min(min, v);
+					max = glm::max(max, v);
 				}
 			}
 
-			// Definir los 8 vértices de la Bounding Box
-			glm::vec3 boundingBoxVertices[8] = {
-				glm::vec3(globalMin.x, globalMin.y, globalMin.z),
-				glm::vec3(globalMax.x, globalMin.y, globalMin.z),
-				glm::vec3(globalMin.x, globalMax.y, globalMin.z),
-				glm::vec3(globalMax.x, globalMax.y, globalMin.z),
-				glm::vec3(globalMin.x, globalMin.y, globalMax.z),
-				glm::vec3(globalMax.x, globalMin.y, globalMax.z),
-				glm::vec3(globalMin.x, globalMax.y, globalMax.z),
-				glm::vec3(globalMax.x, globalMax.y, globalMax.z)
-			};
-
-			// Dibujar las aristas de la Bounding Box
+			// Dibujar la caja delimitadora
+			glColor3f(1.0f, 0.0f, 0.0f); // Rojo para la Bounding Box
 			glColor3f(1.0f, 1.0f, 0.0f); // Amarillo para la Bounding Box
 			glBegin(GL_LINES);
+			// Dibujar las aristas de la caja delimitadora
+			glVertex3f(min.x, min.y, min.z);
+			glVertex3f(max.x, min.y, min.z);
 
-			// Conectar los vértices de la Bounding Box
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[0]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[1]));
+			glVertex3f(min.x, min.y, min.z);
+			glVertex3f(min.x, max.y, min.z);
 
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[0]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[2]));
+			glVertex3f(min.x, min.y, min.z);
+			glVertex3f(min.x, min.y, max.z);
 
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[0]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[4]));
+			glVertex3f(max.x, max.y, max.z);
+			glVertex3f(min.x, max.y, max.z);
 
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[1]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[3]));
+			glVertex3f(max.x, max.y, max.z);
+			glVertex3f(max.x, min.y, max.z);
 
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[1]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[5]));
+			glVertex3f(max.x, max.y, max.z);
+			glVertex3f(max.x, max.y, min.z);
 
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[2]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[3]));
+			glVertex3f(min.x, max.y, min.z);
+			glVertex3f(max.x, max.y, min.z);
 
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[2]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[6]));
+			glVertex3f(min.x, min.y, max.z);
+			glVertex3f(max.x, min.y, max.z);
 
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[3]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[7]));
+			glVertex3f(min.x, max.y, max.z);
+			glVertex3f(min.x, max.y, min.z);
 
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[4]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[5]));
-
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[4]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[6]));
-
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[5]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[7]));
-
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[6]));
-			glVertex3fv(glm::value_ptr(boundingBoxVertices[7]));
+			glVertex3f(max.x, min.y, max.z);
+			glVertex3f(max.x, min.y, min.z);
 
 			glEnd();
 
-			// Restablecer color
+			// Restablecer color a blanco para evitar efectos no deseados
 			glColor3f(1.0f, 1.0f, 1.0f);
 		}
 	}
 
-	if (material) {
-		material->UnBind();
-	}
+	if (material) { material->UnBind(); }
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glPopMatrix(); // Restablecer la matriz después de dibujar
 }
+
+
+
 
 
 void Component_Mesh::DrawInspectorComponent()

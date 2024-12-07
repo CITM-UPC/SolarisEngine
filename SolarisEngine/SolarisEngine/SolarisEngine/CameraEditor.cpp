@@ -234,49 +234,67 @@ void CameraEditor::GetCameraFrustum()
 {
     glm::mat4 viewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
 
-    leftPlaneFrustrum = viewProjectionMatrix[3] + viewProjectionMatrix[0];
-    rightPlaneFrustrum = viewProjectionMatrix[3] - viewProjectionMatrix[0];
-    topPlaneFrustrum = viewProjectionMatrix[3] - viewProjectionMatrix[1];
-    bottomPlaneFrustrum = viewProjectionMatrix[3] + viewProjectionMatrix[1];
-    nearPlaneFrustrum = viewProjectionMatrix[3] + viewProjectionMatrix[2];
-    farPlaneFrustrum = viewProjectionMatrix[3] - viewProjectionMatrix[2];
+    // Extraer los planos de la matriz de proyección
+    leftPlaneFrustrum = glm::vec4(viewProjectionMatrix[3] + viewProjectionMatrix[0]);
+    rightPlaneFrustrum = glm::vec4(viewProjectionMatrix[3] - viewProjectionMatrix[0]);
+    bottomPlaneFrustrum = glm::vec4(viewProjectionMatrix[3] + viewProjectionMatrix[1]);
+    topPlaneFrustrum = glm::vec4(viewProjectionMatrix[3] - viewProjectionMatrix[1]);
+    nearPlaneFrustrum = glm::vec4(viewProjectionMatrix[3] + viewProjectionMatrix[2]);
+    farPlaneFrustrum = glm::vec4(viewProjectionMatrix[3] - viewProjectionMatrix[2]);
 
-    leftPlaneFrustrum /= glm::length(glm::vec3(leftPlaneFrustrum));
-    rightPlaneFrustrum /= glm::length(glm::vec3(rightPlaneFrustrum));
-    topPlaneFrustrum /= glm::length(glm::vec3(topPlaneFrustrum));
-    bottomPlaneFrustrum /= glm::length(glm::vec3(bottomPlaneFrustrum));
-    nearPlane /= glm::length(glm::vec3(nearPlaneFrustrum));
-    farPlane /= glm::length(glm::vec3(farPlaneFrustrum));
+    // Normalizar los planos
+    leftPlaneFrustrum = glm::normalize(leftPlaneFrustrum);
+    rightPlaneFrustrum = glm::normalize(rightPlaneFrustrum);
+    topPlaneFrustrum = glm::normalize(topPlaneFrustrum);
+    bottomPlaneFrustrum = glm::normalize(bottomPlaneFrustrum);
+    nearPlaneFrustrum = glm::normalize(nearPlaneFrustrum);
+    farPlaneFrustrum = glm::normalize(farPlaneFrustrum);
+
+
 
 }
 
-bool CameraEditor::IsInFrustum(const glm::vec3& objectPosition) {
-    // Verificar todos los vértices de la Bounding Box de manera optimizada
-    // Definir las coordenadas mínimas y máximas de la caja
-    glm::vec3 min = objectPosition - glm::vec3(0.5f, 0.5f, 0.5f);  // Vértice inferior izquierdo
-    glm::vec3 max = objectPosition + glm::vec3(0.5f, 0.5f, 0.5f);  // Vértice superior derecho
+bool CameraEditor::IsInFrustum(const glm::vec3& objectPosition, const glm::mat4& modelMatrix) {
+    // Obtener la caja delimitadora en el espacio local del objeto
+    glm::vec3 minLocal = objectPosition - 0.5f;  // Vértice inferior izquierdo
+    glm::vec3 maxLocal = objectPosition + 0.5f;  // Vértice superior derecho
 
-    // Comprobar los vértices contra el frustum
-    // Definir los 8 vértices de la caja (Bounding Box)
+    // Transformar la caja delimitadora a espacio mundial usando la modelMatrix
+    
+    glm::vec3 minWorld = glm::vec3(modelMatrix * glm::vec4(minLocal, 1.0f));
+    glm::vec3 maxWorld = glm::vec3(modelMatrix * glm::vec4(maxLocal, 1.0f));
+
+    // Definir los 8 vértices de la caja delimitadora transformada
     glm::vec3 boundingBoxVertices[8] = {
-        glm::vec3(min.x, min.y, min.z),
-        glm::vec3(max.x, min.y, min.z),
-        glm::vec3(min.x, max.y, min.z),
-        glm::vec3(max.x, max.y, min.z),
-        glm::vec3(min.x, min.y, max.z),
-        glm::vec3(max.x, min.y, max.z),
-        glm::vec3(min.x, max.y, max.z),
-        glm::vec3(max.x, max.y, max.z)
+        glm::vec3(minWorld.x, minWorld.y, minWorld.z),
+        glm::vec3(maxWorld.x, minWorld.y, minWorld.z),
+        glm::vec3(minWorld.x, maxWorld.y, minWorld.z),
+        glm::vec3(maxWorld.x, maxWorld.y, minWorld.z),
+        glm::vec3(minWorld.x, minWorld.y, maxWorld.z),
+        glm::vec3(maxWorld.x, minWorld.y, maxWorld.z),
+        glm::vec3(minWorld.x, maxWorld.y, maxWorld.z),
+        glm::vec3(maxWorld.x, maxWorld.y, maxWorld.z)
     };
 
-    // Comprobar si alguno de los vértices está dentro del frustum
+    // Comprobar si alguno de los vértices está dentro del frustrum
     for (const auto& vertex : boundingBoxVertices) {
-        if (IsInFrustum(vertex)) {
+        if (CheckVertexAgainstFrustum(vertex)) {
             return true;  // Si algún vértice está dentro, el objeto está en el frustum
         }
     }
 
-    return false;  // Ningún vértice está dentro del frustum
+    return false;  // Ningún vértice está dentro del frustrum
+}
+
+
+bool CameraEditor::CheckVertexAgainstFrustum(const glm::vec3& vertex) {
+    // Verificar contra cada plano del frustrum
+    return glm::dot(leftPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0 &&
+        glm::dot(rightPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0 &&
+        glm::dot(topPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0 &&
+        glm::dot(bottomPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0 &&
+        glm::dot(nearPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0 &&
+        glm::dot(farPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0;
 }
 
 
