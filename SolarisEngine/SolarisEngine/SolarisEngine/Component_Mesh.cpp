@@ -52,14 +52,14 @@ void Component_Mesh::DrawComponent() {
 	const glm::vec3& size = transform->GetScale();
 	glm::vec3 objectPosition = transform->GetPosition();
 	//std::cout << "Object Position: " << objectPosition.x << ", " << objectPosition.y << ", " << objectPosition.z << std::endl;
-	//app->cameraEditor->GetCameraFrustum();
+	app->cameraEditor->GetCameraFrustum();
 
-	//// Verificar si el objeto está en el frustrum de la cámara activa
-	//if (!app->cameraEditor || !app->cameraEditor->IsInFrustum(objectPosition, modelMatrix)) {
-	//	printf("un objeto no se esta dibujando");
-	//	Debug::Log("un objeto no se esta dibujando");
-	//	return; // No dibujar si no está en el frustrum
-	//}
+	// Verificar si el objeto está en el frustrum de la cámara activa
+	if (!app->cameraEditor || !app->cameraEditor->IsInFrustum(*this)) {
+		printf("un objeto no se esta dibujando");
+		Debug::Log("un objeto no se esta dibujando");
+		return; // No dibujar si no está en el frustrum
+	}
 
 	if (containerGO->GetComponent<Component_Material>()) {
 		material = containerGO->GetComponent<Component_Material>();
@@ -772,10 +772,22 @@ std::pair<glm::vec3, glm::vec3> Component_Mesh::GetBoundingBoxInWorldSpace() con
 		}
 	}
 
-	// Transformar los límites locales a espacio mundial
-	glm::mat4 modelMatrix = containerGO->GetComponent<Component_Transform>()->GetModelMatrix();
-	glm::vec3 minWorld = glm::vec3(modelMatrix * glm::vec4(minLocal, 1.0f));
-	glm::vec3 maxWorld = glm::vec3(modelMatrix * glm::vec4(maxLocal, 1.0f));
+	// Obtener la posición, escala y rotación del objeto
+	auto transform = containerGO->GetComponent<Component_Transform>();
+	if (!transform) {
+		return { minLocal, maxLocal }; // Si no hay transformación, usar los límites locales
+	}
+
+	glm::vec3 position = transform->GetPosition();
+	glm::vec3 scale = transform->GetScale();
+
+	// Aplicar la escala al tamaño de la caja delimitadora
+	minLocal *= scale;
+	maxLocal *= scale;
+
+	// Calcular los límites en espacio mundial sumando la posición
+	glm::vec3 minWorld = minLocal + position;
+	glm::vec3 maxWorld = maxLocal + position;
 
 	return { minWorld, maxWorld };
 }

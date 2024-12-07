@@ -254,15 +254,9 @@ void CameraEditor::GetCameraFrustum()
 
 }
 
-bool CameraEditor::IsInFrustum(const glm::vec3& objectPosition, const glm::mat4& modelMatrix) {
-    // Obtener la caja delimitadora en el espacio local del objeto
-    glm::vec3 minLocal = objectPosition - 0.5f;  // Vértice inferior izquierdo
-    glm::vec3 maxLocal = objectPosition + 0.5f;  // Vértice superior derecho
-
-    // Transformar la caja delimitadora a espacio mundial usando la modelMatrix
-    
-    glm::vec3 minWorld = glm::vec3(modelMatrix * glm::vec4(minLocal, 1.0f));
-    glm::vec3 maxWorld = glm::vec3(modelMatrix * glm::vec4(maxLocal, 1.0f));
+bool CameraEditor::IsInFrustum(const Component_Mesh& meshComponent) {
+    // Obtener la caja delimitadora en espacio mundial usando GetBoundingBoxInWorldSpace
+    auto [minWorld, maxWorld] = meshComponent.GetBoundingBoxInWorldSpace();
 
     // Definir los 8 vértices de la caja delimitadora transformada
     glm::vec3 boundingBoxVertices[8] = {
@@ -279,22 +273,24 @@ bool CameraEditor::IsInFrustum(const glm::vec3& objectPosition, const glm::mat4&
     // Comprobar si alguno de los vértices está dentro del frustrum
     for (const auto& vertex : boundingBoxVertices) {
         if (CheckVertexAgainstFrustum(vertex)) {
-            return true;  // Si algún vértice está dentro, el objeto está en el frustum
+            return true; // Si algún vértice está dentro, el objeto está en el frustum
         }
     }
 
-    return false;  // Ningún vértice está dentro del frustrum
+    return false; // Ningún vértice está dentro del frustrum
 }
 
 
+
 bool CameraEditor::CheckVertexAgainstFrustum(const glm::vec3& vertex) {
-    // Verificar contra cada plano del frustrum
-    return glm::dot(leftPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0 &&
-        glm::dot(rightPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0 &&
-        glm::dot(topPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0 &&
-        glm::dot(bottomPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0 &&
-        glm::dot(nearPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0 &&
-        glm::dot(farPlaneFrustrum, glm::vec4(vertex, 1.0f)) >= 0;
+    glm::vec4 clipSpaceVertex = getProjectionMatrix() * getViewMatrix() * glm::vec4(vertex, 1.0f);
+    // Convertir de clip space a Normalized Device Coordinates (NDC)
+    glm::vec3 ndcVertex = glm::vec3(clipSpaceVertex) / clipSpaceVertex.w;
+
+    // Comprobar si el vértice está dentro de los límites de NDC
+    return ndcVertex.x >= -1.0f && ndcVertex.x <= 1.0f &&
+        ndcVertex.y >= -1.0f && ndcVertex.y <= 1.0f &&
+        ndcVertex.z >= -1.0f && ndcVertex.z <= 1.0f;
 }
 
 

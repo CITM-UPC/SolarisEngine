@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp> // Para glm::value_ptr
 #include "Ray.h"
 #include "App.h"
+#include "Component_Mesh.h"
 
 class App;  // Declaración anticipada para que el compilador conozca la clase App.
 
@@ -23,7 +24,8 @@ public:
     void Update();
     void MouseWheel(bool zoom);
     void GetCameraFrustum();
-    bool IsInFrustum(const glm::vec3& objectPosition, const glm::mat4& modelMatrix);
+    bool IsInFrustum(const Component_Mesh& meshComponent);
+    /*bool IsInFrustum(glm::vec3 objectPosition, const glm::mat4& modelMatrix);*/
     /*bool IsInFrustum(const glm::vec3& objectPosition, const glm::vec3& objectSize);*/
     //bool IsInFrustum(const glm::vec3& objectPosition);
 
