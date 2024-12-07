@@ -7,16 +7,16 @@
 #include <assimp/scene.h>
 #include <GL/glew.h>
 #include <gl/GL.h>
+#include "ResourceMesh.h"
 
-
-struct Mesh {
-    std::vector<float> vertices;
-    std::vector<float> texCoords;
-    std::vector<unsigned int> indices;
-    std::vector<float> normals; // Normales de los vértices
-    std::vector<float> faceNormals;    // Normales por cara
-    Material material;
-};
+//struct Mesh {
+//    std::vector<float> vertices;
+//    std::vector<float> texCoords;
+//    std::vector<unsigned int> indices;
+//    std::vector<float> normals; // Normales de los vértices
+//    std::vector<float> faceNormals;    // Normales por cara
+//    Material material;
+//};
 
 class Component_Mesh : public Component {
 public:
@@ -31,8 +31,9 @@ public:
 
     void LoadMesh(const aiMesh* ai_mesh);
     void LoadMesh(const aiScene* ai_scene);
+    void LoadMesh(std::string meshHash);
 
-    void CalculateFaceNormals(Mesh& mesh);
+    void CalculateFaceNormals(ResourceMesh& mesh);
 
     void SetMaterial(Component_Material* material);
 
@@ -41,18 +42,19 @@ public:
     std::pair<glm::vec3, glm::vec3> GetBoundingBoxInWorldSpace() const;
 
     // Métodos de creación estáticos para cada primitivo
-    void GenerateCubeMesh();
-    void GenerateSphereMesh();
-    void GeneratePlaneMesh();
-    void GenerateTriangleMesh();
-    void GenerateCapsuleMesh();
-    void GenerateCylinderMesh();
+    //void GenerateCubeMesh();
+    //void GenerateSphereMesh();
+    //void GeneratePlaneMesh();
+    //void GenerateTriangleMesh();
+    //void GenerateCapsuleMesh();
+    //void GenerateCylinderMesh();
 
     glm::vec3 CalculateMeshSize();
 
     
 
-    std::vector<Mesh> meshes;
+    std::vector<ResourceMesh*> meshes;
+    std::vector<std::string> hashes;
 
 private:
  
