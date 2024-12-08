@@ -1,6 +1,11 @@
 #pragma once
+
+#include "ResourceRegistration.h"
 #include "Meta.h"
 #include <string>
+#include "Resource.h"
+#include "ResourceMesh.h"
+
 
 class MetaManager {
 public:
@@ -9,3 +14,4 @@ public:
     static void SaveMeta(const Meta& meta, const std::string& metaFilePath);
     static Meta LoadMeta(const std::string& metaFilePath);
 };
+

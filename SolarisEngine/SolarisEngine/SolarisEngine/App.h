@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/fwd.hpp>
 #include <glm/ext/vector_int2.hpp>
+#include <cereal/types/memory.hpp>
 #include <exception>
 #include <thread>
 
@@ -26,6 +27,12 @@
 #include "Component_ParticleSystem.h"
 #include "Component_Camera.h"
 #include "ResourceManager.h"
+#include "Resource.h"
+#include "ResourceMesh.h"
+
+
+
+
 
 // Classes "globales"
 class MyWindow;

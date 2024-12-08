@@ -320,6 +320,9 @@
     <ClInclude Include="MetaManager.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="ResourceRegistration.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="GameObject.inl">

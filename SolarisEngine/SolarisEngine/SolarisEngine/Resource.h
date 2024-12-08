@@ -1,6 +1,7 @@
 #pragma once
 #include "UIDGen.h"
 #include "Defs.h"
+#include <cereal/cereal.hpp>
 class Resource
 {
 
@@ -20,7 +21,7 @@ public:
 	};
 
 
-
+	Resource() = default; // Constructor por defecto
 	Resource(std::string uid, Resource::Type type);
 	virtual ~Resource();
 
@@ -38,6 +39,17 @@ public:
 	uint GetReferenceCount() const;
 	void IncrementReferenceCount();
 	void DecrementReferenceCount();
+
+	 //// Método de serialización
+		//template <class Archive>
+		//void serialize(Archive& archive) {
+		//	archive(CEREAL_NVP(UID), CEREAL_NVP(type), CEREAL_NVP(assetFile), CEREAL_NVP(libraryFile));
+		//}
+	template <class Archive>
+	void serialize(Archive& archive) {
+		// Serializar los atributos comunes de Resource
+		archive(CEREAL_NVP(UID), CEREAL_NVP(type), CEREAL_NVP(assetFile), CEREAL_NVP(libraryFile), CEREAL_NVP(loadedToMemory), CEREAL_NVP(referenceCount));
+	}
 
 	std::string UID;
 	Type type = Type::UNKNOWN;

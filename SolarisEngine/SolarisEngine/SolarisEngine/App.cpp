@@ -8,6 +8,7 @@
 #include <exception>
 #include <imgui_impl_sdl2.h>
 #include <SDL2/SDL_events.h>
+#include "MetaManager.h"
 
 
 
@@ -48,6 +49,12 @@ bool App::Start()
 {
     std::cout << "App::Start called" << std::endl;
     Debug::Log("App::Start called");
+
+    //Generar metas
+    MetaManager::CheckAndGenerateMetaFiles(ASSETS_DIR);
+
+
+
 
     // Crear los objetos con new
     gameObject = importer->ImportarNuevo("./Assets/Entrega1/BakerHouse.fbx"); // <-- Modelo con 1 textura

@@ -5,11 +5,21 @@
 #include "FileUtils.h"
 #include "ResourceMesh.h"
 
+//#include "ResourceRegistration.cpp"
+
+
+
+
 void MetaManager::CheckAndGenerateMetaFiles(const std::string& assetsDirectory)
 {
     auto assetFiles = FileUtils::GetAllFilesInDirectory(assetsDirectory);
 
     for (const auto& filePath : assetFiles) {
+
+        if (std::filesystem::path(filePath).extension() == ".meta") {
+            continue;
+        }
+
         std::string metaFilePath = filePath + ".meta";
 
         if (!FileUtils::FileExists(metaFilePath)) {

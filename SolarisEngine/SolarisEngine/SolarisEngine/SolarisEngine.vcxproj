@@ -211,6 +211,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ResourceMesh.h" />
+    <ClInclude Include="ResourceRegistration.h" />
     <ClInclude Include="ResourcesData.h" />
     <ClInclude Include="ResourceTexture.h" />
     <ClInclude Include="Scene.h" />
