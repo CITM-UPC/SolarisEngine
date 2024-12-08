@@ -165,9 +165,6 @@
     <ClCompile Include="ResourceTexture.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="MetaData.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="IdentifierGenerator.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
@@ -175,6 +172,15 @@
       <Filter>Source Files\Importers</Filter>
     </ClCompile>
     <ClCompile Include="DataImporter.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="FileUtils.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Meta.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="MetaManager.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -293,9 +299,6 @@
     <ClInclude Include="ResourceManager.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="MetaData.h">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="IdentifierGenerator.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
@@ -306,6 +309,15 @@
       <Filter>Header Files\Importers</Filter>
     </ClInclude>
     <ClInclude Include="DataImporter.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="FileUtils.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Meta.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="MetaManager.h">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
   </ItemGroup>

@@ -39,16 +39,16 @@ public:
 	void IncrementReferenceCount();
 	void DecrementReferenceCount();
 
-
-
-protected:
 	std::string UID;
 	Type type = Type::UNKNOWN;
 
 
 	std::string assetFile;  // Ruta a la carpeta Assets
 	std::string libraryFile; // Ruta a la carpeta Library
-	
+
 	bool loadedToMemory;
 	uint referenceCount;
+
+protected:
+	
 };
