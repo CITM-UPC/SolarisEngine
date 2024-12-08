@@ -142,10 +142,12 @@
     <ClCompile Include="DataImporter.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="EditorSaveLoad.cpp" />
+    <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="IdentifierGenerator.cpp" />
     <ClCompile Include="MeshImporter.cpp" />
-    <ClCompile Include="MetaData.cpp" />
+    <ClCompile Include="Meta.cpp" />
+    <ClCompile Include="MetaManager.cpp" />
     <ClCompile Include="PanelConsola.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -185,10 +187,12 @@
     <ClInclude Include="DataImporter.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="EditorSaveLoad.h" />
+    <ClInclude Include="FileUtils.h" />
     <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="IdentifierGenerator.h" />
     <ClInclude Include="MeshImporter.h" />
-    <ClInclude Include="MetaData.h" />
+    <ClInclude Include="Meta.h" />
+    <ClInclude Include="MetaManager.h" />
     <ClInclude Include="PanelConsola.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Defs.h" />
@@ -207,6 +211,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ResourceMesh.h" />
+    <ClInclude Include="ResourceRegistration.h" />
     <ClInclude Include="ResourcesData.h" />
     <ClInclude Include="ResourceTexture.h" />
     <ClInclude Include="Scene.h" />
