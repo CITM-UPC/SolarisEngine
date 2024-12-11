@@ -400,7 +400,7 @@ void InputEditor::handleDroppedFile(const char* filePath) {
 		std::string extension = droppedFile.substr(droppedFile.find_last_of('.') + 1);
 		std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 		if (extension == "fbx" || extension == "obj") {
-			GameObject* gameObject = app->importer->Importar(droppedFile);
+			GameObject* gameObject = app->importer->ImportarNuevo(droppedFile);
 			if (gameObject) {
 				app->actualScene->AddGameObject(gameObject);
 
