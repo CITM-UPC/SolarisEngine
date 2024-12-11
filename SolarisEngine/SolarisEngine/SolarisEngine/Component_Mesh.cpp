@@ -50,7 +50,7 @@ void Component_Mesh::DrawComponent() {
 	// Obtener la matriz de modelo y calcular la posición del objeto
 	glm::mat4 modelMatrix = transform->GetModelMatrix();
 	const glm::vec3& size = transform->GetScale();
-	glm::vec3 objectPosition = transform->GetPosition();
+	glm::vec3 objectPosition = glm::vec3(modelMatrix[3]);
 	//std::cout << "Object Position: " << objectPosition.x << ", " << objectPosition.y << ", " << objectPosition.z << std::endl;
 	app->cameraEditor->GetCameraFrustum();
 
@@ -787,7 +787,9 @@ std::pair<glm::vec3, glm::vec3> Component_Mesh::GetBoundingBoxInWorldSpace() con
 		return { minLocal, maxLocal }; // Si no hay transformación, usar los límites locales
 	}
 
-	glm::vec3 position = transform->GetPosition();
+
+	glm::mat4 modelMatrix = transform->GetModelMatrix();
+	glm::vec3 position = glm::vec3(modelMatrix[3]);
 	glm::vec3 scale = transform->GetScale();
 
 	// Aplicar la escala al tamaño de la caja delimitadora

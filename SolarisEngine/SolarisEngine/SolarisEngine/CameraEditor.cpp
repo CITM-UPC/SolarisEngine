@@ -59,8 +59,13 @@ void CameraEditor::processInput(unsigned char key, bool isPressed) {
 
 void CameraEditor::focusOnObject() {
     if (app->actualScene->GetSelectedGameObject() != nullptr) {
-        glm::vec3 objectPosition = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>()->GetPosition();
-        float relativeSize = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>()->GetRelativeSize();
+        Component_Transform* transform = app->actualScene->GetSelectedGameObject()->GetComponent<Component_Transform>();
+
+
+        glm::mat4 modelMatrix = transform->GetModelMatrix();
+        glm::vec3 objectPosition = glm::vec3(modelMatrix[3]); // Última columna de la matriz.
+
+        float relativeSize = transform->GetRelativeSize();
 
         // Calcular la distancia requerida para ver el objeto en función de su tamaño
         float baseDistance = 1.5f;
