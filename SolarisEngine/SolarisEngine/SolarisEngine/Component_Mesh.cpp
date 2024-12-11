@@ -137,6 +137,9 @@ void Component_Mesh::DrawComponent() {
 		}
 
 		if (showBoundingBox) {
+			// Deshabilitar blending para la caja delimitadora
+			glDisable(GL_BLEND);
+
 			glm::vec3 min, max;
 			for (size_t i = 0; i < mesh->vertices.size(); i += 3) {
 				glm::vec3 v(mesh->vertices[i], mesh->vertices[i + 1], mesh->vertices[i + 2]);
@@ -149,10 +152,12 @@ void Component_Mesh::DrawComponent() {
 				}
 			}
 
+			// Establecer color fijo para la Bounding Box (Rojo)
+			glColor3f(1.0f, 0.0f, 0.0f);
+
 			// Dibujar la caja delimitadora
-			glColor3f(1.0f, 0.0f, 0.0f); // Rojo para la Bounding Box
-			glColor3f(1.0f, 1.0f, 0.0f); // Amarillo para la Bounding Box
 			glBegin(GL_LINES);
+
 			// Dibujar las aristas de la caja delimitadora
 			glVertex3f(min.x, min.y, min.z);
 			glVertex3f(max.x, min.y, min.z);
@@ -186,9 +191,13 @@ void Component_Mesh::DrawComponent() {
 
 			glEnd();
 
-			// Restablecer color a blanco para evitar efectos no deseados
+			// Restablecer el color a blanco para evitar efectos no deseados en otros objetos
 			glColor3f(1.0f, 1.0f, 1.0f);
+
+			// Habilitar blending nuevamente si era necesario
+			glEnable(GL_BLEND);
 		}
+
 	}
 
 	if (material) { material->UnBind(); }
