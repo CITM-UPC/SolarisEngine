@@ -1,0 +1,28 @@
+{
+    "SaveScene": {
+        "saveGameObjects": [
+            {
+                "uid": 1,
+                "parentUid": 0,
+                "name": "RootNode1",
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "components": []
+            }
+        ]
+    }
+}

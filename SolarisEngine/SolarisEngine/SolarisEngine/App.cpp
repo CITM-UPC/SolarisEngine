@@ -213,6 +213,11 @@ bool App::LoadConfig()
     
     actualScene = new Scene();
 
+    saveGameObject = new SaveGameObject();
+    saveScene = new SaveScene();
+    //saveSceneManager = new SaveSceneManager();
+
+
    
     INIT_openGL();
 

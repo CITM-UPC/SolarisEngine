@@ -52,6 +52,12 @@
     <Filter Include="Header Files\Importers">
       <UniqueIdentifier>{ea55194b-345c-47a9-a54e-e29f17568c15}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\SaveScenes">
+      <UniqueIdentifier>{53317c8f-6a77-48a5-9a30-b4c52a6b8156}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SaveScenes">
+      <UniqueIdentifier>{b3ea3798-7feb-454e-9d84-1eececdaeb6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyWindow.cpp">
@@ -182,6 +188,18 @@
     </ClCompile>
     <ClCompile Include="MetaManager.cpp">
       <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveGameObject.cpp">
+      <Filter>Source Files\SaveScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveScene.cpp">
+      <Filter>Source Files\SaveScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveSceneManager.cpp">
+      <Filter>Source Files\SaveScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadSaveScene.cpp">
+      <Filter>Source Files\SaveScenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -322,6 +340,18 @@
     </ClInclude>
     <ClInclude Include="ResourceRegistration.h">
       <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveGameObject.h">
+      <Filter>Header Files\SaveScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveScene.h">
+      <Filter>Header Files\SaveScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveSceneManager.h">
+      <Filter>Header Files\SaveScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadSaveScene.h">
+      <Filter>Header Files\SaveScenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

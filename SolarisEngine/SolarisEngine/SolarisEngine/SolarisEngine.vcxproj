@@ -145,6 +145,7 @@
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="IdentifierGenerator.cpp" />
+    <ClCompile Include="LoadSaveScene.cpp" />
     <ClCompile Include="MeshImporter.cpp" />
     <ClCompile Include="Meta.cpp" />
     <ClCompile Include="MetaManager.cpp" />
@@ -166,6 +167,9 @@
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="ResourceMesh.cpp" />
     <ClCompile Include="ResourceTexture.cpp" />
+    <ClCompile Include="SaveGameObject.cpp" />
+    <ClCompile Include="SaveScene.cpp" />
+    <ClCompile Include="SaveSceneManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
@@ -190,6 +194,7 @@
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="IdentifierGenerator.h" />
+    <ClInclude Include="LoadSaveScene.h" />
     <ClInclude Include="MeshImporter.h" />
     <ClInclude Include="Meta.h" />
     <ClInclude Include="MetaManager.h" />
@@ -214,6 +219,9 @@
     <ClInclude Include="ResourceRegistration.h" />
     <ClInclude Include="ResourcesData.h" />
     <ClInclude Include="ResourceTexture.h" />
+    <ClInclude Include="SaveGameObject.h" />
+    <ClInclude Include="SaveScene.h" />
+    <ClInclude Include="SaveSceneManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="TextureLoader.h" />
