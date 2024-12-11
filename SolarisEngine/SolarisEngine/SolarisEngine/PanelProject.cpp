@@ -110,6 +110,11 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
 		const auto& entryPath = entry.path();
 		std::string fileName = entryPath.filename().string();
+		// 跳过 .meta 文件 
+		if (entryPath.extension() == ".meta")
+		{
+			continue;
+		}
 		bool isDirectory = entry.is_directory();
 		bool isHovered = false;
 		bool isSelected = (fileName == selectedItem);
@@ -181,7 +186,7 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 			strncpy_s(buffer, sizeof(buffer), renameBuffer.c_str(), _TRUNCATE); // 使用 strncpy_s
 
 			// 设置输入框的最大宽度
-			ImGui::SetNextItemWidth(iconSize + padding + textMaxWidth-75);
+			ImGui::SetNextItemWidth(iconSize + padding + textMaxWidth - 75);
 			if (ImGui::InputText("##Rename", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
 				std::filesystem::path newFilePath = entryPath.parent_path() / buffer;
 				std::filesystem::rename(entryPath, newFilePath);
@@ -203,7 +208,7 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 		}
 
 		DropTarget(entryPath);
-		ShowFileName(textMaxWidth, fileName, maxItemsPerRow,isRenaming, renameTarget);
+		ShowFileName(textMaxWidth, fileName, maxItemsPerRow, isRenaming, renameTarget);
 
 		itemsInRow++;
 		if (itemsInRow >= maxItemsPerRow) {
