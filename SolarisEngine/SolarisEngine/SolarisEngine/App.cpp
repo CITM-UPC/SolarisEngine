@@ -57,11 +57,13 @@ bool App::Start()
 
 
     // Crear los objetos con new
-    gameObject = importer->ImportarNuevo("./Assets/Entrega1/BakerHouse.fbx"); // <-- Modelo con 1 textura
+    gameObject = importer->ImportarNuevo("./Assets/Entrega2/Street environment_V01.fbx"); // <-- Modelo con 1 textura
     actualScene->AddGameObject(gameObject);
+    gameObject->transform->SetRotation(-90,0,0);
+    gameObject->transform->SetScale(0.1, 0.1, 0.1);
 
-    gameObject = importer->ImportarNuevo("./Assets/Entrega1/Sora.fbx");
-    actualScene->AddGameObject(gameObject);
+  /*  gameObject = importer->ImportarNuevo("./Assets/Entrega1/Sora.fbx");
+    actualScene->AddGameObject(gameObject);*/
 
     //gameObject->AddComponent<Component_Material>()->SetTexture("./Assets/Baker_house.png");
     //gameObject->GetComponent<Component_Transform>()->SetPosition(glm::vec3(-5, 0, 0));

@@ -56,8 +56,8 @@ void Component_Mesh::DrawComponent() {
 
 	// Verificar si el objeto está en el frustrum de la cámara activa
 	if (!app->cameraEditor || !app->cameraEditor->IsInFrustum(*this)) {
-		printf("un objeto no se esta dibujando");
-		Debug::Log("un objeto no se esta dibujando");
+		/*printf("un objeto no se esta dibujando");
+		Debug::Log("un objeto no se esta dibujando");*/
 		return; // No dibujar si no está en el frustrum
 	}
 

@@ -21,7 +21,7 @@ Component_Material::Component_Material(GameObject* containerGO)  // Usar puntero
 
 Component_Material::~Component_Material() {
 	if (material->textureID != 0) {
-		ilDeleteImages(1, &material->textureID);  // Libera la textura de DevIL si está cargada
+		ilDeleteImages(1, &material->textureID);  // Libera la textura de DevIL si est?cargada
 	}
 }
 

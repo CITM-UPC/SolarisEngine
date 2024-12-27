@@ -45,7 +45,7 @@ GameObject* Importer::ImportarNuevo(const std::string& modelPath) {
     // Crear el GameObject raíz
     GameObject* newGameObject = GameObject::Create(scene->GetShortFilename(modelPath.c_str()));
 
-    // Asegúrate de que el componente Transform esté presente
+    // Asegúrate de que el componente Transform est?presente
     if (!newGameObject->GetComponent<Component_Transform>()) {
         newGameObject->AddComponent<Component_Transform>();
     }
@@ -101,7 +101,7 @@ void Importer::ImportarChilds(aiNode* node, const aiScene* scene, GameObject* pa
     GameObject* newGameObject = GameObject::Create(node->mName.C_Str());
     newGameObject->SetParent(parent);
 
-    // Asegurarse de que el componente Transform esté presente en el GameObject
+    // Asegurarse de que el componente Transform est?presente en el GameObject
     if (!newGameObject->GetComponent<Component_Transform>()) {
         newGameObject->AddComponent<Component_Transform>();
     }
@@ -163,11 +163,11 @@ void Importer::LoadTexturesFromMaterial(aiMaterial* material, Component_Material
 
         // Si la textura tiene un path vacío, es probable que sea una textura embebida
         if (texturePath.length == 0) {
-            // Aquí verificamos si la textura está incrustada
+            // Aqu?verificamos si la textura est?incrustada
             const aiTexture* embeddedTexture = scene->GetEmbeddedTexture(texturePath.C_Str());
 
             if (embeddedTexture) {
-                // La textura está incrustada, puedes procesarla aquí
+                // La textura est?incrustada, puedes procesarla aqu?
                 LoadEmbeddedTexture((aiTexture*)embeddedTexture, materialComponent);
             }
             else {
@@ -175,7 +175,7 @@ void Importer::LoadTexturesFromMaterial(aiMaterial* material, Component_Material
             }
         }
         else {
-            // Si la ruta no está vacía, es una textura externa
+            // Si la ruta no est?vacía, es una textura externa
             std::string textureFilePath = texturePath.C_Str();
 
             // Si la textura tiene una ruta relativa, combinamos con la ruta del archivo FBX
@@ -183,7 +183,7 @@ void Importer::LoadTexturesFromMaterial(aiMaterial* material, Component_Material
                 textureFilePath = scenePath + "/" + textureFilePath;
             }
 
-            materialComponent->SetTexture(textureFilePath);  // Aquí debes utilizar la ruta completa de la textura
+            materialComponent->SetTexture(textureFilePath);  // Aqu?debes utilizar la ruta completa de la textura
         }
     }
 }
@@ -194,7 +194,7 @@ std::string Importer::GetScenePath(const std::string& modelPath) {
 }
 
 void Importer::LoadEmbeddedTexture(aiTexture* embeddedTexture, Component_Material* materialComponent) {
-    // El contenido de la textura embebida está en embeddedTexture->pcData
+    // El contenido de la textura embebida est?en embeddedTexture->pcData
     // Debes convertir los datos de la textura a un formato que puedas usar (por ejemplo, con una librería como stb_image o DevIL)
 
     if (embeddedTexture->mHeight == 0) {
@@ -230,7 +230,7 @@ void Importer::LoadMaterialProperties(aiMaterial* material, Component_Material* 
     // También puedes cargar otras propiedades como el color especular, si lo deseas
     aiColor4D specularColor;
     if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, specularColor)) {
-        // Si tienes soporte para color especular, puedes agregarlo aquí
+        // Si tienes soporte para color especular, puedes agregarlo aqu?
     }
 
     // Si tienes más propiedades (como reflectividad, opacidad, etc.), puedes extraerlas de la misma manera
@@ -350,7 +350,7 @@ void Importer::LoadMaterials(const aiScene* scene) {
 void Importer::ExportMeshToFile(const std::string& filePath, const MeshData& meshData) {
     std::ofstream file(filePath, std::ios::binary);
 
-    // Asegurarse de que el archivo se abrió correctamente
+    // Asegurarse de que el archivo se abri?correctamente
     if (!file.is_open()) {
         std::cerr << "Error al abrir el archivo para escribir: " << filePath << std::endl;
         return;
