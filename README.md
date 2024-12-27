@@ -6,6 +6,18 @@ Solaris Engine es un motor de videojuegos desarrollado para la asignatura “Mot
 Solaris Engine es un motor 3D desarrollado con SDL2, OpenGL, glew, DevIL, GLM, Assimp e ImGui, programado en C y C++17.
 
 ### Implementaciones
+
+#### Nuevas
+- Gestión de padres e hijos (transform, propiedades...).
+- Gestión del panel de jerarquía(mover objetos, asignar padres e hijos...).
+- Implementación del componente "camera".
+- Selección de objetos en la escena mediante el ratón.
+- "Frustum Culling" de la cámara (dejar de dibujar objetos que no se ven).
+- Las mallas se guardan en nuestro propio formato.
+- Todos los recursos usan recuento de referencias.
+- El usuario puede navegar por la ventana de "assets" así como mover, añadir, cargar, duplicar o borrar archivos.
+
+#### Antiguas
 - Carga de FBXs (arrastrar y soltar).
 - Carga de texturas (PNG, JPG, JPEG, DDS).
 - Gestión de GameObjects.
@@ -23,13 +35,14 @@ Solaris Engine es un motor 3D desarrollado con SDL2, OpenGL, glew, DevIL, GLM, A
 
 ### Controles: 
 - Cámara:
-    - **RMB**: Rotar cámara
-    - **RMB + W**: Avanzar cámara
-    - **RMB + S**: Retroceder cámara
-    - **RMB + D**: Mover la cámara hacia la derecha
-    - **RMB + A**: Mover la cámara hacia la izquierda
-    - **LSHIFT**: Duplica la velocidad de movimiento de la cámara
-    - **MMB Scroll**: Zoom in / Zoom out
-    - **MMB**: Desplazamiento de la cámara
-    - **ALT + LMB**: Orbitar el objeto seleccionado
-    - **F**: Centra la cámara en el objeto seleccionado
+    - **LMB**: Seleccionar objetos.
+    - **RMB**: Rotar cámara.
+    - **RMB + W**: Avanzar cámara.
+    - **RMB + S**: Retroceder cámara.
+    - **RMB + D**: Mover la cámara hacia la derecha.
+    - **RMB + A**: Mover la cámara hacia la izquierda.
+    - **LSHIFT**: Duplica la velocidad de movimiento de la cámara.
+    - **MMB Scroll**: Zoom in / Zoom out.
+    - **MMB**: Desplazamiento de la cámara.
+    - **ALT + LMB**: Orbitar el objeto seleccionado.
+    - **F**: Centra la cámara en el objeto seleccionado.
