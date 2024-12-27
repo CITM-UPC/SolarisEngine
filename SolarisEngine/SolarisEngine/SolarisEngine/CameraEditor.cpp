@@ -275,14 +275,14 @@ bool CameraEditor::IsInFrustum(const Component_Mesh& meshComponent) {
         glm::vec3(maxWorld.x, maxWorld.y, maxWorld.z)
     };
 
-    // Comprobar si alguno de los vértices está dentro del frustrum
+    // Comprobar si alguno de los vértices est?dentro del frustrum
     for (const auto& vertex : boundingBoxVertices) {
         if (CheckVertexAgainstFrustum(vertex)) {
-            return true; // Si algún vértice está dentro, el objeto está en el frustum
+            return true; // Si algún vértice est?dentro, el objeto est?en el frustum
         }
     }
 
-    return false; // Ningún vértice está dentro del frustrum
+    return false; // Ningún vértice est?dentro del frustrum
 }
 
 
@@ -292,7 +292,7 @@ bool CameraEditor::CheckVertexAgainstFrustum(const glm::vec3& vertex) {
     // Convertir de clip space a Normalized Device Coordinates (NDC)
     glm::vec3 ndcVertex = glm::vec3(clipSpaceVertex) / clipSpaceVertex.w;
 
-    // Comprobar si el vértice está dentro de los límites de NDC
+    // Comprobar si el vértice est?dentro de los límites de NDC
     return ndcVertex.x >= -1.0f && ndcVertex.x <= 1.0f &&
         ndcVertex.y >= -1.0f && ndcVertex.y <= 1.0f &&
         ndcVertex.z >= -1.0f && ndcVertex.z <= 1.0f;

@@ -100,7 +100,6 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 	static float lastClickTime = 0.0f;
 	const float doubleClickTime = 0.3f; // Double click interval
 
-	// 添加静态变量以跟踪重命名状态
 	static bool isRenaming = false;
 	static std::string renameBuffer;
 	static std::string renameTarget;
@@ -110,7 +109,7 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
 		const auto& entryPath = entry.path();
 		std::string fileName = entryPath.filename().string();
-		// 跳过 .meta 文件 
+		// salta archivo .meta
 		if (entryPath.extension() == ".meta")
 		{
 			continue;
@@ -123,7 +122,6 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
 		ShowIcon(isDirectory, entryPath);
 
-		// 透明背景
 		ImGui::PushStyleColor(ImGuiCol_Button, isSelected ? ImVec4(0.0f, 0.0f, 1.0f, 0.5f) : ImVec4(0, 0, 0, 0));
 
 		std::string uniqueId = "##" + fileName + "_" + std::to_string(i);
@@ -137,7 +135,6 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 			float currentTime = ImGui::GetTime();
 			if (ImGui::IsMouseClicked(0)) {
 				if (fileName == lastClickedItem && (currentTime - lastClickTime) < doubleClickTime) {
-					// 双击打开文件或文件夹
 					if (isDirectory) {
 						selectedItem = fileName;
 						pathStack.push(currentPath);
@@ -145,34 +142,29 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 					}
 					else {
 						selectedItem = fileName;
-						// 打开文件的逻辑
 					}
 				}
 				else {
-					// 单击选择项目并改变颜色
 					selectedItem = fileName;
 					lastClickedItem = fileName;
 					lastClickTime = currentTime;
 				}
 			}
 
-			// 确保只触发一个弹出菜单
 			if (ImGui::IsMouseClicked(1)) {
 				if (ImGui::IsAnyItemHovered()) {
-					// 如果悬停在项目上，设置 selectedItem 并打开相应的菜单
 					Debug::Log("ProjectContextMenuFile");
 					selectedItem = fileName;
 					ImGui::OpenPopup("ProjectContextMenuFile");
 				}
 				else {
-					// 如果未悬停在任何项目上，清除选择并打开空白区域菜单
 					Debug::Log("ProjectContextMenuEmpty");
 					selectedItem = "";
 					ImGui::OpenPopup("ProjectContextMenu");
 				}
 			}
 
-			// 按下 F2 键开始重命名
+			// Pulsa F2 cambiar nombre
 			if (ImGui::IsKeyPressed(ImGuiKey_F2)) {
 				isRenaming = true;
 				renameBuffer = fileName;
@@ -180,12 +172,10 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 			}
 		}
 
-		// 处理重命名
+	
 		if (isRenaming && isSelected && fileName == renameTarget) {
 			char buffer[256];
 			strncpy_s(buffer, sizeof(buffer), renameBuffer.c_str(), _TRUNCATE); 
-
-			// 设置输入框的最大宽度
 			ImGui::SetNextItemWidth(iconSize + padding + textMaxWidth - 75);
 			if (ImGui::InputText("##Rename", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
 				std::filesystem::path newFilePath = entryPath.parent_path() / buffer;
@@ -200,7 +190,6 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 			}
 		}
 
-		// 设置拖动源
 		if (ImGui::BeginDragDropSource()) {
 			ImGui::SetDragDropPayload("DND_FILE", fileName.c_str(), fileName.size() + 1);
 			ImGui::Text("Dragging %s", fileName.c_str());
@@ -221,10 +210,9 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 
 	}
 
-	// 在任何项目之外左击时取消选择项目
 	if (ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
 		selectedItem = "";
-		isRenaming = false; // 取消重命名状态
+		isRenaming = false; 
 		renameBuffer.clear();
 		renameTarget.clear();
 	}
@@ -368,15 +356,11 @@ void PanelProject::DropTarget(std::filesystem::path entryPath)
 
 	ImVec2 windowPos = ImGui::GetWindowPos();
 	ImVec2 availableRegion = ImGui::GetContentRegionAvail();
-
-	// 手动计算矩形区域
 	ImVec2 rectMin = windowPos;
 	ImVec2 rectMax = ImVec2(windowPos.x + availableRegion.x + 20, windowPos.y + availableRegion.y + 50);
 
-	// 定义拖放区域
 	ImRect dropRect(rectMin, rectMax);
 
-	// 使用自定义拖放目标
 	if (ImGui::BeginDragDropTargetCustom(dropRect, ImGui::GetID("SceneDragDropTarget"))) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
 			const char* payloadFileName = static_cast<const char*>(payload->Data);
@@ -400,7 +384,6 @@ void PanelProject::DropTarget(std::filesystem::path entryPath)
 
 
 
-	// 设置拖动目标
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
 			const char* payloadFileName = static_cast<const char*>(payload->Data);
@@ -440,7 +423,6 @@ void PanelProject::ShowFileName(float textMaxWidth, std::string fileName, int ma
 	//}
 
 
-			// 文件名
 	ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + textMaxWidth);
 	float textWidth = ImGui::CalcTextSize(fileName.c_str()).x;
 

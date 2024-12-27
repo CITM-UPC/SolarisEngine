@@ -8,7 +8,7 @@
 #include <cereal/types/vector.hpp>
 #include <cereal/archives/json.hpp>
 
-// 组件结构体
+// Estructura del componente
 struct ComponentSaveGameObject {
     int type;
     std::string path;
@@ -20,7 +20,7 @@ struct ComponentSaveGameObject {
     }
 };
 
-// 保存游戏对象结构体
+// Estructura del objeto de juego guardado
 struct SaveGameObject {
     int uid;
     int parentUid;

@@ -40,7 +40,7 @@ void Component_ParticleSystem::EmitParticle() {
     newParticle.maxLife = particleLifetime;
     newParticle.color = particleColor;
 
-    // Aleatorización si está habilitada
+    // Aleatorización si est?habilitada
     if (randomizeVelocity) {
         newParticle.velocity = glm::mix(minVelocity, maxVelocity, static_cast<float>(rand()) / static_cast<float>(RAND_MAX));
     }
@@ -125,7 +125,7 @@ void Component_ParticleSystem::DrawComponent() {
 }
 
 void Component_ParticleSystem::RenderParticle(const glm::vec3& position, float size, const glm::vec4& color, float rotation) {
-    // Asegúrate de que la textura está activa
+    // Asegúrate de que la textura est?activa
     //if (materialComponent && materialComponent->GetTextureID() != 0) {
     //    glBindTexture(GL_TEXTURE_2D, materialComponent->GetTextureID());  // Usar la textura del material
     //}

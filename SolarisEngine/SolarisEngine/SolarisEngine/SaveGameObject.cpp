@@ -1,7 +1,7 @@
 ﻿#include "SaveGameObject.h"
 #include <atomic>
 
-// 使用静态原子变量生成唯一ID
+// Usar una variable estática atómica para generar un ID único
 std::atomic<int> nextUID(1);
 
 int SaveGameObjectFactory::GenerateUniqueID() {
