@@ -381,21 +381,21 @@ void InputEditor::handleDroppedFile(const char* filePath) {
 	int mouseX, mouseY;
 	SDL_GetMouseState(&mouseX, &mouseY);
 
-	// 确定文件拖放到哪个面板
+	// Determinar en qué panel se soltó el archivo
 	if (mouseX >= app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerPos.x && mouseX <= app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerPos.x + app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerSize.x &&
 		mouseY >= app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerPos.y && mouseY <= app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerPos.y + app->windowEditor->GetImGuiWindow()->projectPanel->projectExplorerSize.y) {
-		// 文件拖放到Project Explorer面板
+		// Soltar archivo en el panel del Explorador de Proyectos
 		Debug::Log("File dropped into Project Explorer: ", filePath);
-		// 将文件移动到游戏引擎的文件夹中
+		// Mover el archivo a la carpeta del motor de juego
 		std::string destinationFolder = app->windowEditor->GetImGuiWindow()->projectPanel->getCurrentPath().string();
 		app->windowEditor->GetImGuiWindow()->projectPanel->CopyToAssetsFolder(filePath, destinationFolder);
 	}
 	else if (mouseX >= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.x && mouseX <= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.x + app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelSize.x &&
 		mouseY >= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.y && mouseY <= app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelPos.y + app->windowEditor->GetImGuiWindow()->scenePanel->scenePanelSize.y) {
-		// 文件拖放到Scene Panel面板
+		// Soltar archivo en el panel de Escena
 		Debug::Log("File dropped into Scene Panel: ", filePath);
 
-		// 根据文件类型执行相应操作
+		// Realizar la acción correspondiente según el tipo de archivo
 		std::string droppedFile = filePath;
 		std::string extension = droppedFile.substr(droppedFile.find_last_of('.') + 1);
 		std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
@@ -432,7 +432,7 @@ void InputEditor::handleDroppedFile(const char* filePath) {
 	}
 
 
-	//SDL_free((void*)filePath); // 释放SDL分配的文件路径内存
+	//SDL_free((void*)filePath); 
 }
 
 

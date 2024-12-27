@@ -531,7 +531,7 @@ void Component_Mesh::CalculateFaceNormals(ResourceMesh& mesh) {
 //void Component_Mesh::GenerateTriangleMesh() {
 //	Mesh triangleMesh;
 //
-//	// ����
+//	
 //	triangleMesh.vertices = {
 //		0.0f, 0.5f, 0.0f,  // A
 //	   -0.5f, -0.5f, 0.5f, // B
@@ -540,7 +540,7 @@ void Component_Mesh::CalculateFaceNormals(ResourceMesh& mesh) {
 //		0.5f, -0.5f, -0.5f // E
 //	};
 //
-//	// ����
+//	
 //	triangleMesh.indices = {
 //		0, 1, 2,  // ABC
 //		0, 3, 1,  // ADE
