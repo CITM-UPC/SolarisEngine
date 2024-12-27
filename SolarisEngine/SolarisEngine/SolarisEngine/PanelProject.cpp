@@ -183,7 +183,7 @@ void PanelProject::ShowFileSystemTree(const std::filesystem::path& path) {
 		// 处理重命名
 		if (isRenaming && isSelected && fileName == renameTarget) {
 			char buffer[256];
-			strncpy_s(buffer, sizeof(buffer), renameBuffer.c_str(), _TRUNCATE); // 使用 strncpy_s
+			strncpy_s(buffer, sizeof(buffer), renameBuffer.c_str(), _TRUNCATE); 
 
 			// 设置输入框的最大宽度
 			ImGui::SetNextItemWidth(iconSize + padding + textMaxWidth - 75);
@@ -289,64 +289,65 @@ void PanelProject::ShowBreadcrumbNavigation() {
 
 			if (ImGui::BeginDragDropTarget()) {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_FILE")) {
-					// 提取拖动源的文件名
+					// Extraer el nombre del archivo del origen del arrastre
 					const char* fileName = static_cast<const char*>(payload->Data);
 
-					// 构建源路径（假设 `currentPath` 是当前显示目录）
+					// Construir la ruta de origen (suponiendo que `currentPath` es el directorio actual mostrado)
 					std::filesystem::path sourcePath = currentPath / fileName;
 
-					// 构建目标路径（面包屑的路径）
+					// Construir la ruta de destino (la ruta de la miga de pan)
 					std::filesystem::path destinationPath = pathPart / fileName;
 
-					// 检查源路径和目标路径是否相同
+					// Comprobar si la ruta de origen y la ruta de destino son iguales
 					if (sourcePath == destinationPath) {
-						Debug::Log("Cannot move file/folder to the same directory.");
-						return;  // 如果源路径和目标路径相同，则跳过操作
+						Debug::Log("No se puede mover el archivo/carpeta al mismo directorio.");
+						return;  // Si la ruta de origen y la ruta de destino son iguales, omitir la operación
 					}
 
 					try {
-						// 检查源文件夹/文件是否存在
+						// Comprobar si la carpeta/archivo de origen existe
 						if (!std::filesystem::exists(sourcePath)) {
-							Debug::Log("Source file/folder does not exist: ", sourcePath.string());
+							Debug::Log("El archivo/carpeta de origen no existe: ", sourcePath.string());
 							return;
 						}
 
-						// 如果目标路径已存在
+						// Si la ruta de destino ya existe
 						if (std::filesystem::exists(destinationPath)) {
-							// 如果目标路径是当前文件夹，跳过移动
+							// Si la ruta de destino es el directorio actual, omitir el movimiento
 							if (std::filesystem::is_directory(destinationPath) && destinationPath == currentPath) {
-								Debug::Log("Target is the current directory, skipping move.");
-								return;  // 如果目标是当前文件夹，不做任何操作
+								Debug::Log("El destino es el directorio actual, omitiendo el movimiento.");
+								return;  // Si el destino es el directorio actual, no hacer nada
 							}
 
-							// 如果目标路径是其他文件夹，且目标已存在相同名称的文件或文件夹
+							// Si la ruta de destino es otra carpeta y ya existe un archivo o carpeta con el mismo nombre
 							if (std::filesystem::is_directory(destinationPath)) {
-								// 添加数字后缀
+								// Agregar sufijo numérico
 								std::filesystem::path uniqueDestinationPath = destinationPath;
 								int counter = 1;
 								while (std::filesystem::exists(uniqueDestinationPath)) {
-									// 获取文件名和扩展名
-									std::string stem = uniqueDestinationPath.stem().string();  // 不包含扩展名的文件名
-									std::string extension = uniqueDestinationPath.extension().string();  // 文件扩展名
+									// Obtener el nombre y la extensión del archivo
+									std::string stem = uniqueDestinationPath.stem().string();  // Nombre del archivo sin la extensión
+									std::string extension = uniqueDestinationPath.extension().string();  // Extensión del archivo
 
-									// 给文件名加上后缀 (数字)
+									// Agregar sufijo numérico al nombre del archivo
 									uniqueDestinationPath = pathPart / (stem + " (" + std::to_string(counter) + ")" + extension);
-									counter++;  // 增加后缀的数字
+									counter++;  // Incrementar el número del sufijo
 								}
 								destinationPath = uniqueDestinationPath;
 							}
 						}
 
-						// 执行移动操作
+						// Ejecutar la operación de movimiento
 						std::filesystem::rename(sourcePath, destinationPath);
-						Debug::Log("Moved to: ", destinationPath.string());
+						Debug::Log("Movido a: ", destinationPath.string());
 					}
 					catch (const std::exception& e) {
-						Debug::Log("Error moving file/folder: ", e.what());
+						Debug::Log("Error al mover el archivo/carpeta: ", e.what());
 					}
 				}
 				ImGui::EndDragDropTarget();
 			}
+
 
 
 
